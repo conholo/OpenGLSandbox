@@ -42,8 +42,36 @@ namespace Engine
 		m_Specification.Width = width;
 		m_Specification.Height = height;
 
-		m_Specification.InternalFormat = channels == 4 ? ImageUtils::ImageInternalFormat::RGBA8 : ImageUtils::ImageInternalFormat::RGB8;
-		m_Specification.PixelLayoutFormat = channels == 4 ? ImageUtils::ImageDataLayout::RGBA : ImageUtils::ImageDataLayout::RGB;
+		if (m_Specification.InternalFormat == ImageUtils::ImageInternalFormat::FromImage && m_Specification.PixelLayoutFormat == ImageUtils::ImageDataLayout::FromImage)
+		{
+			switch (channels)
+			{
+				case 1:
+				{
+					m_Specification.InternalFormat = ImageUtils::ImageInternalFormat::R8;
+					m_Specification.PixelLayoutFormat = ImageUtils::ImageDataLayout::Red;
+					break;
+				}
+				case 2:
+				{
+					m_Specification.InternalFormat = ImageUtils::ImageInternalFormat::RG8;
+					m_Specification.PixelLayoutFormat = ImageUtils::ImageDataLayout::RG;
+					break;
+				}
+				case 3:
+				{
+					m_Specification.InternalFormat = ImageUtils::ImageInternalFormat::RGB8;
+					m_Specification.PixelLayoutFormat = ImageUtils::ImageDataLayout::RGB;
+					break;
+				}
+				case 4:
+				{
+					m_Specification.InternalFormat = ImageUtils::ImageInternalFormat::RGBA8;
+					m_Specification.PixelLayoutFormat = ImageUtils::ImageDataLayout::RGBA;
+					break;
+				}
+			}
+		}
 
 		if (data)
 		{
@@ -64,6 +92,12 @@ namespace Engine
 	Texture2D::~Texture2D()
 	{
 		glDeleteTextures(1, &m_ID);
+	}
+
+	void Texture2D::BindTextureIDToSamplerSlot(uint32_t slot, uint32_t id)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTextureUnit(slot, id);
 	}
 
 	void Texture2D::BindToSamplerSlot(uint32_t slot)
@@ -103,6 +137,27 @@ namespace Engine
 		GLenum pixelLayout = ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat);
 		GLenum type = ImageUtils::ConvertImageDataType(m_Specification.DataType);
 		glTextureSubImage2D(m_ID, 0, 0, 0, m_Specification.Width, m_Specification.Height, pixelLayout, type, data);
+	}
+
+	Ref<Texture2D> Texture2D::CreateWhiteTexture()
+	{
+		Texture2DSpecification whiteTextureSpec =
+		{
+			Engine::ImageUtils::WrapMode::Repeat,
+			Engine::ImageUtils::WrapMode::Repeat,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::ImageInternalFormat::RGBA8,
+			Engine::ImageUtils::ImageDataLayout::RGBA,
+			Engine::ImageUtils::ImageDataType::UByte,
+			1, 1
+		};
+
+		Ref<Texture2D> whiteTexture = Engine::CreateRef<Engine::Texture2D>(whiteTextureSpec);
+		uint32_t whiteTextureData = 0xffffffff;
+		whiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+
+		return whiteTexture;
 	}
 
 	Texture3D::Texture3D(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
@@ -145,19 +200,19 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 
-	Texture3D::Texture3D(const TextureSpecification& specificiation, const void* data)
-		:m_Specification(specificiation)
+	Texture3D::Texture3D(const TextureSpecification& specification, const void* data)
+		:m_Specification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, 1024, 1024, 1024, 0, GL_RGBA32F, GL_FLOAT, data);
-
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
 	}
 
 	Texture3D::~Texture3D()
@@ -187,7 +242,7 @@ namespace Engine
 			return;
 		}
 
-		glBindImageTexture(unit, m_ID, level, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 }
 

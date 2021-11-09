@@ -13,6 +13,7 @@ namespace Engine
 		void Bind() const;
 		void Unbind() const;
 
+		uint32_t GetID() const { return m_ID; }
 		uint32_t GetIndexCount() const { return m_Count; }
 
 	private:

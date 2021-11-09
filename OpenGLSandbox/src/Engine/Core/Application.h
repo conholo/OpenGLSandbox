@@ -5,6 +5,7 @@
 #include "Engine/Event/WindowEvent.h"
 #include "Engine/Core/LayerStack.h"
 #include "Engine/Core/Memory.h"
+#include "Engine/ImGui/ImGuiLayer.h"
 
 namespace Engine
 {
@@ -22,6 +23,8 @@ namespace Engine
 		Window& GetWindow() const { return *m_Window; }
 		const std::string& GetName() const { return m_Name; }
 
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+
 		void PushLayer(Layer* layer);
 		void PopLayer(Layer* layer);
 
@@ -36,6 +39,7 @@ namespace Engine
 		std::string m_Name;
 		bool m_IsRunning = true;
 		Scope<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 	};
 

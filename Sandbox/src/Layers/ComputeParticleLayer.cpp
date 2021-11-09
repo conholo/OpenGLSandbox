@@ -26,19 +26,17 @@ void ComputeParticleLayer::OnAttach()
 		Engine::ImageUtils::WrapMode::Repeat,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::FilterMode::Linear,
-		Engine::ImageUtils::ImageInternalFormat::RGBA8,
-		Engine::ImageUtils::ImageDataLayout::RGBA,
+		Engine::ImageUtils::ImageInternalFormat::FromImage,
+		Engine::ImageUtils::ImageDataLayout::FromImage,
 		Engine::ImageUtils::ImageDataType::UByte,
 		1, 1
 	};
 
-	m_WhiteTexture = Engine::CreateRef<Engine::Texture2D>(textureSpec);
-	uint32_t whiteTextureData = 0xffffffff;
-	m_WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+	m_WhiteTexture = Engine::Texture2D::CreateWhiteTexture();
 	m_BrickTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/brick-wall.jpg", textureSpec);
 	m_GrassTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/grass.jpg", textureSpec);
 
-	m_GroundPlane = Engine::CreateRef<Engine::Entity>(Engine::PrimitiveType::Plane, "FlatColor");
+	m_GroundPlane = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Plane, "FlatColor");
 	m_GroundPlane->GetEntityTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
 	m_GroundPlane->GetEntityTransform()->SetScale({ 20.0f, 0.0f, 20.0f });
 

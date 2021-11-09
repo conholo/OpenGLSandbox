@@ -45,6 +45,6 @@ private:
 	Engine::Ref<Engine::Texture2D> m_BrickTexture;
 	Engine::Ref<Engine::Texture2D> m_GrassTexture;
 	Engine::Ref<Engine::Texture2D> m_WhiteTexture;
-	Engine::Ref<Engine::Entity> m_GroundPlane;
+	Engine::Ref<Engine::SimpleEntity> m_GroundPlane;
 	Engine::Camera m_Camera;
 };

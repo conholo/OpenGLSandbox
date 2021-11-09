@@ -8,12 +8,15 @@
 
 namespace Engine
 {
+	enum class ProjectionType { None = 0, Perspective, Orthographic };
 	class Camera
 	{
 	public:
-
+		Camera();
 		Camera(float fov, float aspectRatio, float nearClip, float farClip);
 
+		void SetPerspective();
+		void SetOrthographic();
 		void Update(float deltaTime);
 		void OnEvent(Event& event);
 
@@ -28,9 +31,16 @@ namespace Engine
 		void Orbit(const glm::vec3& eyePosition, const glm::vec3& target, const glm::vec3& angleAxisDegrees);
 
 
-		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateView(); }
+		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculatePerspectiveView(); }
 		void SetRotation(const glm::vec2& rotation);
 
+		float GetNearClip() const { return m_NearClip; }
+		float GetFarClip() const { return m_FarClip; }
+		float GetAspectRatio() const { return m_AspectRatio; }
+		float GetPitch() const { return m_Pitch; }
+		float GetYaw() const { return m_Yaw; }
+
+		glm::vec3 ScreenToWorldPoint(const glm::vec3 screenPosition);
 		glm::mat4 GetViewProjection() const { return m_ProjectionMatrix * m_ViewMatrix; }
 		glm::mat4 GetView() const { return m_ViewMatrix; }
 		glm::mat4 GetProjection() const { return m_ProjectionMatrix; }
@@ -43,16 +53,23 @@ namespace Engine
 	private:
 		glm::quat CalculateOrientation() const;
 		glm::vec3 CalculatePosition() const;
-		void RecalculateView();
-		void RecalculateProjection();
+
+		void UpdatePerspective(float deltaTime);
+		void UpdateOrthographic(float deltaTime);
+		void RecalculatePerspectiveView();
+		void RecalculateOrthographicView();
+		void RecalculatePerspectiveProjection();
+		void RecalculateOrthographicProjection();
 
 		bool OnScroll(MouseScrolledEvent& event);
 
 	private:
 
+		ProjectionType m_ProjectionType = ProjectionType::Perspective;
 		bool m_IsLocked = false;
-
+		bool m_OrthographicRotationEnabled = true;
 		float m_PanSpeed = 3.0f;
+		float m_OrthoTranslationSpeed = 1.0f;
 		float m_RotationSpeed = 50.0f;
 
 		float m_FOV = 45.0f;
@@ -65,7 +82,8 @@ namespace Engine
 		float m_PitchDelta = 0.0f, m_YawDelta = 0.0f;
 
 		float m_DistanceFromFocalPoint = 10.0f;
-		float m_Rotation;
+		float m_OrthographicZoomLevel = 1.0f;
+		float m_OrthographicRotation;
 
 		glm::vec3 m_WorldRotationEulers{ 0.0f };
 		glm::vec3 m_Position{ 0.0f };

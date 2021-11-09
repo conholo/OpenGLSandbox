@@ -27,7 +27,7 @@ namespace Engine
 			case FilterMode::LinearMipLinear:		return GL_LINEAR_MIPMAP_LINEAR;
 			case FilterMode::LinearMipNearest:		return GL_LINEAR_MIPMAP_NEAREST;
 			case FilterMode::Nearest:				return GL_NEAREST;
-			case FilterMode::NearestMipNearest:	return GL_NEAREST_MIPMAP_NEAREST;
+			case FilterMode::NearestMipNearest:		return GL_NEAREST_MIPMAP_NEAREST;
 			case FilterMode::NearestMipLinear:		return GL_NEAREST_MIPMAP_LINEAR;
 			}
 
@@ -41,31 +41,31 @@ namespace Engine
 			case ImageInternalFormat::None:			return 0;
 			case ImageInternalFormat::RGBA:			return GL_RGBA;
 			case ImageInternalFormat::RGB:			return GL_RGB;
-			case ImageInternalFormat::RG:				return GL_RG;
+			case ImageInternalFormat::RG:			return GL_RG;
 			case ImageInternalFormat::Red:			return GL_RED;
 			case ImageInternalFormat::DepthStencil:	return GL_DEPTH_STENCIL;
-			case ImageInternalFormat::Depth:			return GL_DEPTH_COMPONENT;
-			case ImageInternalFormat::R8:				return GL_R8;
+			case ImageInternalFormat::Depth:		return GL_DEPTH_COMPONENT;
+			case ImageInternalFormat::R8:			return GL_R8;
 			case ImageInternalFormat::R16:			return GL_R16;
 			case ImageInternalFormat::RG8:			return GL_RG8;
 			case ImageInternalFormat::RG16:			return GL_RG16;
 			case ImageInternalFormat::RGB4:			return GL_RGB4;
 			case ImageInternalFormat::RGB5:			return GL_RGB5;
 			case ImageInternalFormat::RGB8:			return GL_RGB8;
-			case ImageInternalFormat::RGB10:			return GL_RGB10;
-			case ImageInternalFormat::RGB12:			return GL_RGB12;
-			case ImageInternalFormat::RGBA2:			return GL_RGBA2;
-			case ImageInternalFormat::RGBA4:			return GL_RGBA4;
-			case ImageInternalFormat::RGBA8:			return GL_RGBA8;
-			case ImageInternalFormat::RGBA12:			return GL_RGBA12;
-			case ImageInternalFormat::RGBA16:			return GL_RGBA16;
+			case ImageInternalFormat::RGB10:		return GL_RGB10;
+			case ImageInternalFormat::RGB12:		return GL_RGB12;
+			case ImageInternalFormat::RGBA2:		return GL_RGBA2;
+			case ImageInternalFormat::RGBA4:		return GL_RGBA4;
+			case ImageInternalFormat::RGBA8:		return GL_RGBA8;
+			case ImageInternalFormat::RGBA12:		return GL_RGBA12;
+			case ImageInternalFormat::RGBA16:		return GL_RGBA16;
 			case ImageInternalFormat::R16F:			return GL_R16F;
-			case ImageInternalFormat::RG16F:			return GL_RG16F;
-			case ImageInternalFormat::RGB16F:			return GL_RGB16F;
+			case ImageInternalFormat::RG16F:		return GL_RG16F;
+			case ImageInternalFormat::RGB16F:		return GL_RGB16F;
 			case ImageInternalFormat::RGBA16F:		return GL_RGBA16F;
 			case ImageInternalFormat::R32F:			return GL_R32F;
-			case ImageInternalFormat::RG32F:			return GL_RG32F;
-			case ImageInternalFormat::RGB32F:			return GL_RGB32F;
+			case ImageInternalFormat::RG32F:		return GL_RG32F;
+			case ImageInternalFormat::RGB32F:		return GL_RGB32F;
 			case ImageInternalFormat::RGBA32F:		return GL_RGBA32F;
 			}
 
@@ -83,12 +83,11 @@ namespace Engine
 			case ImageDataLayout::Red:				return GL_RED;
 			case ImageDataLayout::RGBAInt:			return GL_RGBA_INTEGER;
 			case ImageDataLayout::RGBInt:			return GL_RGB_INTEGER;
-			case ImageDataLayout::RGInt:				return GL_RG_INTEGER;
+			case ImageDataLayout::RGInt:			return GL_RG_INTEGER;
 			case ImageDataLayout::RedInt:			return GL_RED_INTEGER;
 			case ImageDataLayout::Stencil:			return GL_STENCIL_INDEX;
-			case ImageDataLayout::Depth:				return GL_DEPTH_COMPONENT;
+			case ImageDataLayout::Depth:			return GL_DEPTH_COMPONENT;
 			case ImageDataLayout::DepthStencil:		return GL_DEPTH_STENCIL;
-				;
 			}
 
 			return 0;
@@ -99,14 +98,14 @@ namespace Engine
 			switch (dataType)
 			{
 			case ImageDataType::None:			return 0;
-			case ImageDataType::UByte:		return GL_UNSIGNED_BYTE;
+			case ImageDataType::UByte:			return GL_UNSIGNED_BYTE;
 			case ImageDataType::Byte:			return GL_BYTE;
-			case ImageDataType::UShort:		return GL_UNSIGNED_SHORT;
-			case ImageDataType::Short:		return GL_SHORT;
+			case ImageDataType::UShort:			return GL_UNSIGNED_SHORT;
+			case ImageDataType::Short:			return GL_SHORT;
 			case ImageDataType::UInt:			return GL_UNSIGNED_INT;
 			case ImageDataType::Int:			return GL_INT;
-			case ImageDataType::HalfFloat:	return GL_HALF_FLOAT;
-			case ImageDataType::Float:		return GL_FLOAT;
+			case ImageDataType::HalfFloat:		return GL_HALF_FLOAT;
+			case ImageDataType::Float:			return GL_FLOAT;
 			}
 
 			return 0;

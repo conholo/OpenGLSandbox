@@ -14,9 +14,21 @@
 #include "Engine/Event/WindowEvent.h"
 //--------------------- CORE ---------------------//
 
+//--------------------- Simple ECS ---------------------//
+#include "Engine/Scene/SimpleECS/SimpleEntity.h"
+#include "Engine/Scene/SimpleECS/Light.h"
+// This is in Simple ECS because it depends on Entity Transform.
+// Needs the updated ECS equivalent.
+#include "Engine/Rendering/Line.h"
+//--------------------- Simple ECS ---------------------//
+
+
 //--------------------- Scene ---------------------//
-#include "Engine/Core/Entity.h"
+#include "Engine/Scene/Component.h"
+#include "Engine/Scene/Entity.h"
+#include "Engine/Scene/Scene.h"
 //--------------------- Scene ---------------------//
+
 
 //--------------------- RENDERING ---------------------//
 #include "Engine/Rendering/VertexArray.h"
@@ -27,4 +39,9 @@
 #include "Engine/Rendering/Texture.h"
 #include "Engine/Rendering/CubeMap.h"
 #include "Engine/Rendering/Camera.h"
+#include "Engine/Rendering/EditorGrid.h"
+#include "Engine/Rendering/FrameBuffer.h"
+#include "Engine/Rendering/Renderer.h"
+#include "Engine/Rendering/SceneRenderer.h"
+#include "Engine/Rendering/UniformBuffer.h"
 //--------------------- RENDERING ---------------------//

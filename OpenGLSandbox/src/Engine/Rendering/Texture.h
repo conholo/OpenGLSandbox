@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Rendering/TextureUtils.h"
+#include "Engine/Core/Memory.h"
 
 #include <string>
 #include <stdint.h>
@@ -44,11 +45,14 @@ namespace Engine
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
 
+		static void BindTextureIDToSamplerSlot(uint32_t slot, uint32_t id);
+
 		void BindToSamplerSlot(uint32_t slot);
 		void Unbind() const;
 		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
 		void SetData(void* data, uint32_t size);
 
+		static Ref<Texture2D> CreateWhiteTexture();
 	private:
 		Texture2DSpecification m_Specification;
 		uint32_t m_ID;
@@ -66,6 +70,7 @@ namespace Engine
 		void Unbind() const;
 		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
 
+		uint32_t GetID() const { return m_ID; }
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
 

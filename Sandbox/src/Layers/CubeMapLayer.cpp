@@ -39,27 +39,6 @@ void CubeMapLayer::OnAttach()
 	};
 
 	m_CubeMap = Engine::CreateRef<Engine::CubeMap>(Engine::CreateRef<Engine::Texture3D>(spec, faceFiles), Engine::ShaderLibrary::Get("SkyboxTest"));
-
-
-	Engine::TextureSpecification skySpec =
-	{
-		Engine::ImageUtils::Usage::Storage,
-		Engine::ImageUtils::WrapMode::Repeat,
-		Engine::ImageUtils::FilterMode::Linear,
-		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
-		Engine::ImageUtils::ImageDataLayout::RGBA,
-		Engine::ImageUtils::ImageDataType::Float,
-		1024, 1024
-	};
-
-	Engine::ShaderLibrary::Get("Preetham")->Bind();
-	Engine::ShaderLibrary::Get("Preetham")->UploadUniformFloat3("u_TAI", { 0.5f, 0.1f, 0.2f });
-	Engine::ShaderLibrary::Get("Preetham")->DispatchCompute(1024 / 32, 1024 / 32, 6);
-
-	m_SkyTexture3D = Engine::CreateRef<Engine::Texture3D>(skySpec, nullptr);
-	m_SkyTexture3D->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
-
-	m_SkyMap = Engine::CreateRef<Engine::CubeMap>(m_SkyTexture3D, Engine::ShaderLibrary::Get("SkyboxTest"));
 }
 
 void CubeMapLayer::OnDetach()
@@ -81,14 +60,6 @@ void CubeMapLayer::OnUpdate(float deltaTime)
 	{
 		m_Camera.Update(deltaTime);
 	}
-
-	//Engine::ShaderLibrary::Get("Preetham")->Bind();
-	//Engine::ShaderLibrary::Get("Preetham")->UploadUniformFloat3("u_TAI", { 0.5f, 0.1f, 0.2f });
-	//Engine::ShaderLibrary::Get("Preetham")->DispatchCompute(m_CubeMap->GetTexture3D()->GetWidth() / 32, m_CubeMap->GetTexture3D()->GetHeight() / 32, 6);
-	//Engine::ShaderLibrary::Get("Preetham")->Unbind();
-	//
-	//glm::mat4 view3x3 = glm::mat4(glm::mat3(m_Camera.GetView()));
-	//m_SkyMap->Submit(view3x3);
 
 	DrawReflectionScene();
 }
@@ -121,7 +92,7 @@ void CubeMapLayer::DrawReflectionScene()
 	for (float x = -10.0f; x < 10.0f; x += 2.0f)
 	{
 		Engine::ShaderLibrary::Get("EnvironmentReflection")->Bind();
-		Engine::Ref<Engine::Entity> sphere = Engine::CreateRef<Engine::Entity>(Engine::PrimitiveType::Sphere, "EnvironmentReflection");
+		Engine::Ref<Engine::SimpleEntity> sphere = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Sphere, "EnvironmentReflection");
 		sphere->GetEntityTransform()->SetPosition({ x, 0.0f, 0.0f });
 		glm::mat4 modelMatrix = sphere->GetEntityTransform()->Transform();
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(modelMatrix)));

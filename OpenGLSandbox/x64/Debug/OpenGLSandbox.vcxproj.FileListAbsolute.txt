@@ -1,0 +1,2 @@
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\OpenGLSandbox.pdb
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\x64\Debug\OpenGLSandbox.pdb

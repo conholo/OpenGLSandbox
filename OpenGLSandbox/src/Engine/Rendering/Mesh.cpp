@@ -1,4 +1,6 @@
 #include "Engine/Rendering/Mesh.h"
+#include "Engine/Core/Math.h"
+#include <iostream>
 
 namespace Engine
 {
@@ -8,11 +10,13 @@ namespace Engine
 	{
 		switch (primitiveType)
 		{
-		case PrimitiveType::Plane:		return Plane();
-		case PrimitiveType::Quad:		return Quad();
-		case PrimitiveType::Triangle:	return Triangle();
-		case PrimitiveType::Cube:		return Cube();
-		case PrimitiveType::Sphere:		return Sphere(1.0f);
+		case PrimitiveType::Plane:					return Plane();
+		case PrimitiveType::Quad:					return Quad();
+		case PrimitiveType::FullScreenQuad:			return FullScreenQuad();
+		case PrimitiveType::Triangle:				return Triangle();
+		case PrimitiveType::Cube:					return Cube();
+		case PrimitiveType::Sphere:					return Sphere(1.0f);
+		case PrimitiveType::TessellatedQuad:		return TessellatedQuad(10);
 		}
 
 		return nullptr;
@@ -68,6 +72,25 @@ namespace Engine
 
 		return CreateRef<Mesh>(vertices, indices);
 	}
+
+	Ref<Mesh> MeshFactory::FullScreenQuad()
+	{
+		std::vector<Vertex> vertices =
+		{
+			Vertex{ {-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f} },
+			Vertex{ { 1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f} },
+			Vertex{ { 1.0f,  1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f} },
+			Vertex{ {-1.0f,  1.0f, 0.0f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f} },
+		};
+
+		std::vector<uint32_t> indices =
+		{
+			 0, 1, 2, 2, 3, 0
+		};
+
+		return CreateRef<Mesh>(vertices, indices);
+	}
+
 
 	Ref<Mesh> MeshFactory::Cube()
 	{
@@ -175,12 +198,63 @@ namespace Engine
 				const uint32_t second = first + (uint32_t)longitudeBands + 1;
 
 				indices.push_back(first);
-				indices.push_back(second);
 				indices.push_back(first + 1);
+				indices.push_back(second);
 
 				indices.push_back(second);
-				indices.push_back(second + 1);
 				indices.push_back(first + 1);
+				indices.push_back(second + 1);
+			}
+		}
+
+		return CreateRef<Mesh>(vertices, indices);
+	}
+
+	static glm::vec3 RemapVector3(const glm::vec3& inVector)
+	{
+		float x = Remap(inVector.x, -0.5f, 0.5f, 0.0f, 1.0f);
+		float y = Remap(inVector.y, -0.5f, 0.5f, 0.0f, 1.0f);
+		float z = Remap(inVector.z, -0.5f, 0.5f, 0.0f, 1.0f);
+
+		return { x, y, z };
+	}
+
+	Ref<Mesh> MeshFactory::TessellatedQuad(uint32_t resolution)
+	{
+		std::vector<Vertex> vertices;
+		std::vector<uint32_t> indices;
+
+		// Space between each vertex.  This is for a unit quad (-0.5f, -0.5f) - (0.5f, 0.5).
+		float spacing = 1.0f / (float)resolution;
+		
+		glm::vec3 bottomLeft{ -0.5f, -0.5f, 0.0f };
+
+		for (uint32_t y = 0; y < resolution; y++)
+		{
+			for (uint32_t x = 0; x < resolution; x++)
+			{
+				glm::vec3 position{ bottomLeft.x + (float)x * spacing, bottomLeft.y + (float)y * spacing, 0.0f };
+
+				glm::vec2 texCoord{ (float)x / resolution, (float)y / resolution };
+				glm::vec3 normal{ 0.0f, 0.0f, 1.0f };
+
+				vertices.push_back({ position, texCoord, normal });
+
+				if (x == resolution - 1 || y == resolution - 1) continue;
+
+				uint32_t a = y * resolution + x;
+				uint32_t b = y * resolution + x + resolution;
+				uint32_t c = y * resolution + x + resolution + 1;
+				indices.push_back(a);
+				indices.push_back(b);
+				indices.push_back(c);
+
+				uint32_t d = a;
+				uint32_t e = y * resolution + x + resolution + 1;
+				uint32_t f = a + 1;
+				indices.push_back(d);
+				indices.push_back(e);
+				indices.push_back(f);
 			}
 		}
 

@@ -14,7 +14,6 @@ float SaturatedDot(in vec3 a, in vec3 b)
 	return max(dot(a, b), 0.0);
 }
 
-
 vec3 GetCubeMapTexCoord()
 {
 	vec2 st = gl_GlobalInvocationID.xy / vec2(imageSize(o_SkyMap));
@@ -24,11 +23,11 @@ vec3 GetCubeMapTexCoord()
 	vec3 coords;
 
 	if		(gl_GlobalInvocationID.z == 0)	coords = vec3(   1.0,  uv.y, -uv.x );
-	else if (gl_GlobalInvocationID.z == 0)	coords = vec3(  -1.0,  uv.y,  uv.x );
-	else if (gl_GlobalInvocationID.z == 0)	coords = vec3(  uv.x,  1.0,  -uv.y );
-	else if (gl_GlobalInvocationID.z == 0)	coords = vec3(  uv.x, -1.0,   uv.y );
-	else if (gl_GlobalInvocationID.z == 0)	coords = vec3(  uv.x,  uv.y,  1.0 );
-	else if (gl_GlobalInvocationID.z == 0)	coords = vec3( -uv.x,  uv.y, -1.0 );
+	else if (gl_GlobalInvocationID.z == 1)	coords = vec3(  -1.0,  uv.y,  uv.x );
+	else if (gl_GlobalInvocationID.z == 2)	coords = vec3(  uv.x,  1.0,  -uv.y );
+	else if (gl_GlobalInvocationID.z == 3)	coords = vec3(  uv.x, -1.0,   uv.y );
+	else if (gl_GlobalInvocationID.z == 4)	coords = vec3(  uv.x,  uv.y,  1.0 );
+	else if (gl_GlobalInvocationID.z == 5)	coords = vec3( -uv.x,  uv.y, -1.0 );
 
 	return normalize(coords);
 }

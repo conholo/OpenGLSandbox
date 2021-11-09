@@ -28,9 +28,9 @@ private:
 	glm::vec4 m_ClearColor = glm::vec4(0.1f);
 	float m_CameraYawRotate = 0.0f;
 
-	Engine::Ref<Engine::Entity> m_Sphere;
-	Engine::Ref<Engine::Entity> m_Cube;
-	Engine::Ref<Engine::Entity> m_Quad;
+	Engine::Ref<Engine::SimpleEntity> m_Sphere;
+	Engine::Ref<Engine::SimpleEntity> m_Cube;
+	Engine::Ref<Engine::SimpleEntity> m_Quad;
 
 private:
 

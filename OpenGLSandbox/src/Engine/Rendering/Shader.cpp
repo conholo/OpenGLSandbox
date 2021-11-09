@@ -240,6 +240,12 @@ namespace Engine
 		return location;
 	}
 
+	GLint Shader::UploadUniformMat4Array(const std::string& name, uint32_t count, float* start)
+	{
+		GLint location = glGetUniformLocation(m_ID, name.c_str());
+		glUniformMatrix4fv(location, count, GL_FALSE, start);
+		return location;
+	}
 
 	void Shader::DispatchCompute(uint32_t groupX, uint32_t groupY, uint32_t groupZ)
 	{

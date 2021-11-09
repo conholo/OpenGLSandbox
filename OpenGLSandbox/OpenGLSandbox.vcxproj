@@ -19,13 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine\Core\Entity.cpp" />
+    <ClCompile Include="src\Engine\ImGui\ImGuiBuild.cpp" />
+    <ClCompile Include="src\Engine\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Framebuffer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Line.cpp" />
+    <ClCompile Include="src\Engine\Rendering\Renderer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\RenderPass.cpp" />
+    <ClCompile Include="src\Engine\Rendering\SceneRenderer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\UniformBuffer.cpp" />
+    <ClCompile Include="src\Engine\Scene\Entity.cpp" />
+    <ClCompile Include="src\Engine\Scene\Scene.cpp" />
+    <ClCompile Include="src\Engine\Scene\SimpleECS\SimpleEntity.cpp" />
     <ClCompile Include="src\Engine\Core\Math.cpp" />
     <ClCompile Include="src\Engine\Core\Random.cpp" />
     <ClCompile Include="src\Engine\Rendering\Camera.cpp" />
     <ClCompile Include="src\Engine\Rendering\CubeMap.cpp" />
-    <ClCompile Include="src\Engine\Rendering\EntityRenderer.cpp" />
-    <ClCompile Include="src\Engine\Rendering\EntityTransform.cpp" />
+    <ClCompile Include="src\Engine\Rendering\EditorGrid.cpp" />
+    <ClCompile Include="src\Engine\Scene\SimpleECS\EntityRenderer.cpp" />
+    <ClCompile Include="src\Engine\Scene\SimpleECS\EntityTransform.cpp" />
     <ClCompile Include="src\Engine\Rendering\Mesh.cpp" />
     <ClCompile Include="src\Engine\Rendering\IndexBuffer.cpp" />
     <ClCompile Include="src\Engine\Rendering\RenderCommand.cpp" />
@@ -40,14 +51,34 @@
     <ClCompile Include="src\Engine\Core\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Time.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
+    <ClCompile Include="src\Engine\Scene\SimpleECS\Light.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
+    <ClCompile Include="vendor\imgui\imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="vendor\imgui\imgui\misc\fonts\binary_to_compressed_c.cpp" />
     <ClCompile Include="vendor\stbi\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Core\Buffer.h" />
+    <ClInclude Include="src\Engine\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Engine\Rendering\CubeMap.h" />
-    <ClInclude Include="src\Engine\Core\Entity.h" />
+    <ClInclude Include="src\Engine\Rendering\Line.h" />
+    <ClInclude Include="src\Engine\Rendering\Renderer.h" />
+    <ClInclude Include="src\Engine\Rendering\FrameBuffer.h" />
+    <ClInclude Include="src\Engine\Rendering\RenderPass.h" />
+    <ClInclude Include="src\Engine\Rendering\SceneRenderer.h" />
+    <ClInclude Include="src\Engine\Rendering\UniformBuffer.h" />
+    <ClInclude Include="src\Engine\Scene\Component.h" />
+    <ClInclude Include="src\Engine\Scene\Entity.h" />
+    <ClInclude Include="src\Engine\Scene\Scene.h" />
+    <ClInclude Include="src\Engine\Scene\SimpleECS\SimpleEntity.h" />
     <ClInclude Include="src\Engine\Core\Application.h" />
     <ClInclude Include="src\Engine\Core\Input.h" />
     <ClInclude Include="src\Engine\Core\KeyCodes.h" />
@@ -62,8 +93,9 @@
     <ClInclude Include="src\Engine\Core\Memory.h" />
     <ClInclude Include="src\Engine\Rendering\BufferLayout.h" />
     <ClInclude Include="src\Engine\Rendering\Camera.h" />
-    <ClInclude Include="src\Engine\Rendering\EntityRenderer.h" />
-    <ClInclude Include="src\Engine\Rendering\EntityTransform.h" />
+    <ClInclude Include="src\Engine\Rendering\EditorGrid.h" />
+    <ClInclude Include="src\Engine\Scene\SimpleECS\EntityRenderer.h" />
+    <ClInclude Include="src\Engine\Scene\SimpleECS\EntityTransform.h" />
     <ClInclude Include="src\Engine\Rendering\Mesh.h" />
     <ClInclude Include="src\Engine\Rendering\IndexBuffer.h" />
     <ClInclude Include="src\Engine\Rendering\RenderCommand.h" />
@@ -78,8 +110,18 @@
     <ClInclude Include="src\Engine\Event\MouseEvent.h" />
     <ClInclude Include="src\Engine\Event\WindowEvent.h" />
     <ClInclude Include="src\Engine\Core\EntryPoint.h" />
+    <ClInclude Include="src\Engine\Scene\SimpleECS\Light.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
+    <ClInclude Include="vendor\imgui\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\imgui\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\imgui\imgui\imconfig.h" />
+    <ClInclude Include="vendor\imgui\imgui\imgui.h" />
+    <ClInclude Include="vendor\imgui\imgui\imgui_internal.h" />
+    <ClInclude Include="vendor\imgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="vendor\imgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="vendor\imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="vendor\imgui\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="vendor\stbi\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +199,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -189,7 +231,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

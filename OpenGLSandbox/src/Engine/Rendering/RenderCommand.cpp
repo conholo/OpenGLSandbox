@@ -30,6 +30,30 @@ namespace Engine
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+	}
+
+	void RenderCommand::SetFaceCullMode(FaceCullMode cullMode)
+	{
+		glCullFace(cullMode == FaceCullMode::Front ? GL_FRONT : GL_BACK);
+	}
+
+	void RenderCommand::SetFlags(uint32_t flags)
+	{
+		if (flags & (uint32_t)RenderFlag::DepthTest)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+
+		if (flags & (uint32_t)RenderFlag::Blend)
+			glEnable(GL_BLEND);
+		else
+			glDisable(GL_BLEND);
+	}
+
+	void RenderCommand::SetDrawMode(DrawMode drawMode)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, drawMode == DrawMode::Fill ? GL_FILL : GL_LINE);
 	}
 
 	void RenderCommand::Clear(bool colorBufferBit, bool depthBufferBit)
@@ -65,5 +89,10 @@ namespace Engine
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetIndexCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
+
+	void RenderCommand::DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first)
+	{
+		glDrawArrays(topology == LineTopology::Lines ? GL_LINES : GL_LINE_STRIP, first, vertexCount);
 	}
 }

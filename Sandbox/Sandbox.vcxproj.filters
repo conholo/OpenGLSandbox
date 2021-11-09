@@ -27,6 +27,27 @@
     <ClCompile Include="src\Layers\CubeMapLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\SkyBoxLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\LightingLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\ToonShadingLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\ShaderProjectLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\ShadowsLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\FractalLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\LineLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -38,11 +59,51 @@
     <ClInclude Include="src\Layers\CubeMapLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\SkyBoxLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\LightingLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\ToonShadingLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\ShaderProjectLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\ShadowsLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\FractalLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\LineLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
     <None Include="assets\shaders\SkyboxTest.shader" />
     <None Include="assets\shaders\EnvironmentReflection.shader" />
     <None Include="assets\shaders\Preetham.shader" />
+    <None Include="assets\shaders\TestWriteToCube.shader" />
+    <None Include="assets\shaders\Skybox.shader" />
+    <None Include="assets\shaders\Grid.shader" />
+    <None Include="assets\shaders\InfiniteGrid.shader" />
+    <None Include="assets\shaders\InfiniteGridPractice.shader" />
+    <None Include="assets\shaders\Test.shader" />
+    <None Include="assets\shaders\BlinnPhong.shader" />
+    <None Include="assets\shaders\SDFBlinnPhong.shader" />
+    <None Include="assets\shaders\Portal.shader" />
+    <None Include="assets\shaders\NormalMapExample.shader" />
+    <None Include="assets\shaders\Surfaces.shader" />
+    <None Include="assets\shaders\ToonShader.shader" />
+    <None Include="assets\shaders\BlinnPhongWS.shader" />
+    <None Include="assets\shaders\DebugDepth.shader" />
+    <None Include="assets\shaders\Depth.shader" />
+    <None Include="assets\shaders\EngineBP.shader" />
+    <None Include="assets\shaders\Fractal.shader" />
+    <None Include="assets\shaders\TestPhong.shader" />
+    <None Include="assets\shaders\LineShader.shader" />
   </ItemGroup>
 </Project>

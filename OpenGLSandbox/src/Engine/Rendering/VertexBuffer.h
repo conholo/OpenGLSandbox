@@ -14,10 +14,13 @@ namespace Engine
 		~VertexBuffer();
 
 		void SetData(const void* data, uint32_t size);
+		void Resize(uint32_t size);
+		void ResizeAndSetData(const void* data, uint32_t size);
 
 		void Bind() const;
 		void Unbind() const;
 
+		uint32_t GetID() const { return m_ID; }
 		void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
 		const BufferLayout& GetLayout() const { return m_Layout; }
 

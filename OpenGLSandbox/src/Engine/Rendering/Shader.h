@@ -31,6 +31,7 @@ namespace Engine
 		GLint UploadUniformIntArray(const std::string& name, uint32_t count, int* basePtr);
 		GLint UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
 		GLint UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+		GLint UploadUniformMat4Array(const std::string& name, uint32_t count, float* start);
 
 		bool IsCompute() const { return m_IsCompute; }
 

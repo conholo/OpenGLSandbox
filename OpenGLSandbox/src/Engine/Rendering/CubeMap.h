@@ -20,14 +20,14 @@ namespace Engine
 		~CubeMap();
 
 		void Submit(const glm::mat4& viewProjection);
-		const Ref<Texture3D> GetTexture3D() const { return m_TextureCube; }
+		const Ref<Texture3D> GetTexture3D() const { return m_Texture3D; }
 
 	private:
 		void ConstructPipelinePrimitives();
 
 	private:
 		uint32_t m_ID;
-		Ref<Texture3D> m_TextureCube;
+		Ref<Texture3D> m_Texture3D;
 		Ref<Shader> m_Shader;
 		Ref<VertexArray> m_VAO;
 		Ref<VertexBuffer> m_VBO;

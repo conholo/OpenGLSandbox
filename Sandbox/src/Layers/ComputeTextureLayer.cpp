@@ -30,11 +30,11 @@ void ComputeTextureLayer::OnAttach()
 	m_TestComputeTexture = Engine::CreateRef<Engine::Texture2D>(computeTextureSpecification);
 	m_TestComputeTexture->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
 
-	m_Sphere = Engine::CreateRef<Engine::Entity>(Engine::PrimitiveType::Sphere, "FlatColor");
+	m_Sphere = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Sphere, "FlatColor");
 	m_Sphere->GetEntityTransform()->SetPosition(glm::vec3(3.5f, 0.0f, 0.0f));
-	m_Cube = Engine::CreateRef<Engine::Entity>(Engine::PrimitiveType::Cube, "FlatColor");
+	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "FlatColor");
 	m_Cube->GetEntityTransform()->SetPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
-	m_Quad = Engine::CreateRef<Engine::Entity>(Engine::PrimitiveType::Quad, "FlatColor");
+	m_Quad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Quad, "FlatColor");
 	m_Quad->GetEntityTransform()->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	m_Quad->GetEntityTransform()->SetScale(glm::vec3(4.0f, 2.0f, 0.0f));
 

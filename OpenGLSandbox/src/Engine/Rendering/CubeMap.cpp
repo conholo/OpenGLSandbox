@@ -49,7 +49,7 @@ namespace Engine
 	};
 
 	CubeMap::CubeMap(const Ref<Texture3D>& textureCube, const Ref<Shader>& shader)
-		:m_TextureCube(textureCube), m_Shader(shader)
+		:m_Texture3D(textureCube), m_Shader(shader)
 	{
 		ConstructPipelinePrimitives();
 	}
@@ -80,12 +80,12 @@ namespace Engine
 	{
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		m_Shader->Bind();
+		m_Texture3D->BindToSamplerSlot(0);
 		m_Shader->UploadUniformMat4("u_ViewProjection", viewProjection);
 		m_Shader->UploadUniformInt("u_Skybox", 0);
-		m_TextureCube->BindToSamplerSlot(0);
 		m_VAO->Bind();
 		RenderCommand::DrawIndexed(m_VAO);
-		m_TextureCube->Unbind();
+		m_Texture3D->Unbind();
 		m_VAO->Unbind();
 		m_Shader->Unbind();
 		glDepthFunc(GL_LESS);
