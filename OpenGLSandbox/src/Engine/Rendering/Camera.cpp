@@ -244,9 +244,22 @@ namespace Engine
 	{
 		EventDispatcher dispatcher(event);
 
+		dispatcher.Dispatch<WindowResizedEvent>(BIND_FN(Camera::OnResize));
+
 		if (m_IsLocked) return;
 
 		dispatcher.Dispatch<MouseScrolledEvent>(BIND_FN(Camera::OnScroll));
+	}
+
+	bool Camera::OnResize(WindowResizedEvent& event)
+	{
+		m_AspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
+		if (m_ProjectionType == ProjectionType::Orthographic)
+			RecalculateOrthographicProjection();
+		else
+			RecalculatePerspectiveProjection();
+
+		return false;
 	}
 
 	bool Camera::OnScroll(MouseScrolledEvent& event)

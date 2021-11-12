@@ -3,6 +3,7 @@
 #include "Engine/Event/Event.h"
 #include "Engine/Core/Time.h"
 #include "Engine/Event/MouseEvent.h"
+#include "Engine/Event/WindowEvent.h"
 
 #include <glm/glm.hpp>
 
@@ -62,6 +63,7 @@ namespace Engine
 		void RecalculateOrthographicProjection();
 
 		bool OnScroll(MouseScrolledEvent& event);
+		bool OnResize(WindowResizedEvent& event);
 
 	private:
 

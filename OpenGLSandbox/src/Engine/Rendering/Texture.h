@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace Engine
 {
@@ -40,8 +41,13 @@ namespace Engine
 		Texture2D(const std::string& filePath, const Texture2DSpecification& specification);
 		~Texture2D();
 
+		void Invalidate();
+		void Resize(uint32_t width, uint32_t height);
+
 		const Texture2DSpecification& GetSpecification() const { return m_Specification; }
 
+		glm::vec2 GetMipCount(uint32_t mip) const;
+		uint32_t GetMipLevelCount() const;
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
 
@@ -53,6 +59,10 @@ namespace Engine
 		void SetData(void* data, uint32_t size);
 
 		static Ref<Texture2D> CreateWhiteTexture();
+		static Ref<Texture2D> CreateBlackTexture();
+
+	private:
+		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height) const;
 	private:
 		Texture2DSpecification m_Specification;
 		uint32_t m_ID;

@@ -1,3 +1,12 @@
-﻿  SandboxApplication.cpp
+﻿  LineLayer.cpp
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(65,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(66,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(77,50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(221,24): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(265,24): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(299,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(300,55): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(301,55): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(302,61): warning C4305: 'argument': truncation from 'double' to 'float'
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

@@ -51,6 +51,7 @@
   <ItemGroup>
     <None Include="assets\shaders\BlinnPhong.shader" />
     <None Include="assets\shaders\BlinnPhongWS.shader" />
+    <None Include="assets\shaders\Bloom.shader" />
     <None Include="assets\shaders\DebugDepth.shader" />
     <None Include="assets\shaders\Depth.shader" />
     <None Include="assets\shaders\EngineBP.shader" />
@@ -59,10 +60,12 @@
     <None Include="assets\shaders\Grid.shader" />
     <None Include="assets\shaders\InfiniteGrid.shader" />
     <None Include="assets\shaders\InfiniteGridPractice.shader" />
+    <None Include="assets\shaders\LinePointShader.shader" />
     <None Include="assets\shaders\LineShader.shader" />
     <None Include="assets\shaders\NormalMapExample.shader" />
     <None Include="assets\shaders\Particle.shader" />
     <None Include="assets\shaders\Portal.shader" />
+    <None Include="assets\shaders\PostProcessing.shader" />
     <None Include="assets\shaders\Preetham.shader" />
     <None Include="assets\shaders\SDFBlinnPhong.shader" />
     <None Include="assets\shaders\TestPhong.shader" />

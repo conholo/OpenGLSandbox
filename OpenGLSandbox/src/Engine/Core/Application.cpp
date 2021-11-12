@@ -47,6 +47,9 @@ namespace Engine
 		Engine::ShaderLibrary::Load("assets/shaders/EngineBP.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/Fractal.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/LineShader.shader");
+		Engine::ShaderLibrary::Load("assets/shaders/LinePointShader.shader");
+		Engine::ShaderLibrary::Load("assets/shaders/PostProcessing.shader");
+		Engine::ShaderLibrary::Load("assets/shaders/Bloom.shader");
 
 		RenderCommand::Initialize();
 		RenderCommand::SetViewport(m_Window->GetWidth(), m_Window->GetHeight());
@@ -86,8 +89,6 @@ namespace Engine
 		EventDispatcher dispatcher(event);
 
 		m_ImGuiLayer->OnEvent(event);
-
-
 
 		dispatcher.Dispatch<WindowClosedEvent>(BIND_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizedEvent>(BIND_FN(Application::OnWindowResize));

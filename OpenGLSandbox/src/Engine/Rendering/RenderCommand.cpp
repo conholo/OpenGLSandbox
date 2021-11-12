@@ -56,6 +56,11 @@ namespace Engine
 		glPolygonMode(GL_FRONT_AND_BACK, drawMode == DrawMode::Fill ? GL_FILL : GL_LINE);
 	}
 
+	void RenderCommand::SetPointSize(float size)
+	{
+		glPointSize(size);
+	}
+
 	void RenderCommand::Clear(bool colorBufferBit, bool depthBufferBit)
 	{
 		if (colorBufferBit && depthBufferBit)
@@ -93,6 +98,12 @@ namespace Engine
 
 	void RenderCommand::DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first)
 	{
-		glDrawArrays(topology == LineTopology::Lines ? GL_LINES : GL_LINE_STRIP, first, vertexCount);
+		uint32_t count = topology == LineTopology::Lines ? 2 : vertexCount;
+		glDrawArrays(topology == LineTopology::Lines ? GL_LINES : GL_LINE_STRIP, first, count);
+	}
+
+	void RenderCommand::DrawPoints(uint32_t vertexCount, uint32_t first)
+	{
+		glDrawArrays(GL_POINTS, first, vertexCount);
 	}
 }

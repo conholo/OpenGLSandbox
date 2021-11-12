@@ -16,9 +16,9 @@ namespace Engine
 		}
 	}
 
-	static void AttachColorTexture(uint32_t attachmentId, GLenum internalFormat, GLenum dataFormat, uint32_t width, uint32_t height, uint32_t index)
+	static void AttachColorTexture(uint32_t attachmentId, GLenum internalFormat, GLenum dataFormat, GLenum dataType, uint32_t width, uint32_t height, uint32_t index)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, dataType, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -98,12 +98,17 @@ namespace Engine
 				{
 					case FramebufferTextureFormat::RGBA8:
 					{
-						AttachColorTexture(m_ColorAttachmentIDs[i], GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+						AttachColorTexture(m_ColorAttachmentIDs[i], GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT, m_Specification.Width, m_Specification.Height, i);
+						break;
+					}
+					case FramebufferTextureFormat::RGBA32F:
+					{
+						AttachColorTexture(m_ColorAttachmentIDs[i], GL_RGBA32F, GL_RGBA, GL_FLOAT, m_Specification.Width, m_Specification.Height, i);
 						break;
 					}
 					case FramebufferTextureFormat::RED_INTEGER:
 					{
-						AttachColorTexture(m_ColorAttachmentIDs[i], GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+						AttachColorTexture(m_ColorAttachmentIDs[i], GL_R32I, GL_RED_INTEGER, GL_INT, m_Specification.Width, m_Specification.Height, i);
 						break;
 					}
 				}

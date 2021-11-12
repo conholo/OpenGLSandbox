@@ -10,8 +10,8 @@
 //#include "Layers/ToonShadingLayer.h"
 //#include "Layers/ShaderProjectLayer.h"
 //#include "Layers/ShadowsLayer.h"
-#include "Layers/FractalLayer.h"
-//#include "Layers/LineLayer.h"
+//#include "Layers/FractalLayer.h"
+#include "Layers/LineLayer.h"
 
 class SandboxApplication : public Engine::Application
 {
@@ -28,8 +28,8 @@ public:
 		//PushLayer(new ToonShadingLayer);
 		//PushLayer(new ShaderProjectLayer);
 		//PushLayer(new ShadowsLayer);
-		PushLayer(new FractalLayer);
-		//PushLayer(new LineLayer);
+		//PushLayer(new FractalLayer);
+		PushLayer(new LineLayer);
 	}
 	
 	~SandboxApplication()

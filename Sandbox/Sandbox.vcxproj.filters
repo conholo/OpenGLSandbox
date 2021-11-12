@@ -105,5 +105,8 @@
     <None Include="assets\shaders\Fractal.shader" />
     <None Include="assets\shaders\TestPhong.shader" />
     <None Include="assets\shaders\LineShader.shader" />
+    <None Include="assets\shaders\LinePointShader.shader" />
+    <None Include="assets\shaders\PostProcessing.shader" />
+    <None Include="assets\shaders\Bloom.shader" />
   </ItemGroup>
 </Project>

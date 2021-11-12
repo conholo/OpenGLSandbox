@@ -27,11 +27,13 @@ namespace Engine
 		static void SetFaceCullMode(FaceCullMode cullMode);
 		static void SetFlags(uint32_t flags);
 		static void SetDrawMode(DrawMode drawMode);
+		static void SetPointSize(float size);
 		static void Clear(bool colorBufferBit, bool depthBufferBit);
 		static void SetViewport(uint32_t width, uint32_t height);
 		static void ClearColor(const glm::vec4& clearColor);
 		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0);
 		static void DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first = 0);
+		static void DrawPoints(uint32_t vertexCount, uint32_t first = 0);
 	};
 }
 

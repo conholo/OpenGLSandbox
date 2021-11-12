@@ -94,6 +94,53 @@ namespace Engine
 		glDeleteTextures(1, &m_ID);
 	}
 
+	void Texture2D::Invalidate()
+	{
+		if (m_ID)
+		{
+			glDeleteTextures(1, &m_ID);
+		}
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D, m_ID);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		// Immutable-format Texture
+		// Contents of the image can be modified, but it's storage requirements may not change.
+		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+		glTextureStorage2D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
+	}
+
+	void Texture2D::Resize(uint32_t width, uint32_t height)
+	{
+		m_Specification.Width = width;
+		m_Specification.Height = height;
+		Invalidate();
+	}
+
+	glm::vec2 Texture2D::GetMipCount(uint32_t mip) const
+	{
+		uint32_t width = m_Specification.Width;
+		uint32_t height = m_Specification.Height;
+		while (mip != 0)
+		{
+			width /= 2;
+			height /= 2;
+			mip--;
+		}
+
+		return { width, height };
+	}
+
+	uint32_t Texture2D::GetMipLevelCount() const
+	{
+		return CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
+	}
+
 	void Texture2D::BindTextureIDToSamplerSlot(uint32_t slot, uint32_t id)
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
@@ -158,6 +205,35 @@ namespace Engine
 		whiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
 		return whiteTexture;
+	}
+
+	Ref<Texture2D> Texture2D::CreateBlackTexture()
+	{
+		Texture2DSpecification blackTextureSpec =
+		{
+			Engine::ImageUtils::WrapMode::Repeat,
+			Engine::ImageUtils::WrapMode::Repeat,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::ImageInternalFormat::RGBA8,
+			Engine::ImageUtils::ImageDataLayout::RGBA,
+			Engine::ImageUtils::ImageDataType::UByte,
+			1, 1
+		};
+
+		Ref<Texture2D> blackTexture = Engine::CreateRef<Engine::Texture2D>(blackTextureSpec);
+		uint32_t blackTextureData = 0xff000000;
+		blackTexture->SetData(&blackTextureData, sizeof(uint32_t));
+
+		return blackTexture;
+	}
+
+
+
+	uint32_t Texture2D::CalculateMipLevelCount(uint32_t width, uint32_t height) const
+	{
+		return (uint32_t)std::floor(std::log2(glm::min(width, height))) + 1;
+
 	}
 
 	Texture3D::Texture3D(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)

@@ -247,6 +247,11 @@ namespace Engine
 		return location;
 	}
 
+	void Shader::EnableShaderImageAccessBarrierBit()
+	{
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+	}
+
 	void Shader::DispatchCompute(uint32_t groupX, uint32_t groupY, uint32_t groupZ)
 	{
 		if (!m_IsCompute)

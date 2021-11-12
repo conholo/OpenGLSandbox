@@ -15,8 +15,8 @@ namespace Engine
 	}
 
 
-	Window::Window(const std::string& name, uint32_t width, uint32_t height)
-		:m_WindowData({ name, width, height })
+	Window::Window(const std::string& name, uint32_t width, uint32_t height, bool fullScreen, bool maximized)
+		:m_WindowData({ name, width, height, fullScreen, maximized })
 	{
 		Initialize();
 	}
@@ -36,6 +36,8 @@ namespace Engine
 
 		glfwSetErrorCallback(GLFWErrorCallback);
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+		glfwWindowHint(GLFW_DECORATED, m_WindowData.FullScreenBorderless ? GLFW_FALSE : GLFW_TRUE);
+		glfwWindowHint(GLFW_MAXIMIZED, m_WindowData.Maximized ? GLFW_TRUE : GLFW_FALSE);
 		m_WindowHandle = glfwCreateWindow(m_WindowData.Width, m_WindowData.Height, m_WindowData.Name.c_str(), nullptr, nullptr);
 
 		glfwMakeContextCurrent(m_WindowHandle);
@@ -147,6 +149,14 @@ namespace Engine
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_WindowHandle);
+	}
+
+	void Window::ToggleMaximize(bool maximize)
+	{
+		if (maximize)
+			glfwMaximizeWindow(m_WindowHandle);
+		else
+			glfwRestoreWindow(m_WindowHandle);
 	}
 
 	void Window::SetVSync(bool enable)
