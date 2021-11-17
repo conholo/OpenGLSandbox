@@ -108,5 +108,7 @@
     <None Include="assets\shaders\LinePointShader.shader" />
     <None Include="assets\shaders\PostProcessing.shader" />
     <None Include="assets\shaders\Bloom.shader" />
+    <None Include="assets\shaders\BloomDebugWrite.shader" />
+    <None Include="assets\shaders\Bloom2.shader" />
   </ItemGroup>
 </Project>

@@ -249,7 +249,12 @@ namespace Engine
 
 	void Shader::EnableShaderImageAccessBarrierBit()
 	{
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
+	}
+
+	void Shader::EnableTextureFetchBarrierBit()
+	{
+		glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 	}
 
 	void Shader::DispatchCompute(uint32_t groupX, uint32_t groupY, uint32_t groupZ)

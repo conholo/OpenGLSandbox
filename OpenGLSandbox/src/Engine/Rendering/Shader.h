@@ -34,6 +34,7 @@ namespace Engine
 		GLint UploadUniformMat4Array(const std::string& name, uint32_t count, float* start);
 
 		void EnableShaderImageAccessBarrierBit();
+		void EnableTextureFetchBarrierBit();
 		bool IsCompute() const { return m_IsCompute; }
 
 		void DispatchCompute(uint32_t groupX, uint32_t groupY, uint32_t groupZ);

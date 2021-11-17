@@ -46,6 +46,7 @@ namespace Engine
 		void SetOuterCutOff(float outerCutoff) { m_Specification.OuterCutOff = outerCutoff; }
 
 		const glm::vec3& GetLightColor() const { return m_Specification.LightColor; }
+		glm::vec3& GetLightColor() { return m_Specification.LightColor; }
 		float GetLightIntensity() const { return m_Specification.Intensity; }
 		float GetConstantAttenuation() const { return m_Specification.ConstantAttenuation; }
 		float GetLinearAttenuation() const { return m_Specification.LinearAttenuation; }

@@ -4,6 +4,7 @@
 #include <imgui/imgui.h>
 #define PI 3.14159265358979
 
+#include <glad/glad.h>
 
 LineLayer::LineLayer()
 {
@@ -18,10 +19,10 @@ LineLayer::~LineLayer()
 void LineLayer::OnAttach()
 {
 	Engine::Application::GetApplication().GetWindow().ToggleMaximize(true);
-	m_Camera.SetOrthographic();
+	//m_Camera.SetOrthographic();
 
 	m_WhiteTexture = Engine::Texture2D::CreateWhiteTexture();
-	m_BloomDirtTexture = Engine::Texture2D::CreateWhiteTexture();
+	m_BloomDirtTexture = Engine::Texture2D::CreateBlackTexture();
 	m_ViewportWidth = Engine::Application::GetApplication().GetWindow().GetWidth();
 	m_ViewportHeight = Engine::Application::GetApplication().GetWindow().GetHeight();
 
@@ -46,7 +47,6 @@ void LineLayer::OnAttach()
 		1, 1
 	};
 
-
 	m_BloomComputeTextures[0] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 	m_BloomComputeTextures[1] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 	m_BloomComputeTextures[2] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
@@ -60,7 +60,19 @@ void LineLayer::OnAttach()
 		m_BaseCurveVertices.push_back(lineVertex);
 
 	m_FullScreenQuad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::FullScreenQuad, "PostProcessing");
-	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "FlatColor");
+	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+
+
+	Engine::LightSpecification sunSpec =
+	{
+		Engine::LightType::Directional,
+		{1.0f, 1.0f, 1.0f},
+		1.0f
+	};
+
+	m_Light = Engine::CreateRef<Engine::Light>(sunSpec);
+	m_Light->GetLightTransform()->SetPosition({ 10.0f, 50.0f, 10.0f });
+
 
 	OnResize();
 }
@@ -124,47 +136,52 @@ void LineLayer::OnUpdate(float deltaTime)
 		}
 	}
 
-	uint32_t flags = 0;
-	flags |= (uint32_t)Engine::RenderFlag::DepthTest;
-	flags |= (uint32_t)Engine::RenderFlag::Blend;
+
 	m_FBO->Bind();
-	Engine::RenderCommand::SetFlags(flags);
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
 	m_Curve->SetControlLineColor(m_LineColor);
 	m_Curve->Draw(m_Camera.GetViewProjection());
 
-	m_Cube->GetEntityTransform()->SetPosition(m_CubePosition);
 	m_Cube->GetEntityRenderer()->GetShader()->Bind();
 	m_WhiteTexture->BindToSamplerSlot(0);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", m_CubeColor);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Cube->GetEntityTransform()->Transform());
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_SphereProperties.AmbientColor);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_SphereProperties.DiffuseColor);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_SphereProperties.AmbientStrength);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_SphereProperties.DiffuseStrength);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_SphereProperties.SpecularStrength);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_SphereProperties.Shininess);
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
 	m_Cube->DrawEntity(m_Camera.GetViewProjection());
 	m_FBO->Unbind();
 
-
 	BloomComputePass();
-	m_FBO->BindColorAttachment(0);
-	m_BloomComputeTextures[2]->BindToSamplerSlot(1);
-	m_BloomDirtTexture->BindToSamplerSlot(2);
-	flags ^= (uint32_t)Engine::RenderFlag::DepthTest;
-	Engine::RenderCommand::SetFlags(flags);
+
 	Engine::RenderCommand::Clear(true, true);
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->Bind();
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomIntensity", m_BloomIntensity);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomDirtIntensity);
+	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomIntensity", m_BloomEnabled ? m_BloomIntensity : 0.0f);
+	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomEnabled ? m_BloomDirtIntensity : 0.0f);
+
+	m_FBO->BindColorAttachment(0, 0);
+	m_BloomComputeTextures[2]->BindToSamplerSlot(1);
+	m_BloomDirtTexture->BindToSamplerSlot(2);
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BloomTexture", 1);
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BloomDirtTexture", 2);
 	m_FullScreenQuad->DrawEntity(m_Camera.GetViewProjection());
+	m_BloomComputeTextures[2]->Unbind();
+	m_FBO->UnbindColorAttachment(0, 0);
 }
 
 void LineLayer::BloomComputePass()
 {
-	for (auto bloomTexture : m_BloomComputeTextures)
-		bloomTexture->Invalidate();
-
-	Engine::ShaderLibrary::Get("Bloom")->Bind();
+	Engine::ShaderLibrary::Get("Bloom2")->Bind();
 
 	struct BloomConstants
 	{
@@ -174,108 +191,119 @@ void LineLayer::BloomComputePass()
 	} bloomConstants;
 
 	bloomConstants.Params = { m_BloomThreshold, m_BloomThreshold - m_BloomKnee, m_BloomKnee * 2.0f, 0.25f / m_BloomKnee };
-	bloomConstants.Mode = 0;
 
-
-	//------------------ PREFILTER -----------------//
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat4("u_Params", bloomConstants.Params);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Mode", bloomConstants.Mode);
-	m_FBO->BindColorAttachment(0);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Texture", 0);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_BloomTexture", 0);
-	m_BloomComputeTextures[0]->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
+	//------------------ MODE_PREFILTER -----------------//
 	uint32_t workGroupsX = m_BloomComputeTextures[0]->GetWidth() / m_BloomWorkGroupSize;
 	uint32_t workGroupsY = m_BloomComputeTextures[0]->GetHeight() / m_BloomWorkGroupSize;
 
-	Engine::ShaderLibrary::Get("Bloom")->DispatchCompute(workGroupsX, workGroupsY, 1);
-	Engine::ShaderLibrary::Get("Bloom")->EnableShaderImageAccessBarrierBit();
+	{
+		bloomConstants.Mode = 0;
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat4("u_Params", bloomConstants.Params);
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Mode", bloomConstants.Mode);
+		m_FBO->BindColorAttachment(0);
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Texture", 0);
+		m_BloomComputeTextures[0]->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
 
-	//------------------ PREFILTER -----------------//
+		Engine::ShaderLibrary::Get("Bloom2")->DispatchCompute(workGroupsX, workGroupsY, 1);
+		Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
+
+		m_FBO->UnbindColorAttachment(0, 0);
+	}
+	//------------------ MODE_PREFILTER -----------------//
 
 
-	//------------------ DOWNSAMPLE -----------------//
+	//------------------ MODE_DOWNSAMPLE -----------------//
 	bloomConstants.Mode = 1;
 	uint32_t mips = m_BloomComputeTextures[0]->GetMipLevelCount() - 2;
 
-	for (uint32_t i = 1; i < mips; i++)
+	for (uint32_t mip = 1; mip < mips; mip++)
 	{
-		glm::vec2 mipDimensions = m_BloomComputeTextures[0]->GetMipCount(i);
-		workGroupsX = (uint32_t)glm::ceil((float)mipDimensions.x / (float)m_BloomWorkGroupSize);
-		workGroupsY = (uint32_t)glm::ceil((float)mipDimensions.y / (float)m_BloomWorkGroupSize);
+		{
+			auto [mipWidth, mipHeight] = m_BloomComputeTextures[0]->GetMipSize(mip);
+			workGroupsX = (uint32_t)glm::ceil((float)mipWidth / (float)m_BloomWorkGroupSize);
+			workGroupsY = (uint32_t)glm::ceil((float)mipHeight / (float)m_BloomWorkGroupSize);
 
-		bloomConstants.LOD = i - 1.0f;
-		// Write to 1
-		m_BloomComputeTextures[1]->BindToImageSlot(0, i, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
-		// Read from 0
-		m_BloomComputeTextures[0]->BindToSamplerSlot(0);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Texture", 0);
-		m_FBO->BindColorAttachment(0, 1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_BloomTexture", 1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Mode", bloomConstants.Mode);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+			bloomConstants.LOD = mip - 1.0f;
+			// Write to 1
+			m_BloomComputeTextures[1]->BindToImageSlot(0, mip, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
+			// Read from 0 (starts pre-filtered)
+			m_BloomComputeTextures[0]->BindToSamplerSlot(0);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Texture", 0);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Mode", bloomConstants.Mode);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+			Engine::ShaderLibrary::Get("Bloom2")->DispatchCompute(workGroupsX, workGroupsY, 1);
+			Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
+		}
 
-		Engine::ShaderLibrary::Get("Bloom")->DispatchCompute(workGroupsX, workGroupsY, 1);
-		Engine::ShaderLibrary::Get("Bloom")->EnableShaderImageAccessBarrierBit();
+		{
+			bloomConstants.LOD = mip;
+			// Write to 0
+			m_BloomComputeTextures[0]->BindToImageSlot(0, mip, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
+			// Read from 1
+			m_BloomComputeTextures[1]->BindToSamplerSlot(0);
 
-		bloomConstants.LOD = i;
-		// Write to 0
-		m_BloomComputeTextures[0]->BindToImageSlot(0, i, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
-
-		// Read from 1
-		m_BloomComputeTextures[1]->BindToSamplerSlot(0);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Texture", 0);
-		m_FBO->BindColorAttachment(0, 1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_BloomTexture", 1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
-		Engine::ShaderLibrary::Get("Bloom")->DispatchCompute(workGroupsX, workGroupsY, 1);
-		Engine::ShaderLibrary::Get("Bloom")->EnableShaderImageAccessBarrierBit();
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Texture", 0);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Mode", bloomConstants.Mode);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+			Engine::ShaderLibrary::Get("Bloom2")->DispatchCompute(workGroupsX, workGroupsY, 1);
+			Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
+		}
 	}
-	//------------------ DOWNSAMPLE -----------------//
+	//------------------ MODE_DOWNSAMPLE -----------------//
 
-	bloomConstants.Mode = 2;
-	workGroupsX *= 2;
-	workGroupsY *= 2;
-
-	bloomConstants.LOD--;
-
-	// Write to 2
-	m_BloomComputeTextures[2]->BindToImageSlot(0, mips - 2, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
-	// Read from 0
-	m_BloomComputeTextures[0]->BindToSamplerSlot(0);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Texture", 0);
-	m_FBO->BindColorAttachment(0, 1);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_BloomTexture", 1);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Mode", bloomConstants.Mode);
-	Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
-
-	glm::vec2 mipDimensions = m_BloomComputeTextures[2]->GetMipCount(mips - 2);
-	workGroupsX = (uint32_t)glm::ceil((float)mipDimensions.x / (float)m_BloomWorkGroupSize);
-	workGroupsY = (uint32_t)glm::ceil((float)mipDimensions.y / (float)m_BloomWorkGroupSize);
-	Engine::ShaderLibrary::Get("Bloom")->DispatchCompute(workGroupsX, workGroupsY, 1);
-	Engine::ShaderLibrary::Get("Bloom")->EnableShaderImageAccessBarrierBit();
-
-	bloomConstants.Mode = 3;
-	for (int32_t mip = mips - 3; mip >= 0; mip--)
+	//------------------ MODE_UPSAMPLE_FIRST -----------------//
 	{
-		glm::vec2 mipDimensions = m_BloomComputeTextures[2]->GetMipCount(mip);
-		workGroupsX = (uint32_t)glm::ceil((float)mipDimensions.x / (float)m_BloomWorkGroupSize);
-		workGroupsY = (uint32_t)glm::ceil((float)mipDimensions.y / (float)m_BloomWorkGroupSize);
-
-		bloomConstants.LOD = mip;
-
-		// Write to 2
-		m_BloomComputeTextures[2]->BindToImageSlot(0, mip, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
-		// Read from 0
+		bloomConstants.Mode = 2;
+		bloomConstants.LOD--;
+		// Write to 2 at smallest image in up-sampling mip chain
+		m_BloomComputeTextures[2]->BindToImageSlot(0, mips - 2, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
+		// Read from 0 (fully down-sampled)
 		m_BloomComputeTextures[0]->BindToSamplerSlot(0);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Texture", 0);
-		m_BloomComputeTextures[2]->BindToSamplerSlot(1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_BloomTexture", 1);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformInt("u_Mode", bloomConstants.Mode);
-		Engine::ShaderLibrary::Get("Bloom")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
-		Engine::ShaderLibrary::Get("Bloom")->DispatchCompute(workGroupsX, workGroupsY, 1);
-		Engine::ShaderLibrary::Get("Bloom")->EnableShaderImageAccessBarrierBit();
+
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Texture", 0);
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Mode", bloomConstants.Mode);
+		Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+
+		auto [mipWidth, mipHeight] = m_BloomComputeTextures[2]->GetMipSize(mips - 2);
+		workGroupsX = (uint32_t)glm::ceil((float)mipWidth / (float)m_BloomWorkGroupSize);
+		workGroupsY = (uint32_t)glm::ceil((float)mipHeight / (float)m_BloomWorkGroupSize);
+		Engine::ShaderLibrary::Get("Bloom2")->DispatchCompute(workGroupsX, workGroupsY, 1);
+		Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
 	}
+	//------------------ MODE_UPSAMPLE_FIRST -----------------//
+
+
+	//------------------ UPSAMPLE -----------------//
+	{
+		bloomConstants.Mode = 3;
+		for (int32_t mip = mips - 3; mip >= 0; mip--)
+		{
+			auto [mipWidth, mipHeight] = m_BloomComputeTextures[2]->GetMipSize(mip);
+			workGroupsX = (uint32_t)glm::ceil((float)mipWidth / (float)m_BloomWorkGroupSize);
+			workGroupsY = (uint32_t)glm::ceil((float)mipHeight / (float)m_BloomWorkGroupSize);
+
+			bloomConstants.LOD = mip;
+
+			// Write to 2
+			Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
+			m_BloomComputeTextures[2]->BindToImageSlot(0, mip, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
+			// Read from 0	
+			m_BloomComputeTextures[0]->BindToSamplerSlot(0);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Texture", 0);
+			m_BloomComputeTextures[2]->BindToSamplerSlot(1);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_BloomTexture", 1);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformInt("u_Mode", bloomConstants.Mode);
+			Engine::ShaderLibrary::Get("Bloom2")->UploadUniformFloat("u_LOD", bloomConstants.LOD);
+			Engine::ShaderLibrary::Get("Bloom2")->DispatchCompute(workGroupsX, workGroupsY, 1);
+			Engine::ShaderLibrary::Get("Bloom2")->EnableShaderImageAccessBarrierBit();
+		}
+	}
+	//------------------ UPSAMPLE -----------------//
+
+	for (auto tex : m_BloomComputeTextures)
+		tex->Unbind();
+	Engine::ShaderLibrary::Get("Bloom2")->Unbind();
 }
 
 
@@ -294,12 +322,30 @@ void LineLayer::OnImGuiRender()
 {
 	ImGui::Begin("Scene Parameters");
 
+	if (ImGui::TreeNodeEx("Scene Settings"))
+	{
+		ImGui::DragFloat3("Sphere Ambient Color", &m_SphereProperties.AmbientColor.x, 0.01);
+		ImGui::DragFloat3("Sphere Diffuse Color", &m_SphereProperties.DiffuseColor.x, 0.01);
+		ImGui::DragFloat("Sphere Ambient Strength", &m_SphereProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Sphere Diffuse Strength", &m_SphereProperties.DiffuseStrength, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Sphere Shininess", &m_SphereProperties.Shininess, 0.01, 2.0f, 256.0f);
+		ImGui::DragFloat3("Cube Position", &m_Cube->GetEntityTransform()->GetPosition().x, 0.01);
+		ImGui::DragFloat3("Cube Scale", &m_Cube->GetEntityTransform()->GetScale().x, 0.01);
+		ImGui::Separator();
+
+		ImGui::DragFloat3("Light Position", &m_Light->GetLightTransform()->GetPosition().x);
+		ImGui::DragFloat3("Light Color", &m_Light->GetLightColor().x);
+		float intensity = m_Light->GetLightIntensity();
+		ImGui::DragFloat("Light Intensity", &intensity);
+		if (intensity != m_Light->GetLightIntensity())
+			m_Light->SetIntensity(intensity);
+
+		ImGui::TreePop();
+	}
+
 	if (ImGui::TreeNodeEx("Curve Settings"))
 	{
-		ImGui::DragFloat4("Clear Color", &m_ClearColor.x, 0.01);
 		ImGui::DragFloat3("Line Color", &m_LineColor.x, 0.01);
-		ImGui::DragFloat3("Cube Color", &m_CubeColor.x, 0.01);
-		ImGui::DragFloat3("Cube Position", &m_CubePosition.x, 0.01);
 		bool loop = m_Looped;
 		ImGui::Checkbox("Loop", &loop);
 		if (loop != m_Looped)
@@ -319,14 +365,25 @@ void LineLayer::OnImGuiRender()
 		ImGui::TreePop();
 	}
 
-	if (ImGui::TreeNodeEx("Camera Settings"))
+	if (ImGui::TreeNodeEx("Bloom"))
 	{
+		ImGui::Checkbox("Enabled", &m_BloomEnabled);
 		ImGui::DragFloat("Bloom Dirt Intensity", &m_BloomDirtIntensity, 0.01f);
 		ImGui::DragFloat("Bloom Intensity", &m_BloomIntensity, 0.01f);
 		ImGui::DragFloat("Bloom Threshold", &m_BloomThreshold, 0.01f);
 		ImGui::DragFloat("Bloom Knee", &m_BloomKnee, 0.001f);
 		ImGui::DragFloat("Exposure", &m_Exposure, 0.01f);
 
+
+		float aspect = (float)m_ViewportWidth / (float)m_ViewportHeight;
+		ImGui::Image((ImTextureID)(m_BloomComputeTextures[0]->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((ImTextureID)(m_BloomComputeTextures[2]->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Camera Settings"))
+	{
 		bool isOrthographic = m_Orthographic;
 		ImGui::Checkbox("Orthographic", &isOrthographic);
 

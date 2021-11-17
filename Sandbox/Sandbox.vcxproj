@@ -52,6 +52,8 @@
     <None Include="assets\shaders\BlinnPhong.shader" />
     <None Include="assets\shaders\BlinnPhongWS.shader" />
     <None Include="assets\shaders\Bloom.shader" />
+    <None Include="assets\shaders\Bloom2.shader" />
+    <None Include="assets\shaders\BloomDebugWrite.shader" />
     <None Include="assets\shaders\DebugDepth.shader" />
     <None Include="assets\shaders\Depth.shader" />
     <None Include="assets\shaders\EngineBP.shader" />

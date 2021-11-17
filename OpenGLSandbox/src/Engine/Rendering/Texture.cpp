@@ -1,5 +1,6 @@
 #include "Engine/Rendering/Texture.h"
 #include <iostream>
+#include <utility>
 
 #include <stb_image.h>
 #include <glad/glad.h>
@@ -17,10 +18,31 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// Immutable-format Texture
-		// Contents of the image can be modified, but it's storage requirements may not change.
-		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
-		glTextureStorage2D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
+		if (1)
+		{
+			glTexImage2D
+			(
+				GL_TEXTURE_2D,
+				0,
+				ImageUtils::ConvertInternalFormatMode(specification.InternalFormat),
+				specification.Width,
+				specification.Height,
+				0,
+				ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat),
+				ImageUtils::ConvertImageDataType(m_Specification.DataType), 
+				nullptr
+			);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			// Immutable-format Texture
+			// Contents of the image can be modified, but it's storage requirements may not change.
+			// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+			uint32_t mips = GetMipLevelCount();
+			glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
+		}
 	}
 
 	Texture2D::Texture2D(const std::string& filePath, const Texture2DSpecification& specification)
@@ -109,10 +131,37 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// Immutable-format Texture
-		// Contents of the image can be modified, but it's storage requirements may not change.
-		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
-		glTextureStorage2D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
+		if (1)
+		{
+			glTexImage2D
+			(
+				GL_TEXTURE_2D,
+				0,
+				ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat),
+				m_Specification.Width,
+				m_Specification.Height,
+				0,
+				ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat),
+				ImageUtils::ConvertImageDataType(m_Specification.DataType),
+				nullptr
+			);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			// Immutable-format Texture
+			// Contents of the image can be modified, but it's storage requirements may not change.
+			// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+			uint32_t mips = GetMipLevelCount();
+			glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
+		}
+	}
+
+	void Texture2D::Clear()
+	{
+		float data = 0;
+		glClearTexImage(m_ID, 0, ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat), ImageUtils::ConvertImageDataType(m_Specification.DataType), &data);
 	}
 
 	void Texture2D::Resize(uint32_t width, uint32_t height)
@@ -122,7 +171,7 @@ namespace Engine
 		Invalidate();
 	}
 
-	glm::vec2 Texture2D::GetMipCount(uint32_t mip) const
+	std::pair<uint32_t, uint32_t> Texture2D::GetMipSize(uint32_t mip) const
 	{
 		uint32_t width = m_Specification.Width;
 		uint32_t height = m_Specification.Height;
@@ -170,6 +219,11 @@ namespace Engine
 		}
 
 		glBindImageTexture(unit, m_ID, level, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+	}
+
+	void Texture2D::UnbindFromImageSlot(uint32_t unit, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	{
+		glBindImageTexture(unit, 0, 0, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 
 	void Texture2D::SetData(void* data, uint32_t size)
@@ -228,12 +282,9 @@ namespace Engine
 		return blackTexture;
 	}
 
-
-
 	uint32_t Texture2D::CalculateMipLevelCount(uint32_t width, uint32_t height) const
 	{
 		return (uint32_t)std::floor(std::log2(glm::min(width, height))) + 1;
-
 	}
 
 	Texture3D::Texture3D(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)

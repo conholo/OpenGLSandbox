@@ -1,5 +1,5 @@
 #type vertex
-#version 450
+#version 450 core
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec2 a_TexCoord;
@@ -10,7 +10,7 @@ out vec2 v_TexCoord;
 void main()
 {
 	v_TexCoord = a_TexCoord;
-	gl_Position = vec4(a_Position, 1.0);
+	gl_Position = vec4(a_Position.xy, 0.0, 1.0);
 }
 
 
@@ -28,9 +28,9 @@ uniform float u_Exposure;
 
 in vec2 v_TexCoord;
 
-vec3 UpsampleTent9(sampler2D tex, float lod, vec2 uv, vec2 texelSize, float radius)
+vec3 UpsampleTent9(sampler2D tex, float lod, vec2 uv, vec2 texelSize, float scale)
 {
-	vec4 offset = texelSize.xyxy * vec4(1.0f, 1.0f, -1.0f, 0.0f) * radius;
+	vec4 offset = texelSize.xyxy * vec4(1.0f, 1.0f, -1.0f, 0.0f) * scale;
 
 	// Center
 	vec3 result = textureLod(tex, uv, lod).rgb * 4.0f;
@@ -76,14 +76,15 @@ vec3 GammaCorrect(vec3 color, float gamma)
 void main()
 {
 	const float gamma = 2.2;
-	float sampleScale = 0.5;
+	float sampleScale = 1.0;
 
 	ivec2 texSize = textureSize(u_BloomTexture, 0);
 	vec2 fTexSize = vec2(float(texSize.x), float(texSize.y));
-	vec3 bloom = UpsampleTent9(u_BloomTexture, 0, v_TexCoord, 1.0f / fTexSize, sampleScale) * u_BloomIntensity;
+	vec3 bloom = max(UpsampleTent9(u_BloomTexture, 0, v_TexCoord, 1.0f / fTexSize, sampleScale) * u_BloomIntensity, vec3(0.0));
 	vec3 bloomDirt = texture(u_BloomDirtTexture, v_TexCoord).rgb * u_BloomDirtIntensity;
 
 	vec3 color = texture(u_Texture, v_TexCoord).rgb;
+	color += bloom;
 	color += bloom * bloomDirt;
 	color *= u_Exposure;
 

@@ -28,6 +28,7 @@ private:
 	std::vector<Engine::Ref<Engine::Texture2D>> m_BloomComputeTextures;
 	Engine::Ref<Engine::Texture2D> m_BloomDirtTexture;
 	const uint32_t m_BloomWorkGroupSize = 4;
+	bool m_BloomEnabled = true;
 	float m_BloomThreshold = 1.0f;
 	float m_BloomKnee = 0.1f;
 	float UpsampleScale = 1.0f;
@@ -45,7 +46,6 @@ private:
 
 	bool m_MouseAnimation = false;
 
-
 	std::vector<Engine::LineVertex> m_BaseCurveVertices;
 
 	Engine::Camera m_Camera;
@@ -55,10 +55,13 @@ private:
 	Engine::Ref<Engine::Texture2D> m_WhiteTexture;
 	Engine::Ref<Engine::BezierCurve> m_Curve;
 	Engine::Ref<Engine::SimpleEntity> m_FullScreenQuad;
+
 	Engine::Ref<Engine::SimpleEntity> m_Cube;
+	Engine::RendererMaterialProperties m_SphereProperties;
+
+	Engine::Ref<Engine::Light> m_Light;
+
 	glm::vec3 m_LineColor{ 0.0f, 3.0f, 0.0f };
-	glm::vec3 m_CubeColor{ 2.0f, 0.0f, 0.0f };
-	glm::vec3 m_CubePosition{ 2.0f, 0.0f, 0.0f };
 
 	uint32_t m_ViewportWidth;
 	uint32_t m_ViewportHeight;

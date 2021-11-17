@@ -42,11 +42,13 @@ namespace Engine
 		~Texture2D();
 
 		void Invalidate();
+		void Clear();
 		void Resize(uint32_t width, uint32_t height);
 
+		uint32_t GetID() const { return m_ID; }
 		const Texture2DSpecification& GetSpecification() const { return m_Specification; }
 
-		glm::vec2 GetMipCount(uint32_t mip) const;
+		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;
 		uint32_t GetMipLevelCount() const;
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
@@ -56,6 +58,7 @@ namespace Engine
 		void BindToSamplerSlot(uint32_t slot);
 		void Unbind() const;
 		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
+		void UnbindFromImageSlot(uint32_t unit, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
 		void SetData(void* data, uint32_t size);
 
 		static Ref<Texture2D> CreateWhiteTexture();

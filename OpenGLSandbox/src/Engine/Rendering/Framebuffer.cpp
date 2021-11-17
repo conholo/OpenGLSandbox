@@ -9,9 +9,19 @@ namespace Engine
 	{
 		switch (format)
 		{
-			case FramebufferTextureFormat::RGBA8: GL_RGBA8;
-			case FramebufferTextureFormat::RED_INTEGER: GL_RED_INTEGER;
-			case FramebufferTextureFormat::DEPTH24STENCIL8: return GL_DEPTH24_STENCIL8;
+			case FramebufferTextureFormat::RGBA32F:
+			case FramebufferTextureFormat::RGBA8: 
+			{
+				return GL_RGBA;
+			}
+			case FramebufferTextureFormat::RED_INTEGER: 
+			{
+				return GL_RED_INTEGER;
+			}
+			case FramebufferTextureFormat::DEPTH24STENCIL8: 
+			{
+				return GL_DEPTH24_STENCIL8;
+			}
 			default:	return 0;
 		}
 	}
@@ -163,12 +173,19 @@ namespace Engine
 		glBindTextureUnit(slot, m_ColorAttachmentIDs[index]);
 	}
 
+	void Framebuffer::UnbindColorAttachment(uint32_t index, uint32_t slot) const
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTextureUnit(slot, 0);
+	}
+
 	void Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 	{
 		auto& specification = m_ColorAttachmentTextureSpecs[attachmentIndex];
+		uint32_t texID = m_ColorAttachmentIDs[attachmentIndex];
 
 		GLenum format = TextureFormatToGLenum(specification.TextureFormat);
 
-		glClearTexImage(attachmentIndex, 0, format, GL_INT, &value);
+		glClearTexImage(texID, 0, format, GL_INT, &value);
 	}
 }
