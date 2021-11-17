@@ -1,0 +1,70 @@
+Name: Noodle2
+Vertex Count: 31
+
+Curve Color: (2.494000,5.545000,13.051000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (0.417451,-1.793904,0.000000)
+Line Vertex - 1:
+	Position: (0.447663,-1.650259,0.000000)
+Line Vertex - 2:
+	Position: (0.444907,-0.997370,0.000000)
+Line Vertex - 3:
+	Position: (0.464774,-1.187531,0.000000)
+Line Vertex - 4:
+	Position: (0.483409,-1.365893,0.000000)
+Line Vertex - 5:
+	Position: (0.481567,-1.646950,0.000000)
+Line Vertex - 6:
+	Position: (0.466193,-1.792871,0.000000)
+Line Vertex - 7:
+	Position: (0.460908,-1.843041,0.000000)
+Line Vertex - 8:
+	Position: (0.378185,-1.801963,0.000000)
+Line Vertex - 9:
+	Position: (0.397521,-1.525160,0.000000)
+Line Vertex - 10:
+	Position: (0.415496,-1.267828,0.000000)
+Line Vertex - 11:
+	Position: (0.451447,-1.113618,0.000000)
+Line Vertex - 12:
+	Position: (0.420227,-1.121186,0.000000)
+Line Vertex - 13:
+	Position: (0.401609,-1.125700,0.000000)
+Line Vertex - 14:
+	Position: (0.377479,-1.373838,0.000000)
+Line Vertex - 15:
+	Position: (0.372344,-1.566918,0.000000)
+Line Vertex - 16:
+	Position: (0.366088,-1.802145,0.000000)
+Line Vertex - 17:
+	Position: (0.397888,-1.813133,0.000000)
+Line Vertex - 18:
+	Position: (0.343016,-1.792320,0.000000)
+Line Vertex - 19:
+	Position: (0.311122,-1.780222,0.000000)
+Line Vertex - 20:
+	Position: (0.338319,-1.490364,0.000000)
+Line Vertex - 21:
+	Position: (0.378966,-1.089270,0.000000)
+Line Vertex - 22:
+	Position: (0.386535,-1.014586,0.000000)
+Line Vertex - 23:
+	Position: (0.275210,-1.718963,0.000000)
+Line Vertex - 24:
+	Position: (0.300810,-1.797508,0.000000)
+Line Vertex - 25:
+	Position: (0.316893,-1.846854,0.000000)
+Line Vertex - 26:
+	Position: (0.263344,-1.832079,0.000000)
+Line Vertex - 27:
+	Position: (0.213771,-1.784413,0.000000)
+Line Vertex - 28:
+	Position: (0.189173,-1.760761,0.000000)
+Line Vertex - 29:
+	Position: (0.061453,-1.824148,0.000000)
+Line Vertex - 30:
+	Position: (0.123894,-1.896050,0.000000)

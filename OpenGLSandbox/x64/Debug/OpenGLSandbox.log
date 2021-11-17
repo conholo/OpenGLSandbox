@@ -1,6 +1,34 @@
-﻿  Light.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Scene\SimpleECS\Light.cpp(18,11): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Scene\SimpleECS\Light.cpp(19): warning C4172: returning address of local variable or temporary
+﻿  Line.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(75,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(76,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(52,80): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(55,69): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(279,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(300,85): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(347,48): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,unsigned __int64>(_Ty &,unsigned __int64 &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=Engine::VertexBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1587): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<unsigned __int64>(unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::VertexBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1588): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<unsigned __int64>(unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::VertexBuffer
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.h(21): message : see reference to function template instantiation 'std::shared_ptr<Engine::VertexBuffer> std::make_shared<T,_Ty>(_Ty &&)' being compiled
+          with
+          [
+              T=Engine::VertexBuffer,
+              _Ty=unsigned __int64
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.cpp(31): message : see reference to function template instantiation 'std::shared_ptr<Engine::VertexBuffer> Engine::CreateRef<Engine::VertexBuffer,unsigned __int64>(unsigned __int64 &&)' being compiled
 ImGuiBuild.obj : warning LNK4006: imgl3wProcs already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "bool __cdecl ImGui_ImplOpenGL3_Init(char const *)" (?ImGui_ImplOpenGL3_Init@@YA_NPEBD@Z) already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "void __cdecl ImGui_ImplOpenGL3_Shutdown(void)" (?ImGui_ImplOpenGL3_Shutdown@@YAXXZ) already defined in imgui_impl_opengl3.obj; second definition ignored

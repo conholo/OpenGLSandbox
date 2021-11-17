@@ -15,8 +15,12 @@ public:
 	void OnImGuiRender() override;
 
 private:
-
+	void CheckForResize();
 	void BloomComputePass();
+	void PollCurvePicking();
+
+private:
+	void MakeLineHelix(const Engine::Ref<Engine::BezierCurve>& curve);
 
 private:
 	bool OnKeyPressed(Engine::KeyPressedEvent& keyPressedEvent);
@@ -37,31 +41,36 @@ private:
 	float m_Exposure = 1.0f;
 
 private:
+	bool m_Orthographic = false;
 	int m_DragID = -1;
 	bool m_IsDragging = false;
-	bool m_Animate = false;
-	bool m_Looped = false;
-	bool m_Debug = true;
-	bool m_Orthographic = true;
 
-	bool m_MouseAnimation = false;
 
-	std::vector<Engine::LineVertex> m_BaseCurveVertices;
-
+private:
 	Engine::Camera m_Camera;
 	glm::vec4 m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	Engine::Ref<Engine::Framebuffer> m_FBO;
 	Engine::Ref<Engine::Texture2D> m_WhiteTexture;
-	Engine::Ref<Engine::BezierCurve> m_Curve;
 	Engine::Ref<Engine::SimpleEntity> m_FullScreenQuad;
 
-	Engine::Ref<Engine::SimpleEntity> m_Cube;
-	Engine::RendererMaterialProperties m_SphereProperties;
+	Engine::Ref<Engine::SimpleEntity> m_Table;
+	Engine::RendererMaterialProperties m_TableProperties
+	{
+		{0.130, 0.190, 0.880},
+		{1.00,  0.310, 0.660},
+		0.8f,
+		0.680f,
+		1.00f,
+		2.0f
+	};
 
 	Engine::Ref<Engine::Light> m_Light;
 
-	glm::vec3 m_LineColor{ 0.0f, 3.0f, 0.0f };
+	int m_CurveEditIndex = 0;
+	std::vector<Engine::Ref<Engine::BezierCurve>> m_Curves;
+	glm::vec3 m_LineColor{ 10.0f, 1.0f, 6.0f };
+	std::string m_SaveNameHolder = "Curve";
 
 	uint32_t m_ViewportWidth;
 	uint32_t m_ViewportHeight;

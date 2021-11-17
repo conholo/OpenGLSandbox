@@ -30,6 +30,8 @@
     <ClCompile Include="src\Layers\ToonShadingLayer.cpp" />
     <ClCompile Include="src\Layers\SkyBoxLayer.cpp" />
     <ClCompile Include="src\SandboxApplication.cpp" />
+    <ClCompile Include="src\Utility\CurveSerializer.cpp" />
+    <ClCompile Include="src\Utility\ImGuiUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeParticleLayer.h" />
@@ -42,6 +44,8 @@
     <ClInclude Include="src\Layers\ShadowsLayer.h" />
     <ClInclude Include="src\Layers\ToonShadingLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxLayer.h" />
+    <ClInclude Include="src\Utility\CurveSerializer.h" />
+    <ClInclude Include="src\Utility\ImGuiUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenGLSandbox\OpenGLSandbox.vcxproj">
@@ -146,7 +150,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -178,7 +182,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>

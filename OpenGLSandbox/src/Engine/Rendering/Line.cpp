@@ -141,6 +141,8 @@ namespace Engine
 		glm::vec3 movementDirection = glm::normalize(newPosition - m_Vertices[index].Position);
 		float movementDistance = glm::length(newPosition - m_Vertices[index].Position);
 
+		if (movementDistance == 0) return;
+
 		if (m_Looped && (index == 0 || index == m_Vertices.size() - 1))
 		{
 			m_Vertices[0].Position = newPosition;
@@ -230,6 +232,12 @@ namespace Engine
 		}
 	}
 
+	void BezierCurve::SetVertices(const std::vector<LineVertex>& vertices)
+	{
+		m_Vertices.clear();
+		m_Vertices = vertices;
+	}
+
 	std::vector<LineVertex> BezierCurve::GetPointsInSegment(uint32_t index)
 	{
 		return std::vector<LineVertex>
@@ -293,7 +301,6 @@ namespace Engine
 
 		{
 			m_LineShader->Bind();
-			m_LineShader->UploadUniformFloat3("u_Color", m_ControlLineColor);
 			m_LineShader->UploadUniformMat4("u_MVP", viewProjection * m_Transform->Transform());
 
 			// Every two points, draw a line, skipping the line from point 2 to point 3 per segment (that will be the curve).
@@ -302,10 +309,12 @@ namespace Engine
 				if (m_Debug)
 				{
 					m_VAO->EnableVertexAttributes(m_DebugVBO);
+					m_LineShader->UploadUniformFloat3("u_Color", m_ControlLineColor);
 					RenderCommand::DrawLine(LineTopology::Lines, 2, i * 3 + 0);
 					RenderCommand::DrawLine(LineTopology::Lines, 2, i * 3 + 2);
 				}
 
+				m_LineShader->UploadUniformFloat3("u_Color", m_CurveColor);
 				{
 					std::vector<LineVertex> segmentVertices = GetPointsInSegment(i);
 					std::vector<LineVertex> curveVertices;
@@ -333,7 +342,7 @@ namespace Engine
 			{
 				m_VAO->EnableVertexAttributes(m_DebugVBO);
 				m_PointShader->Bind();
-				m_LineShader->UploadUniformFloat3("u_Color", m_PointColor);
+				m_LineShader->UploadUniformFloat3("u_Color", m_ControlPointColor);
 				m_PointShader->UploadUniformMat4("u_MVP", viewProjection * m_Transform->Transform());
 				RenderCommand::DrawPoints(m_Vertices.size());
 				m_PointShader->Unbind();

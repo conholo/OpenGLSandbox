@@ -2,8 +2,13 @@
 #include <vector>
 #include <iostream>
 #include <imgui/imgui.h>
-#define PI 3.14159265358979
+#include <imgui/imgui_internal.h>
 
+#define PI 3.14159265358979
+#include <string>
+
+#include "Utility/CurveSerializer.h"
+#include "Utility/ImGuiUtility.h"
 #include <glad/glad.h>
 
 LineLayer::LineLayer()
@@ -51,17 +56,11 @@ void LineLayer::OnAttach()
 	m_BloomComputeTextures[1] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 	m_BloomComputeTextures[2] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 
-	std::vector<Engine::LineVertex> vertices;
-	m_Curve = Engine::CreateRef<Engine::BezierCurve>(glm::vec3(0.0f, 0.0f, 0.0f));
-	m_Curve->SetPointSize(10.0f);
-	m_Curve->SetControlLineColor({0.0f, 1.0f, 0.0f});
-
-	for (auto lineVertex : *m_Curve)
-		m_BaseCurveVertices.push_back(lineVertex);
-
 	m_FullScreenQuad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::FullScreenQuad, "PostProcessing");
-	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
 
+	m_Table->GetEntityTransform()->SetScale({ 8.0f, 3.0f, 8.0f });
+	m_Table->GetEntityTransform()->SetPosition({ 0.0f, -3.0f, 0.0f});
 
 	Engine::LightSpecification sunSpec =
 	{
@@ -89,7 +88,8 @@ static float Fract(float f)
 static float Rand(float n) { return Fract(sin(n) * 43758.5453); }
 
 
-void LineLayer::OnUpdate(float deltaTime)
+
+void LineLayer::CheckForResize()
 {
 	uint32_t width = Engine::Application::GetApplication().GetWindow().GetWidth();
 	uint32_t height = Engine::Application::GetApplication().GetWindow().GetHeight();
@@ -100,64 +100,64 @@ void LineLayer::OnUpdate(float deltaTime)
 
 		OnResize();
 	}
+}
 
-	m_Camera.Update(deltaTime);
+
+void LineLayer::PollCurvePicking()
+{
+	if (m_Curves.size() <= 0) return;
+
+	auto curve = m_Curves[m_CurveEditIndex];
+
 	glm::vec2 mousePosition = Engine::Input::GetMousePosition();
 	glm::vec3 worldCoordinate = m_Camera.ScreenToWorldPoint({ mousePosition.x, mousePosition.y, 0.0f });
 
-	if (!m_Animate &&  m_IsDragging && m_DragID != -1)
+	if (m_IsDragging && m_DragID != -1)
 	{
-		Engine::LineVertex dragPoint = (*m_Curve)[m_DragID];
+		Engine::LineVertex dragPoint = (*curve)[m_DragID];
 		worldCoordinate.z = 0.0;
-		
-		if (glm::vec2(worldCoordinate) != glm::vec2(dragPoint.Position))
-			m_Curve->MovePoint(m_DragID, worldCoordinate);
 
-		m_BaseCurveVertices.clear();
-		for (auto lineVertex : *m_Curve)
-			m_BaseCurveVertices.push_back(lineVertex);
-	}
+		glm::vec2 pointTransformOffset = glm::vec2(curve->GetTransform()->GetPosition());
 
-	if (m_Animate)
-	{
-		float elapsed = Engine::Time::Elapsed();
-		uint32_t i = 0;
-		for (auto curveVertex : *m_Curve)
+		glm::vec2 dragPointWorld = glm::vec2(curve->GetTransform()->Transform() * glm::vec4(dragPoint.Position, 1.0));
+
+		glm::vec2 worldPoint = pointTransformOffset + glm::vec2(dragPoint.Position);
+
+		if (glm::vec2(worldCoordinate) != glm::vec2(dragPointWorld))
 		{
-			if (i % 3 == 1 || i % 3 == 2)
-			{
-				glm::vec2 randomOffset = { Rand(m_BaseCurveVertices[i].Position.x), Rand(m_BaseCurveVertices[i].Position.y) };
-				glm::vec3 current = m_BaseCurveVertices[i].Position;
-				glm::vec3 newPosition = current + glm::vec3(cos(elapsed * randomOffset.x), sin(elapsed * randomOffset.y), 0.0f);
-				m_Curve->MovePoint(i, newPosition);
-			}
-
-			i++;
+			glm::vec3 curveSpace = glm::vec3(glm::inverse(curve->GetTransform()->Transform()) * glm::vec4(worldCoordinate, 1.0f));
+			curveSpace.z = 0.0f;
+			curve->MovePoint(m_DragID, curveSpace);
 		}
 	}
+}
 
+void LineLayer::OnUpdate(float deltaTime)
+{
+	CheckForResize();
+	m_Camera.Update(deltaTime);
+	PollCurvePicking();
 
 	m_FBO->Bind();
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
-	m_Curve->SetControlLineColor(m_LineColor);
-	m_Curve->Draw(m_Camera.GetViewProjection());
-
-	m_Cube->GetEntityRenderer()->GetShader()->Bind();
+	for(auto curve : m_Curves)
+		curve->Draw(m_Camera.GetViewProjection());
+	m_Table->GetEntityRenderer()->GetShader()->Bind();
 	m_WhiteTexture->BindToSamplerSlot(0);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Cube->GetEntityTransform()->Transform());
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_SphereProperties.AmbientColor);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_SphereProperties.DiffuseColor);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_SphereProperties.AmbientStrength);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_SphereProperties.DiffuseStrength);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_SphereProperties.SpecularStrength);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_SphereProperties.Shininess);
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
-	m_Cube->DrawEntity(m_Camera.GetViewProjection());
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_TableProperties.AmbientStrength);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_TableProperties.DiffuseStrength);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_TableProperties.SpecularStrength);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_TableProperties.Shininess);
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+	m_Table->DrawEntity(m_Camera.GetViewProjection());
 	m_FBO->Unbind();
 
 	BloomComputePass();
@@ -178,6 +178,7 @@ void LineLayer::OnUpdate(float deltaTime)
 	m_BloomComputeTextures[2]->Unbind();
 	m_FBO->UnbindColorAttachment(0, 0);
 }
+
 
 void LineLayer::BloomComputePass()
 {
@@ -307,6 +308,7 @@ void LineLayer::BloomComputePass()
 }
 
 
+
 void LineLayer::OnEvent(Engine::Event& event)
 {
 	m_Camera.OnEvent(event);
@@ -324,13 +326,13 @@ void LineLayer::OnImGuiRender()
 
 	if (ImGui::TreeNodeEx("Scene Settings"))
 	{
-		ImGui::DragFloat3("Sphere Ambient Color", &m_SphereProperties.AmbientColor.x, 0.01);
-		ImGui::DragFloat3("Sphere Diffuse Color", &m_SphereProperties.DiffuseColor.x, 0.01);
-		ImGui::DragFloat("Sphere Ambient Strength", &m_SphereProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
-		ImGui::DragFloat("Sphere Diffuse Strength", &m_SphereProperties.DiffuseStrength, 0.01, 0.0f, 1.0f);
-		ImGui::DragFloat("Sphere Shininess", &m_SphereProperties.Shininess, 0.01, 2.0f, 256.0f);
-		ImGui::DragFloat3("Cube Position", &m_Cube->GetEntityTransform()->GetPosition().x, 0.01);
-		ImGui::DragFloat3("Cube Scale", &m_Cube->GetEntityTransform()->GetScale().x, 0.01);
+		ImGui::DragFloat3("Table Ambient Color", &m_TableProperties.AmbientColor.x, 0.01);
+		ImGui::DragFloat3("Table Diffuse Color", &m_TableProperties.DiffuseColor.x, 0.01);
+		ImGui::DragFloat("Table Ambient Strength", &m_TableProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Table Specular Strength", &m_TableProperties.SpecularStrength, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Table Shininess", &m_TableProperties.Shininess, 0.01, 2.0f, 256.0f);
+		ImGui::DragFloat3("Table Position", &m_Table->GetEntityTransform()->GetPosition().x, 0.01);
+		ImGui::DragFloat3("Table Scale", &m_Table->GetEntityTransform()->GetScale().x, 0.01);
 		ImGui::Separator();
 
 		ImGui::DragFloat3("Light Position", &m_Light->GetLightTransform()->GetPosition().x);
@@ -345,21 +347,120 @@ void LineLayer::OnImGuiRender()
 
 	if (ImGui::TreeNodeEx("Curve Settings"))
 	{
-		ImGui::DragFloat3("Line Color", &m_LineColor.x, 0.01);
-		bool loop = m_Looped;
-		ImGui::Checkbox("Loop", &loop);
-		if (loop != m_Looped)
+		if (ImGui::Button("Create Curve"))
 		{
-			m_Curve->ToggleLooped();
-			m_Looped = loop;
+			if (m_Curves.size() > 0)
+				m_Curves[m_CurveEditIndex]->SetDebug(false);
+			auto curve = Engine::CreateRef<Engine::BezierCurve>();
+			curve->SetPointSize(10.0f);
+			curve->SetCurveColor({ 10.0f, 1.0f, 6.0f });
+			curve->SetDebug(true);
+			m_Curves.push_back(curve);
+			m_CurveEditIndex = m_Curves.size() - 1;
 		}
-		ImGui::Checkbox("Animate", &m_Animate);
-		bool debug = m_Debug;
-		ImGui::Checkbox("Debug Control Points", &debug);
-		if (debug != m_Debug)
+
+		if (m_Curves.size() > 0)
 		{
-			m_Curve->ToggleDebug();
-			m_Debug = debug;
+			int editIndex = m_CurveEditIndex;
+			ImGui::SliderInt("Curve Index", &editIndex, 0, m_Curves.size() - 1);
+
+			if (editIndex != m_CurveEditIndex)
+			{
+				m_Curves[m_CurveEditIndex]->SetDebug(false);
+				m_CurveEditIndex = editIndex;
+				m_Curves[m_CurveEditIndex]->SetDebug(true);
+			}
+
+			Engine::Ref<Engine::BezierCurve> curve = m_Curves[m_CurveEditIndex];
+
+			std::string curveLabel = "Curve " + std::to_string(m_CurveEditIndex) + " Properties";
+			if (ImGui::TreeNodeEx(curveLabel.c_str()))
+			{
+				std::string transformLabel = curveLabel + std::string(" Transform");
+				if (ImGui::TreeNodeEx(transformLabel.c_str()))
+				{
+					ImGuiUtility::DrawVec3Controls("Position", curve->GetTransform()->GetPosition());
+					ImGuiUtility::DrawVec3Controls("Rotation", curve->GetTransform()->GetRotation());
+					ImGuiUtility::DrawVec3Controls("Scale", curve->GetTransform()->GetScale(), 1.0f);
+
+					ImGui::TreePop();
+				}
+
+				ImGui::ColorEdit3("Curve Color", &curve->GetCurveColor().x, ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_Float);
+
+				bool loop = curve->GetIsLooped();
+				ImGui::Checkbox("Loop", &loop);
+				if (loop != curve->GetIsLooped())
+					curve->ToggleLooped();
+
+				bool debug = curve->GetIsDisplayingDebug();
+				ImGui::Checkbox("Debug Control Points", &debug);
+				if (debug != curve->GetIsDisplayingDebug())
+					curve->ToggleDebug();
+
+
+				if (ImGui::TreeNodeEx("Curve Points"))
+				{
+					for (uint32_t i = 0; i < curve->GetSegmentCount(); i++)
+					{
+						std::string segmentLabel = "Segment: " + std::to_string(i);
+
+						if (ImGui::TreeNodeEx(segmentLabel.c_str()))
+						{
+							std::vector<Engine::LineVertex> segmentPoints = curve->GetPointsInSegment(i);
+
+							for (uint32_t p = 0; p < segmentPoints.size(); p++)
+							{
+								std::string pointTypeDescriptor = p % 3 == 0 ? "Anchor: " : "Control: ";
+								pointTypeDescriptor += std::to_string(p);
+								std::string pointLabel = std::to_string(i) + " - " + pointTypeDescriptor;
+
+								glm::vec3 position = segmentPoints[p].Position;
+								if (ImGui::DragFloat3(pointLabel.c_str(), &position.x, 0.01f))
+								{
+									curve->MovePoint(i * 3 + p, position);
+								}
+							}
+
+							ImGui::TreePop();
+						}
+					}
+					ImGui::TreePop();
+				}
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNodeEx("Save/Load"))
+			{
+				char buffer[256];
+				memset(buffer, 0, sizeof(buffer));
+				std::strncpy(buffer, m_SaveNameHolder.c_str(), sizeof(buffer));
+				if (ImGui::InputText("Save Name", buffer, sizeof(buffer)))
+					m_SaveNameHolder = std::string(buffer);
+
+				if (ImGui::Button("Save Curve"))
+				{
+					CurveSerializer::SerializeCurve(m_SaveNameHolder, curve);
+				}
+
+				std::vector<std::string> saves = CurveSerializer::GetCurveSaves();
+				if (ImGui::TreeNodeEx("Load Curve"))
+				{
+					for (uint32_t i = 0; i < saves.size(); i++)
+					{
+						std::string name = saves[i];
+						if (ImGui::Button(name.c_str()))
+						{
+							std::cout << "Loading Curve: " << name << std::endl;
+							CurveSerializer::DeserializeAndWriteToCurve(name, curve);
+						}
+					}
+
+					ImGui::TreePop();
+				}
+				ImGui::TreePop();
+			}
 		}
 
 		ImGui::TreePop();
@@ -406,8 +507,13 @@ void LineLayer::OnImGuiRender()
 
 bool LineLayer::OnKeyPressed(Engine::KeyPressedEvent& keyPressedEvent)
 {
-	if (keyPressedEvent.GetKeyCode() == Engine::Key::Space)
-		m_Curve->Clear();
+	if (m_Curves.size() > 0)
+	{
+		auto curve = m_Curves[m_CurveEditIndex];
+
+		if (keyPressedEvent.GetKeyCode() == Engine::Key::Space)
+			curve->Clear();
+	}
 
 	return true;
 }
@@ -425,16 +531,21 @@ bool LineLayer::OnMouseButtonReleased(Engine::MouseButtonReleasedEvent& released
 
 bool LineLayer::OnMouseButtonPressed(Engine::MouseButtonPressedEvent& pressedEvent)
 {
-	if (!m_IsDragging && pressedEvent.GetButton() == Engine::Mouse::ButtonLeft)
+	if (m_Curves.size() > 0 && !m_IsDragging && pressedEvent.GetButton() == Engine::Mouse::ButtonLeft)
 	{
+		auto curve = m_Curves[m_CurveEditIndex];
 		glm::vec2 mousePosition = Engine::Input::GetMousePosition();
 		glm::vec3 worldCoordinate = m_Camera.ScreenToWorldPoint({ mousePosition.x, mousePosition.y, 0.0f });
 
-		for (uint32_t i = 0; i < m_Curve->GetPointCount(); i++)
+		for (uint32_t i = 0; i < curve->GetPointCount(); i++)
 		{
-			Engine::LineVertex vertex = (*m_Curve)[i];
+			Engine::LineVertex vertex = (*curve)[i];
+			glm::vec3 transformOffset = curve->GetTransform()->GetPosition();
+			transformOffset.z = 0.0f;
 
-			glm::vec3 offset = vertex.Position - worldCoordinate;
+			glm::vec3 toWorld = glm::vec3(curve->GetTransform()->Transform() * glm::vec4(vertex.Position, 1.0));
+
+			glm::vec3 offset = toWorld - worldCoordinate;
 
 			if (glm::dot(offset, offset) < glm::dot(0.04f, 0.04f))
 			{
@@ -444,18 +555,14 @@ bool LineLayer::OnMouseButtonPressed(Engine::MouseButtonPressedEvent& pressedEve
 		}
 	}
 
-	if (pressedEvent.GetButton() == Engine::Mouse::ButtonRight && Engine::Input::IsKeyPressed(Engine::Key::LeftShift))
+	if (m_Curves.size() > 0 && pressedEvent.GetButton() == Engine::Mouse::ButtonRight && Engine::Input::IsKeyPressed(Engine::Key::LeftShift))
 	{
+		auto curve = m_Curves[m_CurveEditIndex];
+
 		glm::vec2 mousePosition = Engine::Input::GetMousePosition();
 		glm::vec3 worldCoordinate = m_Camera.ScreenToWorldPoint({ mousePosition.x, mousePosition.y, 0.0f });
-		m_Curve->AddSegment({ worldCoordinate });
-
-		m_BaseCurveVertices.clear();
-
-		for (auto lineVertex : *m_Curve)
-			m_BaseCurveVertices.push_back(lineVertex);
+		curve->AddSegment({ worldCoordinate });
 	}
-
 
 	return true;
 }

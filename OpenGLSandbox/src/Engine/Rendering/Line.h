@@ -57,14 +57,27 @@ namespace Engine
 		void Draw(const glm::mat4& viewProjection);
 
 		void ToggleDebug() { m_Debug = !m_Debug; }
+		void SetDebug(bool enabled) { m_Debug = enabled; }
 		void ToggleLooped();
-		void SetPointColor(const glm::vec3& pointColor) { m_PointColor = pointColor; }
+		void SetPointColor(const glm::vec3& pointColor) { m_ControlPointColor = pointColor; }
 		void SetControlLineColor(const glm::vec3& controlLineColor) { m_ControlLineColor = controlLineColor; }
+		void SetCurveColor(const glm::vec3& curveColor) { m_CurveColor = curveColor; }
 		void Clear() { m_Vertices.clear(); m_Looped = false; }
+
+		bool GetIsLooped() const { return m_Looped; }
+		bool GetIsDisplayingDebug() const { return m_Debug; }
+		glm::vec3& GetCurveColor() { return m_CurveColor; }
+		glm::vec3& GetPointColor() { return m_ControlPointColor; }
+		const Ref<EntityTransform>& GetTransform() const { return m_Transform; }
+
+		void SetVertices(const std::vector<LineVertex>& vertices);
 
 		uint32_t GetPointCount() const { return m_Vertices.size(); }
 		uint32_t GetSegmentCount() const { return (m_Vertices.size() - 4) / 3 + 1; }
 		std::vector<LineVertex> GetPointsInSegment(uint32_t index);
+
+		std::vector<LineVertex>& GetVertices() { return m_Vertices; }
+		const std::vector<LineVertex>& GetVertices() const { return m_Vertices; }
 
 		LineVertex operator[](uint32_t index) { return m_Vertices[index]; }
 		const LineVertex& operator[](uint32_t index) const { return m_Vertices[index]; }
@@ -79,10 +92,11 @@ namespace Engine
 
 	private:
 		uint32_t m_Resolution = 100;
-		bool m_Debug = true;
+		bool m_Debug = false;
 		bool m_Looped = false;
-		glm::vec3 m_PointColor = glm::vec3(1.0, 0.0, 0.0);
+		glm::vec3 m_ControlPointColor = glm::vec3(1.0, 0.0, 0.0);
 		glm::vec3 m_ControlLineColor = glm::vec3(1.0, 1.0, 1.0);
+		glm::vec3 m_CurveColor = glm::vec3(0.0, 1.0, 0.0);
 
 	private:
 		std::vector<LineVertex> m_Vertices;

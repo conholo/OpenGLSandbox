@@ -1,0 +1,58 @@
+Name: Noodle1
+Vertex Count: 25
+
+Curve Color: (2.494000,5.545000,13.051000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (0.404518,-1.868697,0.000000)
+Line Vertex - 1:
+	Position: (0.455606,-1.827070,0.000000)
+Line Vertex - 2:
+	Position: (0.113023,-1.820254,0.000000)
+Line Vertex - 3:
+	Position: (0.099401,-1.992418,0.000000)
+Line Vertex - 4:
+	Position: (0.091276,-2.095106,0.000000)
+Line Vertex - 5:
+	Position: (-0.101723,-2.218568,0.000000)
+Line Vertex - 6:
+	Position: (-0.289046,-2.025569,0.000000)
+Line Vertex - 7:
+	Position: (-0.371472,-1.940646,0.000000)
+Line Vertex - 8:
+	Position: (0.120172,-1.868103,0.000000)
+Line Vertex - 9:
+	Position: (0.560643,-1.989794,0.000000)
+Line Vertex - 10:
+	Position: (0.875686,-2.076831,0.000000)
+Line Vertex - 11:
+	Position: (1.014550,-1.895367,0.000000)
+Line Vertex - 12:
+	Position: (0.772806,-1.821909,0.000000)
+Line Vertex - 13:
+	Position: (0.531063,-1.748451,0.000000)
+Line Vertex - 14:
+	Position: (0.529544,-1.911788,0.000000)
+Line Vertex - 15:
+	Position: (0.944046,-1.873943,0.000000)
+Line Vertex - 16:
+	Position: (1.062725,-1.863108,0.000000)
+Line Vertex - 17:
+	Position: (0.806132,-2.170258,0.000000)
+Line Vertex - 18:
+	Position: (0.705375,-2.103559,0.000000)
+Line Vertex - 19:
+	Position: (0.554980,-2.004003,0.000000)
+Line Vertex - 20:
+	Position: (0.595485,-2.160232,0.000000)
+Line Vertex - 21:
+	Position: (0.429436,-2.020654,0.000000)
+Line Vertex - 22:
+	Position: (0.331517,-1.938346,0.000000)
+Line Vertex - 23:
+	Position: (0.144194,-1.985177,0.000000)
+Line Vertex - 24:
+	Position: (0.120069,-2.111478,0.000000)
