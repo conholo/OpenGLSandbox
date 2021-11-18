@@ -3,6 +3,7 @@
 #include <iostream>
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+#include <unordered_map>
 
 #define PI 3.14159265358979
 #include <string>
@@ -59,8 +60,8 @@ void LineLayer::OnAttach()
 	m_FullScreenQuad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::FullScreenQuad, "PostProcessing");
 	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
 
-	m_Table->GetEntityTransform()->SetScale({ 8.0f, 3.0f, 8.0f });
-	m_Table->GetEntityTransform()->SetPosition({ 0.0f, -3.0f, 0.0f});
+	m_Table->GetEntityTransform()->SetScale({ 19.020f, 3.00f, 8.00f });
+	m_Table->GetEntityTransform()->SetPosition({ 4.730f, -4.900f, 0.0f});
 
 	Engine::LightSpecification sunSpec =
 	{
@@ -72,6 +73,14 @@ void LineLayer::OnAttach()
 	m_Light = Engine::CreateRef<Engine::Light>(sunSpec);
 	m_Light->GetLightTransform()->SetPosition({ 10.0f, 50.0f, 10.0f });
 
+	std::vector<std::string> ramenSignFiles = CurveSerializer::GetCurveSavesFromDirectory("Ramen");
+
+	for (auto save : ramenSignFiles)
+	{
+		Engine::Ref<Engine::BezierCurve> curve = Engine::CreateRef<Engine::BezierCurve>();
+		CurveSerializer::DeserializeAndWriteToCurve(save, curve);
+		m_Curves.push_back(curve);
+	}
 
 	OnResize();
 }
@@ -441,19 +450,38 @@ void LineLayer::OnImGuiRender()
 
 				if (ImGui::Button("Save Curve"))
 				{
-					CurveSerializer::SerializeCurve(m_SaveNameHolder, curve);
+					bool containsSubDirectory = m_SaveNameHolder.find("/") != std::string::npos;
+
+					if (containsSubDirectory)
+					{
+						std::string fileName = m_SaveNameHolder.substr(m_SaveNameHolder.find_first_of("/") + 1, m_SaveNameHolder.length() - m_SaveNameHolder.find_first_of("/") + 1);
+						CurveSerializer::SerializeCurve(fileName, curve, m_SaveNameHolder.substr(0, m_SaveNameHolder.find_first_of("/")));
+					}
+					else
+						CurveSerializer::SerializeCurve(m_SaveNameHolder, curve, "My Curves");
+
 				}
 
-				std::vector<std::string> saves = CurveSerializer::GetCurveSaves();
+				std::unordered_map<std::string, std::vector<std::string>> saves = CurveSerializer::GetAllCurvePaths();
 				if (ImGui::TreeNodeEx("Load Curve"))
 				{
-					for (uint32_t i = 0; i < saves.size(); i++)
+					for (auto directoryFilesNamesPair : saves)
 					{
-						std::string name = saves[i];
-						if (ImGui::Button(name.c_str()))
+						std::vector<std::string> fileNames = CurveSerializer::GetCurveSavesFromDirectory(directoryFilesNamesPair.first);
+
+						if (ImGui::TreeNodeEx(directoryFilesNamesPair.first.c_str()))
 						{
-							std::cout << "Loading Curve: " << name << std::endl;
-							CurveSerializer::DeserializeAndWriteToCurve(name, curve);
+							for (uint32_t i = 0; i < fileNames.size(); i++)
+							{
+								std::string name = fileNames[i];
+								std::string displayName = name.substr(directoryFilesNamesPair.first.length() + 1, fileNames[i].length() - directoryFilesNamesPair.first.length());
+								if (ImGui::Button(displayName.c_str()))
+								{
+									CurveSerializer::DeserializeAndWriteToCurve(name, curve);
+								}
+							}
+
+							ImGui::TreePop();
 						}
 					}
 

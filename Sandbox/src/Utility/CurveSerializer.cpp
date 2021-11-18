@@ -8,9 +8,13 @@
 
 std::string CurveSerializer::s_DirectoryPath = "assets/curve-saves/";
 
-void CurveSerializer::SerializeCurve(const std::string& saveName, const Engine::Ref<Engine::BezierCurve>& curve)
+void CurveSerializer::SerializeCurve(const std::string& saveName, const Engine::Ref<Engine::BezierCurve>& curve, const std::string& subDirectoryName)
 {
-	std::string path = s_DirectoryPath + saveName + std::string(".txt");
+	std::string path = s_DirectoryPath + subDirectoryName + "/" + saveName + std::string(".txt");
+
+	if (!std::filesystem::exists(s_DirectoryPath + subDirectoryName))
+		std::filesystem::create_directory(s_DirectoryPath + subDirectoryName);
+
 
 	// Overwrite if it already exists.
 	if (std::filesystem::exists(path.c_str()))
@@ -69,9 +73,11 @@ void CurveSerializer::DeserializeAndWriteToCurve(const std::string& saveName, co
 
 	if (!std::filesystem::exists(path.c_str()))
 	{
-		std::cout << "File with name: " << saveName << " does not exist." << std::endl;
+		std::cout << "File with name: " << saveName << std::endl;
 		return;
 	}
+
+	std::cout << "Loading Curve: " << saveName << ".  Please wait."<< std::endl;
 	
 	std::vector<Engine::LineVertex> vertices;
 
@@ -155,14 +161,31 @@ void CurveSerializer::DeserializeAndWriteToCurve(const std::string& saveName, co
 	curve->GetTransform()->SetScale(scale);
 }
 
-std::vector<std::string> CurveSerializer::GetCurveSaves()
+std::vector<std::string> CurveSerializer::GetCurveSavesFromDirectory(const std::string& subDirectory)
 {
+	std::string path = s_DirectoryPath + subDirectory + "/";
 	std::vector<std::string> files;
-	for (const auto& entry : std::filesystem::directory_iterator(s_DirectoryPath))
+	for (const auto& entry : std::filesystem::directory_iterator(path))
 	{
 		std::string name = entry.path().filename().string();
-		files.push_back(name);
+		files.push_back(subDirectory + "/" + name);
 	}
 
 	return files;
+}
+
+std::unordered_map<std::string, std::vector<std::string>> CurveSerializer::GetAllCurvePaths()
+{
+	std::vector<std::string> subDirectories;
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(s_DirectoryPath))
+	{
+		if (!entry.is_directory()) continue;
+		subDirectories.push_back(entry.path().filename().string());
+	}
+
+	std::unordered_map<std::string, std::vector<std::string>> result;
+	for (uint32_t i = 0; i < subDirectories.size(); i++)
+		result[subDirectories[i]] = (GetCurveSavesFromDirectory(subDirectories[i]));
+
+	return result;
 }

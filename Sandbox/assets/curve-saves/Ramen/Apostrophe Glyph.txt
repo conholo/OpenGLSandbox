@@ -1,0 +1,34 @@
+Name: Apostrophe Glyph
+Vertex Count: 13
+
+Curve Color: (5.000000,8.000000,15.000000)
+Translation: (-0.300000,-0.200000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (8.884399,-0.120995,0.000000)
+Line Vertex - 1:
+	Position: (9.344192,-0.393464,0.000000)
+Line Vertex - 2:
+	Position: (9.054787,-0.216749,0.000000)
+Line Vertex - 3:
+	Position: (9.465383,-0.478338,0.000000)
+Line Vertex - 4:
+	Position: (9.573144,-0.546993,0.000000)
+Line Vertex - 5:
+	Position: (9.491009,-0.613162,0.000000)
+Line Vertex - 6:
+	Position: (9.415713,-0.561120,0.000000)
+Line Vertex - 7:
+	Position: (9.190548,-0.405491,0.000000)
+Line Vertex - 8:
+	Position: (9.232874,-0.426830,0.000000)
+Line Vertex - 9:
+	Position: (8.842866,-0.190259,0.000000)
+Line Vertex - 10:
+	Position: (8.769951,-0.146030,0.000000)
+Line Vertex - 11:
+	Position: (8.816376,-0.071054,0.000000)
+Line Vertex - 12:
+	Position: (8.885912,-0.120722,0.000000)

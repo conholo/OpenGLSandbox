@@ -1,0 +1,22 @@
+Name: Bottom X Glyph
+Vertex Count: 7
+
+Curve Color: (5.000000,8.000000,15.000000)
+Translation: (0.600000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (6.675866,-0.954192,0.000000)
+Line Vertex - 1:
+	Position: (6.608222,-1.175573,0.000000)
+Line Vertex - 2:
+	Position: (5.835536,-1.745236,0.000000)
+Line Vertex - 3:
+	Position: (5.864641,-1.766635,0.000000)
+Line Vertex - 4:
+	Position: (6.010008,-1.873516,0.000000)
+Line Vertex - 5:
+	Position: (6.722874,-1.217887,0.000000)
+Line Vertex - 6:
+	Position: (6.775382,-1.036086,0.000000)

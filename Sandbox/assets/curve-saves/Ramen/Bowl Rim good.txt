@@ -1,0 +1,22 @@
+Name: Bowl Rim good
+Vertex Count: 7
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-1.711826,0.051088,0.000000)
+Line Vertex - 1:
+	Position: (-2.153183,-0.570009,0.000000)
+Line Vertex - 2:
+	Position: (0.510098,-0.935118,0.000000)
+Line Vertex - 3:
+	Position: (0.989232,-0.049437,0.000000)
+Line Vertex - 4:
+	Position: (1.387933,0.687563,0.000000)
+Line Vertex - 5:
+	Position: (-0.944856,1.130402,0.000000)
+Line Vertex - 6:
+	Position: (-1.711826,0.051088,0.000000)

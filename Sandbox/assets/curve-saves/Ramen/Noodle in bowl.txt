@@ -1,0 +1,142 @@
+Name: Noodle in bowl
+Vertex Count: 67
+
+Curve Color: (8.284000,5.395000,0.014562)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-0.488536,0.431508,0.000000)
+Line Vertex - 1:
+	Position: (-1.078886,0.302842,0.000000)
+Line Vertex - 2:
+	Position: (-0.222968,0.256793,0.000000)
+Line Vertex - 3:
+	Position: (-0.760338,0.116774,0.000000)
+Line Vertex - 4:
+	Position: (-1.297708,-0.023245,0.000000)
+Line Vertex - 5:
+	Position: (-1.169709,0.155254,0.000000)
+Line Vertex - 6:
+	Position: (-1.502727,0.181744,0.000000)
+Line Vertex - 7:
+	Position: (-1.636527,0.192388,0.000000)
+Line Vertex - 8:
+	Position: (-1.797671,-0.421482,0.000000)
+Line Vertex - 9:
+	Position: (-1.404336,-0.310214,0.000000)
+Line Vertex - 10:
+	Position: (-1.203371,-0.253365,0.000000)
+Line Vertex - 11:
+	Position: (-1.645069,-0.125992,0.000000)
+Line Vertex - 12:
+	Position: (-1.567060,-0.030176,0.000000)
+Line Vertex - 13:
+	Position: (-1.483574,0.072369,0.000000)
+Line Vertex - 14:
+	Position: (-0.791305,0.012255,0.000000)
+Line Vertex - 15:
+	Position: (-0.692888,-0.064235,0.000000)
+Line Vertex - 16:
+	Position: (-0.531388,-0.189754,0.000000)
+Line Vertex - 17:
+	Position: (-1.168383,-0.158323,0.000000)
+Line Vertex - 18:
+	Position: (-1.196200,-0.276155,0.000000)
+Line Vertex - 19:
+	Position: (-1.218237,-0.369508,0.000000)
+Line Vertex - 20:
+	Position: (-0.708661,-0.518856,0.000000)
+Line Vertex - 21:
+	Position: (0.086676,-0.366978,0.000000)
+Line Vertex - 22:
+	Position: (0.443508,-0.298838,0.000000)
+Line Vertex - 23:
+	Position: (-0.831670,-0.085409,0.000000)
+Line Vertex - 24:
+	Position: (-0.586293,0.002487,0.000000)
+Line Vertex - 25:
+	Position: (-0.364439,0.081957,0.000000)
+Line Vertex - 26:
+	Position: (-0.456135,0.250766,0.000000)
+Line Vertex - 27:
+	Position: (-0.275035,0.340235,0.000000)
+Line Vertex - 28:
+	Position: (-0.188700,0.382887,0.000000)
+Line Vertex - 29:
+	Position: (-0.403128,0.443829,0.000000)
+Line Vertex - 30:
+	Position: (-0.205498,0.479308,0.000000)
+Line Vertex - 31:
+	Position: (0.148406,0.542842,0.000000)
+Line Vertex - 32:
+	Position: (-0.184175,0.333923,0.000000)
+Line Vertex - 33:
+	Position: (0.032512,0.142180,0.000000)
+Line Vertex - 34:
+	Position: (0.249200,-0.049563,0.000000)
+Line Vertex - 35:
+	Position: (0.203927,0.724900,0.000000)
+Line Vertex - 36:
+	Position: (-0.071490,0.576863,0.000000)
+Line Vertex - 37:
+	Position: (-0.298548,0.454819,0.000000)
+Line Vertex - 38:
+	Position: (-0.393176,-0.101181,0.000000)
+Line Vertex - 39:
+	Position: (0.070401,0.026538,0.000000)
+Line Vertex - 40:
+	Position: (0.533977,0.154258,0.000000)
+Line Vertex - 41:
+	Position: (-0.045455,0.572602,0.000000)
+Line Vertex - 42:
+	Position: (0.427544,0.483019,0.000000)
+Line Vertex - 43:
+	Position: (0.739748,0.423890,0.000000)
+Line Vertex - 44:
+	Position: (1.030674,-0.232987,0.000000)
+Line Vertex - 45:
+	Position: (0.716096,-0.129564,0.000000)
+Line Vertex - 46:
+	Position: (0.543438,-0.072799,0.000000)
+Line Vertex - 47:
+	Position: (0.545948,0.386047,0.000000)
+Line Vertex - 48:
+	Position: (0.441880,0.360030,0.000000)
+Line Vertex - 49:
+	Position: (0.385441,0.345920,0.000000)
+Line Vertex - 50:
+	Position: (0.475570,0.156453,0.000000)
+Line Vertex - 51:
+	Position: (0.306696,0.073671,0.000000)
+Line Vertex - 52:
+	Position: (0.137821,-0.009110,0.000000)
+Line Vertex - 53:
+	Position: (-0.003483,-0.106451,0.000000)
+Line Vertex - 54:
+	Position: (-0.355422,0.037353,0.000000)
+Line Vertex - 55:
+	Position: (-0.407999,0.058835,0.000000)
+Line Vertex - 56:
+	Position: (-0.456786,0.043975,0.000000)
+Line Vertex - 57:
+	Position: (-0.467059,-0.032657,0.000000)
+Line Vertex - 58:
+	Position: (-0.477332,-0.109289,0.000000)
+Line Vertex - 59:
+	Position: (0.322131,-0.177518,0.000000)
+Line Vertex - 60:
+	Position: (0.393868,0.029784,0.000000)
+Line Vertex - 61:
+	Position: (0.468251,0.244729,0.000000)
+Line Vertex - 62:
+	Position: (0.588197,-0.076802,0.000000)
+Line Vertex - 63:
+	Position: (0.634335,-0.151501,0.000000)
+Line Vertex - 64:
+	Position: (0.684004,-0.231917,0.000000)
+Line Vertex - 65:
+	Position: (0.433449,-0.331909,0.000000)
+Line Vertex - 66:
+	Position: (-0.399251,-0.090006,0.000000)

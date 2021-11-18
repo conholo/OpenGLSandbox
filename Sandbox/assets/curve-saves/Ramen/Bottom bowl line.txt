@@ -1,0 +1,16 @@
+Name: Bottom bowl line
+Vertex Count: 4
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-1.340143,-1.237507,0.000000)
+Line Vertex - 1:
+	Position: (-1.360011,-1.694461,0.000000)
+Line Vertex - 2:
+	Position: (0.581332,-1.984905,0.000000)
+Line Vertex - 3:
+	Position: (0.743111,-1.167498,0.000000)

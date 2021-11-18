@@ -20,9 +20,6 @@ private:
 	void PollCurvePicking();
 
 private:
-	void MakeLineHelix(const Engine::Ref<Engine::BezierCurve>& curve);
-
-private:
 	bool OnKeyPressed(Engine::KeyPressedEvent& keyPressedEvent);
 	bool OnMouseButtonReleased(Engine::MouseButtonReleasedEvent& releasedEvent);
 	bool OnMouseButtonPressed(Engine::MouseButtonPressedEvent& pressedEvent);
@@ -44,7 +41,6 @@ private:
 	bool m_Orthographic = false;
 	int m_DragID = -1;
 	bool m_IsDragging = false;
-
 
 private:
 	Engine::Camera m_Camera;

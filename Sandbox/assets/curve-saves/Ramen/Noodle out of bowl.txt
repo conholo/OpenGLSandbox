@@ -1,0 +1,46 @@
+Name: Noodle out of bowl
+Vertex Count: 19
+
+Curve Color: (10.000000,5.395000,0.015000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-0.477326,0.424304,0.000000)
+Line Vertex - 1:
+	Position: (-1.098423,1.149943,0.000000)
+Line Vertex - 2:
+	Position: (-0.581006,2.885096,0.000000)
+Line Vertex - 3:
+	Position: (-0.563418,2.736508,0.000000)
+Line Vertex - 4:
+	Position: (-0.496390,2.170213,0.000000)
+Line Vertex - 5:
+	Position: (-0.960807,1.382836,0.000000)
+Line Vertex - 6:
+	Position: (-0.360486,0.473500,0.000000)
+Line Vertex - 7:
+	Position: (-0.261645,0.323781,0.000000)
+Line Vertex - 8:
+	Position: (-0.779563,1.330046,0.000000)
+Line Vertex - 9:
+	Position: (-0.363940,2.749909,0.000000)
+Line Vertex - 10:
+	Position: (-0.325926,2.879771,0.000000)
+Line Vertex - 11:
+	Position: (-0.482706,0.874971,0.000000)
+Line Vertex - 12:
+	Position: (-0.289095,0.442911,0.000000)
+Line Vertex - 13:
+	Position: (-0.251345,0.358669,0.000000)
+Line Vertex - 14:
+	Position: (-0.473353,1.088752,0.000000)
+Line Vertex - 15:
+	Position: (-0.173588,2.816091,0.000000)
+Line Vertex - 16:
+	Position: (-0.106485,3.202757,0.000000)
+Line Vertex - 17:
+	Position: (-0.352396,0.190736,0.000000)
+Line Vertex - 18:
+	Position: (-0.173588,0.494426,0.000000)

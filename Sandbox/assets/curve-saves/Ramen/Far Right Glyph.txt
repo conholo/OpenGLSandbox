@@ -1,0 +1,34 @@
+Name: Far Right Glyph
+Vertex Count: 13
+
+Curve Color: (5.000000,8.000000,15.000000)
+Translation: (-0.100000,-0.100000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (9.439319,-1.775392,0.000000)
+Line Vertex - 1:
+	Position: (9.808288,-1.695449,0.000000)
+Line Vertex - 2:
+	Position: (10.792204,-1.168190,0.000000)
+Line Vertex - 3:
+	Position: (10.964171,-0.096208,0.000000)
+Line Vertex - 4:
+	Position: (10.983677,0.025381,0.000000)
+Line Vertex - 5:
+	Position: (10.878515,0.016686,0.000000)
+Line Vertex - 6:
+	Position: (10.865998,-0.067433,0.000000)
+Line Vertex - 7:
+	Position: (10.764142,-0.751953,0.000000)
+Line Vertex - 8:
+	Position: (10.223571,-1.327900,0.000000)
+Line Vertex - 9:
+	Position: (9.469849,-1.682774,0.000000)
+Line Vertex - 10:
+	Position: (9.237198,-1.792312,0.000000)
+Line Vertex - 11:
+	Position: (9.435873,-1.801773,0.000000)
+Line Vertex - 12:
+	Position: (9.497369,-1.768661,0.000000)

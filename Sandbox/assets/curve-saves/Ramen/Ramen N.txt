@@ -1,0 +1,64 @@
+Name: Ramen N
+Vertex Count: 28
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (9.297508,2.561852,0.000000)
+Line Vertex - 1:
+	Position: (9.282751,0.856908,0.000000)
+Line Vertex - 2:
+	Position: (9.280333,0.667649,0.000000)
+Line Vertex - 3:
+	Position: (9.286535,0.240068,0.000000)
+Line Vertex - 4:
+	Position: (9.287605,0.166301,0.000000)
+Line Vertex - 5:
+	Position: (9.378428,0.163463,0.000000)
+Line Vertex - 6:
+	Position: (9.375589,0.242933,0.000000)
+Line Vertex - 7:
+	Position: (9.372751,0.322403,0.000000)
+Line Vertex - 8:
+	Position: (9.366684,1.388498,0.000000)
+Line Vertex - 9:
+	Position: (9.380794,2.379596,0.000000)
+Line Vertex - 10:
+	Position: (9.382229,2.480417,0.000000)
+Line Vertex - 11:
+	Position: (9.769275,1.702054,0.000000)
+Line Vertex - 12:
+	Position: (10.561823,0.157449,0.000000)
+Line Vertex - 13:
+	Position: (10.601498,0.080126,0.000000)
+Line Vertex - 14:
+	Position: (10.640995,0.064821,0.000000)
+Line Vertex - 15:
+	Position: (10.639591,0.157592,0.000000)
+Line Vertex - 16:
+	Position: (10.638267,0.245126,0.000000)
+Line Vertex - 17:
+	Position: (10.654317,1.377736,0.000000)
+Line Vertex - 18:
+	Position: (10.663716,2.520314,0.000000)
+Line Vertex - 19:
+	Position: (10.664341,2.596299,0.000000)
+Line Vertex - 20:
+	Position: (10.589720,2.608202,0.000000)
+Line Vertex - 21:
+	Position: (10.589243,2.527779,0.000000)
+Line Vertex - 22:
+	Position: (10.588480,2.399059,0.000000)
+Line Vertex - 23:
+	Position: (10.582415,1.358991,0.000000)
+Line Vertex - 24:
+	Position: (10.582415,0.259788,0.000000)
+Line Vertex - 25:
+	Position: (10.582415,0.200240,0.000000)
+Line Vertex - 26:
+	Position: (10.216014,0.951680,0.000000)
+Line Vertex - 27:
+	Position: (9.360422,2.608210,0.000000)

@@ -1,0 +1,34 @@
+Name: Ramen Sign
+Vertex Count: 13
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-2.795921,-2.518866,0.000000)
+Line Vertex - 1:
+	Position: (-2.759408,3.008353,0.000000)
+Line Vertex - 2:
+	Position: (-2.757045,2.928276,0.000000)
+Line Vertex - 3:
+	Position: (-2.789347,4.707668,0.000000)
+Line Vertex - 4:
+	Position: (-2.792598,4.886773,0.000000)
+Line Vertex - 5:
+	Position: (6.046620,4.879258,0.000000)
+Line Vertex - 6:
+	Position: (12.425932,4.855390,0.000000)
+Line Vertex - 7:
+	Position: (12.650916,4.854548,0.000000)
+Line Vertex - 8:
+	Position: (12.674693,2.151905,0.000000)
+Line Vertex - 9:
+	Position: (12.758950,-2.440732,0.000000)
+Line Vertex - 10:
+	Position: (12.764182,-2.725911,0.000000)
+Line Vertex - 11:
+	Position: (-2.797485,-2.755642,0.000000)
+Line Vertex - 12:
+	Position: (-2.795921,-2.518866,0.000000)

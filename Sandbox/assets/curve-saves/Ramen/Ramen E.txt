@@ -1,0 +1,82 @@
+Name: Ramen E
+Vertex Count: 37
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (7.326067,0.346026,0.000000)
+Line Vertex - 1:
+	Position: (7.304780,1.767265,0.000000)
+Line Vertex - 2:
+	Position: (7.314002,1.676508,0.000000)
+Line Vertex - 3:
+	Position: (7.331403,2.446241,0.000000)
+Line Vertex - 4:
+	Position: (7.333407,2.534901,0.000000)
+Line Vertex - 5:
+	Position: (7.410003,2.543959,0.000000)
+Line Vertex - 6:
+	Position: (8.790562,2.524352,0.000000)
+Line Vertex - 7:
+	Position: (8.882837,2.523041,0.000000)
+Line Vertex - 8:
+	Position: (8.885747,2.468233,0.000000)
+Line Vertex - 9:
+	Position: (8.794924,2.471071,0.000000)
+Line Vertex - 10:
+	Position: (8.704101,2.473909,0.000000)
+Line Vertex - 11:
+	Position: (8.051671,2.457479,0.000000)
+Line Vertex - 12:
+	Position: (7.421237,2.457479,0.000000)
+Line Vertex - 13:
+	Position: (7.385286,2.457479,0.000000)
+Line Vertex - 14:
+	Position: (7.381688,1.774710,0.000000)
+Line Vertex - 15:
+	Position: (7.383437,1.581060,0.000000)
+Line Vertex - 16:
+	Position: (7.383835,1.537025,0.000000)
+Line Vertex - 17:
+	Position: (7.996057,1.554329,0.000000)
+Line Vertex - 18:
+	Position: (8.589269,1.570733,0.000000)
+Line Vertex - 19:
+	Position: (8.659568,1.572677,0.000000)
+Line Vertex - 20:
+	Position: (8.664188,1.536674,0.000000)
+Line Vertex - 21:
+	Position: (8.584719,1.532890,0.000000)
+Line Vertex - 22:
+	Position: (8.505249,1.529105,0.000000)
+Line Vertex - 23:
+	Position: (8.028260,1.520038,0.000000)
+Line Vertex - 24:
+	Position: (7.388431,1.507871,0.000000)
+Line Vertex - 25:
+	Position: (7.340807,1.506965,0.000000)
+Line Vertex - 26:
+	Position: (7.358572,0.943599,0.000000)
+Line Vertex - 27:
+	Position: (7.367762,0.382747,0.000000)
+Line Vertex - 28:
+	Position: (7.368291,0.350407,0.000000)
+Line Vertex - 29:
+	Position: (7.891950,0.354991,0.000000)
+Line Vertex - 30:
+	Position: (8.765715,0.350734,0.000000)
+Line Vertex - 31:
+	Position: (8.806363,0.350536,0.000000)
+Line Vertex - 32:
+	Position: (8.809201,0.306741,0.000000)
+Line Vertex - 33:
+	Position: (8.762370,0.305322,0.000000)
+Line Vertex - 34:
+	Position: (8.715539,0.303903,0.000000)
+Line Vertex - 35:
+	Position: (8.021967,0.313837,0.000000)
+Line Vertex - 36:
+	Position: (7.318460,0.320459,0.000000)

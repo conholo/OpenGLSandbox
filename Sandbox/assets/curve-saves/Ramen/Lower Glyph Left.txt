@@ -1,0 +1,58 @@
+Name: Lower Glyph Left
+Vertex Count: 25
+
+Curve Color: (5.000000,8.000000,15.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (1.679253,-0.430425,0.000000)
+Line Vertex - 1:
+	Position: (2.102148,-0.427587,0.000000)
+Line Vertex - 2:
+	Position: (3.312763,-0.427583,0.000000)
+Line Vertex - 3:
+	Position: (3.605551,-0.427583,0.000000)
+Line Vertex - 4:
+	Position: (3.693536,-0.427583,0.000000)
+Line Vertex - 5:
+	Position: (3.691113,-0.494604,0.000000)
+Line Vertex - 6:
+	Position: (3.537648,-0.691132,0.000000)
+Line Vertex - 7:
+	Position: (3.385100,-0.886485,0.000000)
+Line Vertex - 8:
+	Position: (2.573369,-1.596041,0.000000)
+Line Vertex - 9:
+	Position: (2.275766,-1.615178,0.000000)
+Line Vertex - 10:
+	Position: (2.218916,-1.618833,0.000000)
+Line Vertex - 11:
+	Position: (2.176841,-1.570396,0.000000)
+Line Vertex - 12:
+	Position: (2.304561,-1.527823,0.000000)
+Line Vertex - 13:
+	Position: (2.417823,-1.490069,0.000000)
+Line Vertex - 14:
+	Position: (2.736545,-1.327913,0.000000)
+Line Vertex - 15:
+	Position: (2.977393,-1.118577,0.000000)
+Line Vertex - 16:
+	Position: (3.281083,-0.854623,0.000000)
+Line Vertex - 17:
+	Position: (3.434452,-0.647140,0.000000)
+Line Vertex - 18:
+	Position: (3.546697,-0.510843,0.000000)
+Line Vertex - 19:
+	Position: (3.579809,-0.470635,0.000000)
+Line Vertex - 20:
+	Position: (2.740700,-0.486082,0.000000)
+Line Vertex - 21:
+	Position: (1.638378,-0.489556,0.000000)
+Line Vertex - 22:
+	Position: (1.616667,-0.489625,0.000000)
+Line Vertex - 23:
+	Position: (1.605411,-0.434994,0.000000)
+Line Vertex - 24:
+	Position: (1.674948,-0.432156,0.000000)

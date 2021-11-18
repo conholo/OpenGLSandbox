@@ -1,0 +1,16 @@
+Name: Right bowl line
+Vertex Count: 4
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (0.514882,-0.503989,0.000000)
+Line Vertex - 1:
+	Position: (0.803908,-0.454794,0.000000)
+Line Vertex - 2:
+	Position: (0.940840,-0.255255,0.000000)
+Line Vertex - 3:
+	Position: (1.019140,-0.098124,0.000000)

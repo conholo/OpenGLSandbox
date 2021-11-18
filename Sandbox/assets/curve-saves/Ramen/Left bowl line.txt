@@ -1,0 +1,16 @@
+Name: Left bowl line
+Vertex Count: 4
+
+Curve Color: (8.284000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-1.749655,-0.171712,0.000000)
+Line Vertex - 1:
+	Position: (-1.728519,-0.412251,0.000000)
+Line Vertex - 2:
+	Position: (-1.560440,-0.382213,0.000000)
+Line Vertex - 3:
+	Position: (-1.352304,-0.472090,0.000000)

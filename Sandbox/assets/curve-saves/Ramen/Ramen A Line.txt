@@ -1,0 +1,28 @@
+Name: Ramen A Line
+Vertex Count: 10
+
+Curve Color: (10.000000,1.000000,6.000000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (3.850673,1.420437,0.000000)
+Line Vertex - 1:
+	Position: (4.112216,1.425833,0.000000)
+Line Vertex - 2:
+	Position: (4.230590,1.424646,0.000000)
+Line Vertex - 3:
+	Position: (4.553086,1.427725,0.000000)
+Line Vertex - 4:
+	Position: (4.555213,1.427745,0.000000)
+Line Vertex - 5:
+	Position: (4.564402,1.398755,0.000000)
+Line Vertex - 6:
+	Position: (4.559674,1.398674,0.000000)
+Line Vertex - 7:
+	Position: (4.504801,1.397728,0.000000)
+Line Vertex - 8:
+	Position: (4.201458,1.396781,0.000000)
+Line Vertex - 9:
+	Position: (3.832489,1.395835,0.000000)
