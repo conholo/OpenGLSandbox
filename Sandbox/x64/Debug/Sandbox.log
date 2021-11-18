@@ -14,6 +14,6 @@ C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(343,
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(344,86): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(368,42): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(374,70): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(508,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(509,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(519,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(520,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

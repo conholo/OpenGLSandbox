@@ -77,7 +77,7 @@ void CurveSerializer::DeserializeAndWriteToCurve(const std::string& saveName, co
 		return;
 	}
 
-	std::cout << "Loading Curve: " << saveName << ".  Please wait."<< std::endl;
+	std::cout << "Loading Curve: " << saveName << std::endl;
 	
 	std::vector<Engine::LineVertex> vertices;
 

@@ -442,28 +442,32 @@ void LineLayer::OnImGuiRender()
 
 			if (ImGui::TreeNodeEx("Save/Load"))
 			{
-				char buffer[256];
-				memset(buffer, 0, sizeof(buffer));
-				std::strncpy(buffer, m_SaveNameHolder.c_str(), sizeof(buffer));
-				if (ImGui::InputText("Save Name", buffer, sizeof(buffer)))
-					m_SaveNameHolder = std::string(buffer);
-
-				if (ImGui::Button("Save Curve"))
+				if (ImGui::TreeNodeEx("Save"))
 				{
-					bool containsSubDirectory = m_SaveNameHolder.find("/") != std::string::npos;
+					char buffer[256];
+					memset(buffer, 0, sizeof(buffer));
+					std::strncpy(buffer, m_SaveNameHolder.c_str(), sizeof(buffer));
+					if (ImGui::InputText("Save Name", buffer, sizeof(buffer)))
+						m_SaveNameHolder = std::string(buffer);
 
-					if (containsSubDirectory)
+					if (ImGui::Button("Save Curve"))
 					{
-						std::string fileName = m_SaveNameHolder.substr(m_SaveNameHolder.find_first_of("/") + 1, m_SaveNameHolder.length() - m_SaveNameHolder.find_first_of("/") + 1);
-						CurveSerializer::SerializeCurve(fileName, curve, m_SaveNameHolder.substr(0, m_SaveNameHolder.find_first_of("/")));
-					}
-					else
-						CurveSerializer::SerializeCurve(m_SaveNameHolder, curve, "My Curves");
+						bool containsSubDirectory = m_SaveNameHolder.find("/") != std::string::npos;
 
+						if (containsSubDirectory)
+						{
+							std::string fileName = m_SaveNameHolder.substr(m_SaveNameHolder.find_first_of("/") + 1, m_SaveNameHolder.length() - m_SaveNameHolder.find_first_of("/") + 1);
+							CurveSerializer::SerializeCurve(fileName, curve, m_SaveNameHolder.substr(0, m_SaveNameHolder.find_first_of("/")));
+						}
+						else
+							CurveSerializer::SerializeCurve(m_SaveNameHolder, curve, "My Curves");
+					}
+					
+					ImGui::TreePop();
 				}
 
 				std::unordered_map<std::string, std::vector<std::string>> saves = CurveSerializer::GetAllCurvePaths();
-				if (ImGui::TreeNodeEx("Load Curve"))
+				if (ImGui::TreeNodeEx("Load"))
 				{
 					for (auto directoryFilesNamesPair : saves)
 					{
@@ -488,6 +492,13 @@ void LineLayer::OnImGuiRender()
 					ImGui::TreePop();
 				}
 				ImGui::TreePop();
+			}
+
+			if (ImGui::Button("Delete Curve"))
+			{
+				m_Curves.erase(m_Curves.begin() + m_CurveEditIndex);
+				if(!m_Curves.empty())
+					m_CurveEditIndex = m_CurveEditIndex % m_Curves.size();
 			}
 		}
 
