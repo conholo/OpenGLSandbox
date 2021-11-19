@@ -65,10 +65,12 @@ namespace Engine
 
 		std::vector<glm::vec3> controls;
 		m_PatchCurves.resize(m_PatchCount);
+		m_PatchCurvesDefaultPositions.resize(m_PatchCount);
 		for (uint32_t patchIndex = 0; patchIndex < m_PatchCount; patchIndex++)
 		{
 			// Always 4 controllable curves per patch.
 			m_PatchCurves[patchIndex].resize(4);
+			m_PatchCurvesDefaultPositions[patchIndex].resize(4);
 
 			// Always 16 controls per patch (4 per curve).
 			controls.resize(16);
@@ -89,6 +91,9 @@ namespace Engine
 				curveControls[1] = { controls[i * 4 + 1] };
 				curveControls[2] = { controls[i * 4 + 2] };
 				curveControls[3] = { controls[i * 4 + 3] };
+
+				for(uint32_t curvePosition = 0; curvePosition < 4; curvePosition++)
+					m_PatchCurvesDefaultPositions[patchIndex][i].push_back(curveControls[curvePosition].Position);
 
 				Ref<BezierCurve> curve = CreateRef<BezierCurve>();
 
@@ -214,7 +219,10 @@ namespace Engine
 		m_PointShader->UploadUniformInt("u_Texture", 0);
 		m_PointShader->UploadUniformMat4("u_ModelMatrix", m_Transform->Transform());
 		m_PointVBO->ResizeAndSetData(vertexDataPtr, sizeOfData);
+		if (m_WireFrame)
+			RenderCommand::SetDrawMode(DrawMode::WireFrame);
 		RenderCommand::DrawIndexed(m_VAO, m_PointEBO->GetIndexCount(), IndexedTopology::Quads);
+		RenderCommand::SetDrawMode(DrawMode::Fill);
 		m_PointShader->Unbind();
 		m_VAO->Unbind();
 
@@ -290,6 +298,36 @@ namespace Engine
 		}
 	}
 
+	void BezierSurface::SetPosition(const glm::vec3& position)
+	{
+		m_Transform->SetPosition(position);
+		for(auto patchCurves: m_PatchCurves)
+			for (auto curve : patchCurves)
+			{
+				curve->GetTransform()->SetPosition(position);
+			}
+	}
+
+	void BezierSurface::SetScale(const glm::vec3& scale)
+	{
+		m_Transform->SetScale(scale);
+		for (auto patchCurves : m_PatchCurves)
+			for (auto curve : patchCurves)
+			{
+				curve->GetTransform()->SetScale(scale);
+			}
+	}
+
+	void BezierSurface::SetRotation(const glm::vec3& rotation)
+	{
+		m_Transform->SetRotation(rotation);
+		for (auto patchCurves : m_PatchCurves)
+			for (auto curve : patchCurves)
+			{
+				curve->GetTransform()->SetRotation(rotation);
+			}
+	}
+
 	static float Wave(float x, float y, float t)
 	{
 		return sin(PI * (x + y + t));
@@ -297,15 +335,17 @@ namespace Engine
 
 	static float MultiWave(float x, float y, float t)
 	{
-		float z = sin(PI * (x + 0.5 * t));
-		z += 0.5 * sin(2.0 * PI * (y + t));
-		z += sin(PI * (x + y + 0.25 * t));
+		float z = sin(PI * (x + 0.2 * t));
+		z += 0.2 * sin(2.0 * PI * (y + t));
+		z += sin(PI * (x + y + 0.2 * t));
 
-		return z * (1.0 / 2.5);
+		return z * (1.0 / 10.0f);
 	}
 
-	void BezierSurface::TestMoveAllControls()
+	void BezierSurface::AnimateControls()
 	{
+		if (!m_Animate) return;
+
 		for (auto patchCurves : m_PatchCurves)
 			for (auto curve : patchCurves)
 			{
@@ -313,8 +353,10 @@ namespace Engine
 
 				for (uint32_t i = 0; i < vertices.size(); i++)
 				{
+					if (i % 3 == 0) continue;
+
 					LineVertex vertex = vertices[i];
-					float z = MultiWave(vertex.Position.x, vertex.Position.y, Time::Elapsed() * 0.1f);
+					float z = MultiWave(vertex.Position.x, vertex.Position.y, Time::Elapsed() * 0.5f);
 					curve->MovePoint(i, { vertex.Position.x, vertex.Position.y, z });
 				}
 			}
@@ -324,4 +366,32 @@ namespace Engine
 	{
 		m_DrawCurves = !m_DrawCurves;
 	}
+
+	void BezierSurface::ToggleWireFrame()
+	{
+		m_WireFrame = !m_WireFrame;
+	}
+
+	void BezierSurface::ToggleAnimation()
+	{
+		m_Animate = !m_Animate;
+
+		if (!m_Animate)
+			SetPosition(m_DefaultPosition);
+	}
+
+	void BezierSurface::ResetCurves()
+	{
+		for (uint32_t i = 0; i < m_PatchCount; i++)
+		{
+			for (uint32_t j = 0; j < m_PatchCurves[i].size(); j++)
+			{
+				Ref<BezierCurve> curve = m_PatchCurves[i][j];
+				std::vector<glm::vec3> defaultPositions = m_PatchCurvesDefaultPositions[i][j];
+
+				curve->SetVertices(defaultPositions);
+			}
+		}
+	}
+
 }

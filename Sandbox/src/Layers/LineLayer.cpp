@@ -33,8 +33,8 @@ void LineLayer::OnAttach()
 	m_ViewportHeight = Engine::Application::GetApplication().GetWindow().GetHeight();
 
 	m_Surface = Engine::CreateRef<Engine::BezierSurface>();
-	m_Surface->GetTransform()->SetScale( glm::vec3(1.5f, 1.0f, 1.0f) * 10.0f);
-	m_Surface->GetTransform()->SetPosition({7.0f, 10.0f, -2.0f});
+	m_Surface->SetScale( glm::vec3(1.5f, 1.0f, 1.0f) * 10.0f);
+	m_Surface->SetPosition({7.0f, 10.0f, 0.0f});
 
 	Engine::FramebufferSpecification fboSpec
 	{
@@ -44,6 +44,19 @@ void LineLayer::OnAttach()
 	m_FBO = Engine::CreateRef<Engine::Framebuffer>(fboSpec);
 
 	m_BloomComputeTextures.resize(3);
+
+	Engine::Texture2DSpecification brickSpec =
+	{
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::FilterMode::Linear,
+		Engine::ImageUtils::FilterMode::Linear,
+		Engine::ImageUtils::ImageInternalFormat::FromImage,
+		Engine::ImageUtils::ImageDataLayout::FromImage,
+		Engine::ImageUtils::ImageDataType::UByte,
+	};
+
+	m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/brick-red.jpg", brickSpec);
 
 	Engine::Texture2DSpecification bloomSpec =
 	{
@@ -62,10 +75,14 @@ void LineLayer::OnAttach()
 	m_BloomComputeTextures[2] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 
 	m_FullScreenQuad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::FullScreenQuad, "PostProcessing");
-	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
 
-	m_Table->GetEntityTransform()->SetScale({ 19.020f, 3.00f, 8.00f });
-	m_Table->GetEntityTransform()->SetPosition({ 4.730f, -4.900f, 0.0f});
+	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+	m_Table->GetEntityTransform()->SetScale({ 26.940f, 3.00f, 19.480f });
+	m_Table->GetEntityTransform()->SetPosition({ 4.730f, -10.010f, 6.100f});
+
+	m_BrickWall = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+	m_BrickWall->GetEntityTransform()->SetScale({ 26.780f, 26.010, 2.00f });
+	m_BrickWall->GetEntityTransform()->SetPosition({ 4.730f, 1.890f, -2.630f });
 
 	Engine::LightSpecification sunSpec =
 	{
@@ -151,41 +168,72 @@ void LineLayer::OnUpdate(float deltaTime)
 	CheckForResize();
 	m_Camera.Update(deltaTime);
 	PollCurvePicking();
+	m_Surface->UpdateDragCurve(m_Camera);
 
 	m_FBO->Bind();
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
-	for(auto curve : m_Curves)
-		curve->Draw(m_Camera.GetViewProjection());
-	m_Table->GetEntityRenderer()->GetShader()->Bind();
-	m_WhiteTexture->BindToSamplerSlot(0);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_TableProperties.AmbientStrength);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_TableProperties.DiffuseStrength);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_TableProperties.SpecularStrength);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_TableProperties.Shininess);
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
-	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
-	m_Table->DrawEntity(m_Camera.GetViewProjection());
 
-	m_Surface->GetShader()->Bind();
-	m_Surface->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
-	m_Surface->GetShader()->UploadUniformFloat3("u_LightPosition", m_Light->GetLightTransform()->GetPosition());
-	m_Surface->GetShader()->UploadUniformFloat3("u_LightColor", m_Light->GetLightColor());
-	m_Surface->GetShader()->UploadUniformFloat("u_LightIntensity", m_Light->GetLightIntensity());
-	m_Surface->GetShader()->UploadUniformFloat("u_AmbientStrength", m_FlagProperties.AmbientStrength);
-	m_Surface->GetShader()->UploadUniformFloat("u_DiffuseStrength", m_FlagProperties.DiffuseStrength);
-	m_Surface->GetShader()->UploadUniformFloat("u_SpecularStrength", m_FlagProperties.SpecularStrength);
-	m_Surface->GetShader()->UploadUniformFloat("u_Shininess", m_FlagProperties.Shininess);
-	m_Surface->GetShader()->UploadUniformFloat3("u_AmbientColor", m_FlagProperties.AmbientColor);
-	m_Surface->GetShader()->UploadUniformFloat3("u_DiffuseColor", m_FlagProperties.DiffuseColor);
-	m_Surface->TestMoveAllControls();
-	m_Surface->Draw(m_Camera.GetViewProjection());
+	if (m_DrawSign)
+	{
+		for (auto curve : m_Curves)
+			curve->Draw(m_Camera.GetViewProjection());
+	}
+
+	if (m_DrawGround)
+	{
+		m_Table->GetEntityRenderer()->GetShader()->Bind();
+		m_WhiteTexture->BindToSamplerSlot(0);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_TableProperties.AmbientStrength);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_TableProperties.DiffuseStrength);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_TableProperties.SpecularStrength);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_TableProperties.Shininess);
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+		m_Table->DrawEntity(m_Camera.GetViewProjection());
+	}
+
+	if (m_DrawWall)
+	{
+		m_BrickWall->GetEntityRenderer()->GetShader()->Bind();
+		m_BrickWallTexture->BindToSamplerSlot(0);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_BrickWall->GetEntityTransform()->Transform());
+		m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_BrickProperties.AmbientColor);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_BrickProperties.DiffuseColor);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_BrickProperties.AmbientStrength);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_BrickProperties.DiffuseStrength);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_BrickProperties.SpecularStrength);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_BrickProperties.Shininess);
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+		m_BrickWall->DrawEntity(m_Camera.GetViewProjection());
+	}
+
+	if (m_DrawFlag)
+	{
+		m_Surface->GetShader()->Bind();
+		m_Surface->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+		m_Surface->GetShader()->UploadUniformFloat3("u_LightPosition", m_Light->GetLightTransform()->GetPosition());
+		m_Surface->GetShader()->UploadUniformFloat3("u_LightColor", m_Light->GetLightColor());
+		m_Surface->GetShader()->UploadUniformFloat("u_LightIntensity", m_Light->GetLightIntensity());
+		m_Surface->GetShader()->UploadUniformFloat("u_AmbientStrength", m_FlagProperties.AmbientStrength);
+		m_Surface->GetShader()->UploadUniformFloat("u_DiffuseStrength", m_FlagProperties.DiffuseStrength);
+		m_Surface->GetShader()->UploadUniformFloat("u_SpecularStrength", m_FlagProperties.SpecularStrength);
+		m_Surface->GetShader()->UploadUniformFloat("u_Shininess", m_FlagProperties.Shininess);
+		m_Surface->GetShader()->UploadUniformFloat3("u_AmbientColor", m_FlagProperties.AmbientColor);
+		m_Surface->GetShader()->UploadUniformFloat3("u_DiffuseColor", m_FlagProperties.DiffuseColor);
+		m_Surface->AnimateControls();
+		m_Surface->Draw(m_Camera.GetViewProjection());
+	}
 	m_FBO->Unbind();
 
 	BloomComputePass();
@@ -354,27 +402,105 @@ void LineLayer::OnImGuiRender()
 
 	if (ImGui::TreeNodeEx("Scene Settings"))
 	{
-		ImGui::DragFloat3("Table Ambient Color", &m_TableProperties.AmbientColor.x, 0.01);
-		ImGui::DragFloat3("Table Diffuse Color", &m_TableProperties.DiffuseColor.x, 0.01);
-		ImGui::DragFloat("Table Ambient Strength", &m_TableProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
-		ImGui::DragFloat("Table Specular Strength", &m_TableProperties.SpecularStrength, 0.01, 0.0f, 1.0f);
-		ImGui::DragFloat("Table Shininess", &m_TableProperties.Shininess, 0.01, 2.0f, 256.0f);
-		ImGui::DragFloat3("Table Position", &m_Table->GetEntityTransform()->GetPosition().x, 0.01);
-		ImGui::DragFloat3("Table Scale", &m_Table->GetEntityTransform()->GetScale().x, 0.01);
+		if (ImGui::TreeNodeEx("Table Settings"))
+		{
+			ImGui::DragFloat3("Table Ambient Color", &m_TableProperties.AmbientColor.x, 0.01);
+			ImGui::DragFloat3("Table Diffuse Color", &m_TableProperties.DiffuseColor.x, 0.01);
+			ImGui::DragFloat("Table Ambient Strength", &m_TableProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Table Diffuse Strength", &m_TableProperties.DiffuseStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Table Specular Strength", &m_TableProperties.SpecularStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Table Shininess", &m_TableProperties.Shininess, 0.01, 2.0f, 256.0f);
+			ImGui::DragFloat3("Table Position", &m_Table->GetEntityTransform()->GetPosition().x, 0.01);
+			ImGui::DragFloat3("Table Scale", &m_Table->GetEntityTransform()->GetScale().x, 0.01);
+			ImGui::Checkbox("Draw Table", &m_DrawGround);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNodeEx("Brick Wall Settings"))
+		{
+			ImGui::DragFloat3("Brick Wall Ambient Color", &m_BrickProperties.AmbientColor.x, 0.01);
+			ImGui::DragFloat3("Brick Wall Diffuse Color", &m_BrickProperties.DiffuseColor.x, 0.01);
+			ImGui::DragFloat("Brick Wall Ambient Strength", &m_BrickProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Brick Wall Diffuse Strength", &m_BrickProperties.DiffuseStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Brick Wall Specular Strength", &m_BrickProperties.SpecularStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Brick Wall Shininess", &m_BrickProperties.Shininess, 0.01, 2.0f, 256.0f);
+			ImGui::DragFloat3("Brick Wall Position", &m_BrickWall->GetEntityTransform()->GetPosition().x, 0.01);
+			ImGui::DragFloat3("Brick Wall Scale", &m_BrickWall->GetEntityTransform()->GetScale().x, 0.01);
+			ImGui::Checkbox("Draw Wall", &m_DrawWall);
+
+			ImGui::TreePop();
+		}
+
 		ImGui::Separator();
 
-		ImGui::DragFloat3("Light Position", &m_Light->GetLightTransform()->GetPosition().x);
-		ImGui::DragFloat3("Light Color", &m_Light->GetLightColor().x);
-		float intensity = m_Light->GetLightIntensity();
-		ImGui::DragFloat("Light Intensity", &intensity);
-		if (intensity != m_Light->GetLightIntensity())
-			m_Light->SetIntensity(intensity);
+		if (ImGui::TreeNodeEx("Light Settings"))
+		{
+			ImGui::DragFloat3("Light Position", &m_Light->GetLightTransform()->GetPosition().x);
+			ImGui::DragFloat3("Light Color", &m_Light->GetLightColor().x);
+			float intensity = m_Light->GetLightIntensity();
+			ImGui::DragFloat("Light Intensity", &intensity);
+			if (intensity != m_Light->GetLightIntensity())
+				m_Light->SetIntensity(intensity);
 
+			ImGui::TreePop();
+		}
+		ImGui::Separator();
+
+		if (ImGui::TreeNodeEx("Flag Settings"))
+		{
+			ImGui::DragFloat3("Flag Ambient Color", &m_FlagProperties.AmbientColor.x, 0.01);
+			ImGui::DragFloat3("Flag Diffuse Color", &m_FlagProperties.DiffuseColor.x, 0.01);
+			ImGui::DragFloat("Flag Ambient Strength", &m_FlagProperties.AmbientStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Flag Diffuse Strength", &m_FlagProperties.DiffuseStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Flag Specular Strength", &m_FlagProperties.SpecularStrength, 0.01, 0.0f, 1.0f);
+			ImGui::DragFloat("Flag Shininess", &m_FlagProperties.Shininess, 0.01, 2.0f, 256.0f);
+
+			glm::vec3 surfacePosition = m_Surface->GetPosition();
+			glm::vec3 surfaceScale = m_Surface->GetScale();
+			glm::vec3 surfaceRotation = m_Surface->GetRotation();
+			ImGui::DragFloat3("Flag Position", &surfacePosition.x, 0.01);
+			ImGui::DragFloat3("Flag Rotation", &surfaceRotation.x, 0.01);
+			ImGui::DragFloat3("Flag Scale", &surfaceScale.x, 0.01);
+
+			if (surfaceScale != m_Surface->GetScale())
+				m_Surface->SetScale(surfaceScale);
+			if (surfacePosition != m_Surface->GetPosition())
+				m_Surface->SetPosition(surfacePosition);
+			if (surfaceRotation != m_Surface->GetRotation())
+				m_Surface->SetRotation(surfaceRotation);
+
+			ImGui::Separator();
+
+			bool animate = m_Surface->IsAnimating();
+			ImGui::Checkbox("Animate", &animate);
+			if (animate != m_Surface->IsAnimating())
+				m_Surface->ToggleAnimation();
+
+			bool wireFrame = m_Surface->IsWireFrame();
+			ImGui::Checkbox("Wire Frame", &wireFrame);
+			if (wireFrame != m_Surface->IsWireFrame())
+				m_Surface->ToggleWireFrame();
+
+			bool drawCurves = m_Surface->IsDrawCurves();
+			ImGui::Checkbox("Draw Curves", &drawCurves);
+			if (drawCurves != m_Surface->IsDrawCurves())
+				m_Surface->ToggleDrawCurves();
+
+			if (ImGui::Button("Reset Flag"))
+				m_Surface->ResetCurves();
+
+			ImGui::Checkbox("Draw Flag", &m_DrawFlag);
+
+			ImGui::TreePop();
+		}
 		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNodeEx("Curve Settings"))
 	{
+		ImGui::Checkbox("Draw Sign", &m_DrawSign);
+
 		if (ImGui::Button("Create Curve"))
 		{
 			if (m_Curves.size() > 0)
@@ -589,6 +715,8 @@ bool LineLayer::OnMouseButtonReleased(Engine::MouseButtonReleasedEvent& released
 		m_DragID = -1;
 	}
 
+	m_Surface->StopPicking(releasedEvent.GetButton());
+
 	return true;
 }
 
@@ -626,6 +754,8 @@ bool LineLayer::OnMouseButtonPressed(Engine::MouseButtonPressedEvent& pressedEve
 		glm::vec3 worldCoordinate = m_Camera.ScreenToWorldPoint({ mousePosition.x, mousePosition.y, 0.0f });
 		curve->AddSegment({ worldCoordinate });
 	}
+
+	m_Surface->StartPicking(pressedEvent.GetButton(), m_Camera);
 
 	return true;
 }
