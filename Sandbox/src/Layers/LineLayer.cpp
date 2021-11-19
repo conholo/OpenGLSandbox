@@ -32,6 +32,10 @@ void LineLayer::OnAttach()
 	m_ViewportWidth = Engine::Application::GetApplication().GetWindow().GetWidth();
 	m_ViewportHeight = Engine::Application::GetApplication().GetWindow().GetHeight();
 
+	m_Surface = Engine::CreateRef<Engine::BezierSurface>();
+	m_Surface->GetTransform()->SetScale( glm::vec3(1.5f, 1.0f, 1.0f) * 10.0f);
+	m_Surface->GetTransform()->SetPosition({7.0f, 10.0f, -2.0f});
+
 	Engine::FramebufferSpecification fboSpec
 	{
 		m_ViewportWidth, m_ViewportHeight,
@@ -75,6 +79,7 @@ void LineLayer::OnAttach()
 
 	std::vector<std::string> ramenSignFiles = CurveSerializer::GetCurveSavesFromDirectory("Ramen");
 
+	Engine::RenderCommand::SetPointSize(10.0f);
 	for (auto save : ramenSignFiles)
 	{
 		Engine::Ref<Engine::BezierCurve> curve = Engine::CreateRef<Engine::BezierCurve>();
@@ -167,6 +172,20 @@ void LineLayer::OnUpdate(float deltaTime)
 	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
 	m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
 	m_Table->DrawEntity(m_Camera.GetViewProjection());
+
+	m_Surface->GetShader()->Bind();
+	m_Surface->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+	m_Surface->GetShader()->UploadUniformFloat3("u_LightPosition", m_Light->GetLightTransform()->GetPosition());
+	m_Surface->GetShader()->UploadUniformFloat3("u_LightColor", m_Light->GetLightColor());
+	m_Surface->GetShader()->UploadUniformFloat("u_LightIntensity", m_Light->GetLightIntensity());
+	m_Surface->GetShader()->UploadUniformFloat("u_AmbientStrength", m_FlagProperties.AmbientStrength);
+	m_Surface->GetShader()->UploadUniformFloat("u_DiffuseStrength", m_FlagProperties.DiffuseStrength);
+	m_Surface->GetShader()->UploadUniformFloat("u_SpecularStrength", m_FlagProperties.SpecularStrength);
+	m_Surface->GetShader()->UploadUniformFloat("u_Shininess", m_FlagProperties.Shininess);
+	m_Surface->GetShader()->UploadUniformFloat3("u_AmbientColor", m_FlagProperties.AmbientColor);
+	m_Surface->GetShader()->UploadUniformFloat3("u_DiffuseColor", m_FlagProperties.DiffuseColor);
+	m_Surface->TestMoveAllControls();
+	m_Surface->Draw(m_Camera.GetViewProjection());
 	m_FBO->Unbind();
 
 	BloomComputePass();
@@ -386,7 +405,7 @@ void LineLayer::OnImGuiRender()
 			if (ImGui::TreeNodeEx(curveLabel.c_str()))
 			{
 				std::string transformLabel = curveLabel + std::string(" Transform");
-				if (ImGui::TreeNodeEx(transformLabel.c_str()))
+				if (ImGui::TreeNodeEx("Transform"))
 				{
 					ImGuiUtility::DrawVec3Controls("Position", curve->GetTransform()->GetPosition());
 					ImGuiUtility::DrawVec3Controls("Rotation", curve->GetTransform()->GetRotation());
@@ -395,17 +414,22 @@ void LineLayer::OnImGuiRender()
 					ImGui::TreePop();
 				}
 
-				ImGui::ColorEdit3("Curve Color", &curve->GetCurveColor().x, ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_Float);
+				if (ImGui::TreeNodeEx("Appearance Properties"))
+				{
+					ImGui::ColorEdit3("Curve Color", &curve->GetCurveColor().x, ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_Float);
 
-				bool loop = curve->GetIsLooped();
-				ImGui::Checkbox("Loop", &loop);
-				if (loop != curve->GetIsLooped())
-					curve->ToggleLooped();
+					bool loop = curve->GetIsLooped();
+					ImGui::Checkbox("Loop", &loop);
+					if (loop != curve->GetIsLooped())
+						curve->ToggleLooped();
 
-				bool debug = curve->GetIsDisplayingDebug();
-				ImGui::Checkbox("Debug Control Points", &debug);
-				if (debug != curve->GetIsDisplayingDebug())
-					curve->ToggleDebug();
+					bool debug = curve->GetIsDisplayingDebug();
+					ImGui::Checkbox("Debug Control Points", &debug);
+					if (debug != curve->GetIsDisplayingDebug())
+						curve->ToggleDebug();
+
+					ImGui::TreePop();
+				}
 
 
 				if (ImGui::TreeNodeEx("Curve Points"))

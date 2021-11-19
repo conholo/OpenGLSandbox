@@ -54,6 +54,9 @@
     <ClCompile Include="src\Utility\ImGuiUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\TestBezierSurfaceLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -92,6 +95,9 @@
     <ClInclude Include="src\Utility\ImGuiUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\TestBezierSurfaceLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -122,5 +128,6 @@
     <None Include="assets\shaders\Bloom.shader" />
     <None Include="assets\shaders\BloomDebugWrite.shader" />
     <None Include="assets\shaders\Bloom2.shader" />
+    <None Include="assets\shaders\SurfaceCurve.shader" />
   </ItemGroup>
 </Project>

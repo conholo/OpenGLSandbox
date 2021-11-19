@@ -51,6 +51,7 @@ namespace Engine
 		Engine::ShaderLibrary::Load("assets/shaders/PostProcessing.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/Bloom.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/Bloom2.shader");
+		Engine::ShaderLibrary::Load("assets/shaders/SurfaceCurve.shader");
 
 		RenderCommand::Initialize();
 		RenderCommand::SetViewport(m_Window->GetWidth(), m_Window->GetHeight());

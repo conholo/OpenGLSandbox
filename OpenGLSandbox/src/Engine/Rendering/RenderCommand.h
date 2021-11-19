@@ -9,6 +9,7 @@ namespace Engine
 {
 	enum class LineTopology { None = 0, Lines, LineStrip };
 	enum class DrawMode { None = 0, Fill, WireFrame };
+	enum class IndexedTopology { None = 0, Triangles, Quads };
 
 	enum class RenderFlag
 	{
@@ -31,9 +32,10 @@ namespace Engine
 		static void Clear(bool colorBufferBit, bool depthBufferBit);
 		static void SetViewport(uint32_t width, uint32_t height);
 		static void ClearColor(const glm::vec4& clearColor);
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0);
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0, IndexedTopology topology = IndexedTopology::Triangles);
 		static void DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first = 0);
 		static void DrawPoints(uint32_t vertexCount, uint32_t first = 0);
+		static void DrawQuads(uint32_t vertexCount, uint32_t first = 0);
 	};
 }
 

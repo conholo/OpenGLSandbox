@@ -43,6 +43,9 @@ private:
 	bool m_IsDragging = false;
 
 private:
+	Engine::Ref<Engine::BezierSurface> m_Surface;
+
+private:
 	Engine::Camera m_Camera;
 	glm::vec4 m_ClearColor{ 0.0f, 0.0f, 0.0f, 0.0f };
 
@@ -60,6 +63,17 @@ private:
 		1.00f,
 		2.0f
 	};
+
+	Engine::RendererMaterialProperties m_FlagProperties
+	{
+		{0.6f, 0.6f, 0.6f},
+		{1.0f, 1.0f, 1.0f},
+		0.5f,
+		0.7f,
+		0.1f,
+		2.0f
+	};
+
 
 	Engine::Ref<Engine::Light> m_Light;
 

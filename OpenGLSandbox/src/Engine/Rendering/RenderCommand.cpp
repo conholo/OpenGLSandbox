@@ -90,10 +90,26 @@ namespace Engine
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void RenderCommand::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	static GLenum GLTopologyFromEngineTopology(IndexedTopology topology)
+	{
+		switch (topology)
+		{
+			case IndexedTopology::Quads: return GL_QUADS;
+			case IndexedTopology::Triangles: return GL_TRIANGLES;
+		}
+
+		return 0;
+	}
+
+	void RenderCommand::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount, IndexedTopology topology)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetIndexCount();
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GLTopologyFromEngineTopology(topology), count, GL_UNSIGNED_INT, nullptr);
+	}
+
+	void RenderCommand::DrawQuads(uint32_t vertexCount, uint32_t first)
+	{
+		glDrawArrays(GL_QUADS, first, vertexCount);
 	}
 
 	void RenderCommand::DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first)

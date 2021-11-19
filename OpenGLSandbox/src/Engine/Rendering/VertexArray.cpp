@@ -43,6 +43,7 @@ namespace Engine
 	void VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(m_ID);
+		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;
 	}
 

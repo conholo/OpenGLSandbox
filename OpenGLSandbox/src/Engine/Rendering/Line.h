@@ -64,6 +64,8 @@ namespace Engine
 		void SetCurveColor(const glm::vec3& curveColor) { m_CurveColor = curveColor; }
 		void Clear() { m_Vertices.clear(); m_Looped = false; }
 
+		static glm::vec3 CalculateCubicBezier(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float t);
+
 		bool GetIsLooped() const { return m_Looped; }
 		bool GetIsDisplayingDebug() const { return m_Debug; }
 		glm::vec3& GetCurveColor() { return m_CurveColor; }
@@ -71,6 +73,7 @@ namespace Engine
 		const Ref<EntityTransform>& GetTransform() const { return m_Transform; }
 
 		void SetVertices(const std::vector<LineVertex>& vertices);
+		void SetVertices(std::vector<glm::vec3>& vertices);
 
 		uint32_t GetPointCount() const { return m_Vertices.size(); }
 		uint32_t GetSegmentCount() const { return (m_Vertices.size() - 4) / 3 + 1; }

@@ -20,6 +20,7 @@
 // This is in Simple ECS because it depends on Entity Transform.
 // Needs the updated ECS equivalent.
 #include "Engine/Rendering/Line.h"
+#include "Engine/Rendering/BezierSurface.h"
 //--------------------- Simple ECS ---------------------//
 
 

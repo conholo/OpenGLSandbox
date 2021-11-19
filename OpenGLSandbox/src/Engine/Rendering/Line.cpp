@@ -238,6 +238,13 @@ namespace Engine
 		m_Vertices = vertices;
 	}
 
+	void BezierCurve::SetVertices(std::vector<glm::vec3>& vertices)
+	{
+		m_Vertices.clear();
+		for (uint32_t i = 0; i < vertices.size(); i++)
+			m_Vertices.push_back({ vertices[i] });
+	}
+
 	std::vector<LineVertex> BezierCurve::GetPointsInSegment(uint32_t index)
 	{
 		return std::vector<LineVertex>
@@ -274,7 +281,7 @@ namespace Engine
 		RenderCommand::SetPointSize(size);
 	}
 
-	static glm::vec3 CalculateCubicBezier(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float t)
+	glm::vec3 BezierCurve::CalculateCubicBezier(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, float t)
 	{
 		float inv = 1.0 - t;
 		float invSquared = inv * inv;
