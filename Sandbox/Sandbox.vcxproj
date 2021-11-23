@@ -28,6 +28,7 @@
     <ClCompile Include="src\Layers\ShaderProjectLayer.cpp" />
     <ClCompile Include="src\Layers\ShadowsLayer.cpp" />
     <ClCompile Include="src\Layers\TestBezierSurfaceLayer.cpp" />
+    <ClCompile Include="src\Layers\Testing\ComputeTest.cpp" />
     <ClCompile Include="src\Layers\ToonShadingLayer.cpp" />
     <ClCompile Include="src\Layers\SkyBoxLayer.cpp" />
     <ClCompile Include="src\SandboxApplication.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="src\Layers\ShaderProjectLayer.h" />
     <ClInclude Include="src\Layers\ShadowsLayer.h" />
     <ClInclude Include="src\Layers\TestBezierSurfaceLayer.h" />
+    <ClInclude Include="src\Layers\Testing\ComputeTest.h" />
     <ClInclude Include="src\Layers\ToonShadingLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxLayer.h" />
     <ClInclude Include="src\Utility\CurveSerializer.h" />
@@ -77,6 +79,8 @@
     <None Include="assets\shaders\Preetham.shader" />
     <None Include="assets\shaders\SDFBlinnPhong.shader" />
     <None Include="assets\shaders\SurfaceCurve.shader" />
+    <None Include="assets\shaders\Testing\TestPostProcessing.shader" />
+    <None Include="assets\shaders\Testing\TextureCopy.shader" />
     <None Include="assets\shaders\TestPhong.shader" />
     <None Include="assets\shaders\ToonShader.shader" />
     <None Include="assets\shaders\Skybox.shader" />

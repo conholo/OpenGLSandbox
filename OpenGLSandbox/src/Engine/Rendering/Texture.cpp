@@ -13,36 +13,22 @@ namespace Engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLenum wrapS = ImageUtils::ConvertWrapMode(specification.WrapModeS);
+		GLenum wrapT = ImageUtils::ConvertWrapMode(specification.WrapModeT);
+		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(specification.MinFilterMode);
+		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(specification.MagFilterMode);
 
-		if (1)
-		{
-			glTexImage2D
-			(
-				GL_TEXTURE_2D,
-				0,
-				ImageUtils::ConvertInternalFormatMode(specification.InternalFormat),
-				specification.Width,
-				specification.Height,
-				0,
-				ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat),
-				ImageUtils::ConvertImageDataType(m_Specification.DataType), 
-				nullptr
-			);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			// Immutable-format Texture
-			// Contents of the image can be modified, but it's storage requirements may not change.
-			// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
 
-			uint32_t mips = GetMipLevelCount();
-			glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
-		}
+		// Immutable-format Texture
+		// Contents of the image can be modified, but it's storage requirements may not change.
+		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+		uint32_t mips = GetMipLevelCount();
+		glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
 	}
 
 	Texture2D::Texture2D(const std::string& filePath, const Texture2DSpecification& specification)
@@ -119,49 +105,32 @@ namespace Engine
 	void Texture2D::Invalidate()
 	{
 		if (m_ID)
-		{
 			glDeleteTextures(1, &m_ID);
-		}
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLenum wrapS = ImageUtils::ConvertWrapMode(m_Specification.WrapModeS);
+		GLenum wrapT = ImageUtils::ConvertWrapMode(m_Specification.WrapModeT);
+		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MinFilterMode);
+		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MagFilterMode);
 
-		if (1)
-		{
-			glTexImage2D
-			(
-				GL_TEXTURE_2D,
-				0,
-				ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat),
-				m_Specification.Width,
-				m_Specification.Height,
-				0,
-				ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat),
-				ImageUtils::ConvertImageDataType(m_Specification.DataType),
-				nullptr
-			);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			// Immutable-format Texture
-			// Contents of the image can be modified, but it's storage requirements may not change.
-			// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
 
-			uint32_t mips = GetMipLevelCount();
-			glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
-		}
+		// Immutable-format Texture
+		// Contents of the image can be modified, but it's storage requirements may not change.
+		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+		uint32_t mips = GetMipLevelCount();
+		glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
 	}
 
 	void Texture2D::Clear()
 	{
-		float data = 0;
-		glClearTexImage(m_ID, 0, ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat), ImageUtils::ConvertImageDataType(m_Specification.DataType), &data);
+		glClearTexImage(m_ID, 0, ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat), ImageUtils::ConvertImageDataType(m_Specification.DataType), nullptr);
 	}
 
 	void Texture2D::Resize(uint32_t width, uint32_t height)
@@ -187,7 +156,7 @@ namespace Engine
 
 	uint32_t Texture2D::GetMipLevelCount() const
 	{
-		return CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
+		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
 	}
 
 	void Texture2D::BindTextureIDToSamplerSlot(uint32_t slot, uint32_t id)
@@ -219,11 +188,6 @@ namespace Engine
 		}
 
 		glBindImageTexture(unit, m_ID, level, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
-	}
-
-	void Texture2D::UnbindFromImageSlot(uint32_t unit, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
-	{
-		glBindImageTexture(unit, 0, 0, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 
 	void Texture2D::SetData(void* data, uint32_t size)
@@ -280,11 +244,6 @@ namespace Engine
 		blackTexture->SetData(&blackTextureData, sizeof(uint32_t));
 
 		return blackTexture;
-	}
-
-	uint32_t Texture2D::CalculateMipLevelCount(uint32_t width, uint32_t height) const
-	{
-		return (uint32_t)std::floor(std::log2(glm::min(width, height))) + 1;
 	}
 
 	Texture3D::Texture3D(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
@@ -370,6 +329,42 @@ namespace Engine
 		}
 
 		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+	}
+
+	Texture2DImageView::Texture2DImageView(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer, uint32_t layerCount)
+		:m_BaseMip(baseMip)
+	{
+		glGenTextures(1, &m_ID);
+		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
+		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), internalFormat, baseMip, mipCount, baseLayer, layerCount);
+	}
+
+	Texture2DImageView::~Texture2DImageView()
+	{
+		glDeleteTextures(1, &m_ID);
+	}
+
+	void Texture2DImageView::ChangeToMip(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer, uint32_t layerCount)
+	{
+		if(m_ID)
+			glDeleteTextures(1, &m_ID);
+
+		original->BindToSamplerSlot(0);
+		GLint hasMips = 0;
+		m_BaseMip = baseMip;
+		glGenTextures(1, &m_ID);
+		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
+		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), internalFormat, baseMip, mipCount, baseLayer, layerCount);
+	}
+
+	void Texture2DImageView::Bind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, m_ID);
+	}
+
+	void Texture2DImageView::Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 

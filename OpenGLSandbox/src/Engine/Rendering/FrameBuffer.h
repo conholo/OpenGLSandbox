@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "Engine/Rendering/TextureUtils.h"
 
 namespace Engine
 {
@@ -55,6 +56,8 @@ namespace Engine
 
 		void BindDepthTexture(uint32_t slot = 0) const;
 		void BindColorAttachment(uint32_t index = 0, uint32_t slot = 0) const;
+		void BindColorAttachmentToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat, uint32_t index = 0) const;
+
 		void UnbindColorAttachment(uint32_t index, uint32_t slot) const;
 		void ClearAttachment(uint32_t attachmentIndex, int value);
 		uint32_t GetColorAttachmentID(uint32_t index = 0) const { return m_ColorAttachmentIDs[index]; }

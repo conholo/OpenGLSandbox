@@ -1,0 +1,52 @@
+Name: Looped Curve
+Vertex Count: 22
+
+Curve Color: (10.000000,6.882000,12.176000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-1.054744,-2.420610,0.000000)
+Line Vertex - 1:
+	Position: (-0.697127,-3.042180,0.000000)
+Line Vertex - 2:
+	Position: (0.631727,-1.916542,0.000000)
+Line Vertex - 3:
+	Position: (2.005491,-1.581378,0.000000)
+Line Vertex - 4:
+	Position: (3.571027,-1.199427,0.000000)
+Line Vertex - 5:
+	Position: (2.798715,-2.189604,0.000000)
+Line Vertex - 6:
+	Position: (3.116537,-4.337565,0.000000)
+Line Vertex - 7:
+	Position: (3.434360,-6.485527,0.000000)
+Line Vertex - 8:
+	Position: (2.303358,-5.879852,0.000000)
+Line Vertex - 9:
+	Position: (1.172356,-5.274179,0.000000)
+Line Vertex - 10:
+	Position: (0.041354,-4.668505,0.000000)
+Line Vertex - 11:
+	Position: (-0.921946,-5.084906,0.000000)
+Line Vertex - 12:
+	Position: (-1.885245,-5.501307,0.000000)
+Line Vertex - 13:
+	Position: (-2.848545,-5.917709,0.000000)
+Line Vertex - 14:
+	Position: (-4.722782,-4.664431,0.000000)
+Line Vertex - 15:
+	Position: (-3.860919,-4.024600,0.000000)
+Line Vertex - 16:
+	Position: (-2.752212,-3.201515,0.000000)
+Line Vertex - 17:
+	Position: (-5.157605,-2.612584,0.000000)
+Line Vertex - 18:
+	Position: (-5.176225,-1.924316,0.000000)
+Line Vertex - 19:
+	Position: (-5.195279,-1.219988,0.000000)
+Line Vertex - 20:
+	Position: (-3.495988,1.822497,0.000000)
+Line Vertex - 21:
+	Position: (-1.054744,-2.420610,0.000000)

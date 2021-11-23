@@ -28,7 +28,7 @@ void TestBezierSurfaceLayer::OnAttach()
 	m_Light = Engine::CreateRef<Engine::Light>(spec);
 	m_Light->GetLightTransform()->SetPosition({ 2.0f, 30.0f, 10.0f });
 
-	//m_Surface->GetTransform()->SetScale({ 1.5f, 1.0f, 1.0f });
+	m_Surface->SetScale({ 1.5f, 1.0f, 1.0f });
 }
 
 void TestBezierSurfaceLayer::OnDetach()

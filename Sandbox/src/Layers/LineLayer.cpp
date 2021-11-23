@@ -28,7 +28,6 @@ void LineLayer::OnAttach()
 	//m_Camera.SetOrthographic();
 
 	m_WhiteTexture = Engine::Texture2D::CreateWhiteTexture();
-	m_BloomDirtTexture = Engine::Texture2D::CreateBlackTexture();
 	m_ViewportWidth = Engine::Application::GetApplication().GetWindow().GetWidth();
 	m_ViewportHeight = Engine::Application::GetApplication().GetWindow().GetHeight();
 
@@ -43,9 +42,8 @@ void LineLayer::OnAttach()
 	};
 	m_FBO = Engine::CreateRef<Engine::Framebuffer>(fboSpec);
 
-	m_BloomComputeTextures.resize(3);
 
-	Engine::Texture2DSpecification brickSpec =
+	Engine::Texture2DSpecification fileTexSpec =
 	{
 		Engine::ImageUtils::WrapMode::Repeat,
 		Engine::ImageUtils::WrapMode::Repeat,
@@ -56,13 +54,17 @@ void LineLayer::OnAttach()
 		Engine::ImageUtils::ImageDataType::UByte,
 	};
 
-	m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/brick-red.jpg", brickSpec);
+	m_BloomDirtTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/dirt-mask.png", fileTexSpec);
+	//m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/brick-red.jpg", fileTexSpec);
+	m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/space.jpg", fileTexSpec);
+	m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/floor3.jpg", fileTexSpec);
+	//m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/ground-blue.jpg", fileTexSpec);
 
 	Engine::Texture2DSpecification bloomSpec =
 	{
 		Engine::ImageUtils::WrapMode::ClampToEdge,
 		Engine::ImageUtils::WrapMode::ClampToEdge,
-		Engine::ImageUtils::FilterMode::Linear,
+		Engine::ImageUtils::FilterMode::LinearMipLinear,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
 		Engine::ImageUtils::ImageDataLayout::RGBA,
@@ -70,6 +72,7 @@ void LineLayer::OnAttach()
 		1, 1
 	};
 
+	m_BloomComputeTextures.resize(3);
 	m_BloomComputeTextures[0] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 	m_BloomComputeTextures[1] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
 	m_BloomComputeTextures[2] = Engine::CreateRef<Engine::Texture2D>(bloomSpec);
@@ -100,7 +103,20 @@ void LineLayer::OnAttach()
 	for (auto save : ramenSignFiles)
 	{
 		Engine::Ref<Engine::BezierCurve> curve = Engine::CreateRef<Engine::BezierCurve>();
+
 		CurveSerializer::DeserializeAndWriteToCurve(save, curve);
+		if (save == "Ramen/Chopstick2.txt")
+		{
+			m_ChopstickA = curve;
+			m_ChopStickAColor = curve->GetCurveColor();
+		}
+		else if (save == "Ramen/Chopstick1.txt")
+		{
+			m_ChopstickB = curve;
+			m_ChopStickBColor = curve->GetCurveColor();
+			m_ChopstickB->SetCurveColor({ 0.1f, 0.1f, 0.1f });
+		}
+
 		m_Curves.push_back(curve);
 	}
 
@@ -111,14 +127,6 @@ void LineLayer::OnDetach()
 {
 
 }
-
-static float Fract(float f)
-{
-	return f - (long)f;
-}
-static float Rand(float n) { return Fract(sin(n) * 43758.5453); }
-
-
 
 void LineLayer::CheckForResize()
 {
@@ -132,7 +140,6 @@ void LineLayer::CheckForResize()
 		OnResize();
 	}
 }
-
 
 void LineLayer::PollCurvePicking()
 {
@@ -163,6 +170,26 @@ void LineLayer::PollCurvePicking()
 	}
 }
 
+void LineLayer::AnimateChopsticks()
+{
+	if (Engine::Time::Elapsed() > m_NextChopStickAnimationTime)
+	{
+		if (m_ChopSticksAOn)
+		{
+			m_ChopstickA->SetCurveColor({ 0.1f, 0.1f, 0.1f });
+			m_ChopstickB->SetCurveColor(m_ChopStickBColor);
+		}
+		else
+		{
+			m_ChopstickA->SetCurveColor(m_ChopStickAColor);
+			m_ChopstickB->SetCurveColor({ 0.1f, 0.1f, 0.1f });
+		}
+		m_ChopSticksAOn = !m_ChopSticksAOn;
+
+		m_NextChopStickAnimationTime = Engine::Time::Elapsed() +  m_ChopStickAnimationPeriod;
+	}
+}
+
 void LineLayer::OnUpdate(float deltaTime)
 {
 	CheckForResize();
@@ -173,6 +200,9 @@ void LineLayer::OnUpdate(float deltaTime)
 	m_FBO->Bind();
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
+
+	if (m_AnimateChopsticks)
+		AnimateChopsticks();
 
 	if (m_DrawSign)
 	{
@@ -185,6 +215,7 @@ void LineLayer::OnUpdate(float deltaTime)
 		m_Table->GetEntityRenderer()->GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
 		m_Table->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
+		m_GroundTexture->BindToSamplerSlot(0);
 		m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
 		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
 		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
@@ -242,7 +273,7 @@ void LineLayer::OnUpdate(float deltaTime)
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->Bind();
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
 	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomIntensity", m_BloomEnabled ? m_BloomIntensity : 0.0f);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomEnabled ? m_BloomDirtIntensity : 0.0f);
+	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomEnabled && m_BloomDirtEnabled ? m_BloomDirtIntensity : 0.0f);
 
 	m_FBO->BindColorAttachment(0, 0);
 	m_BloomComputeTextures[2]->BindToSamplerSlot(1);
@@ -416,7 +447,7 @@ void LineLayer::OnImGuiRender()
 
 			ImGui::TreePop();
 		}
-
+		ImGui::Separator();
 		if (ImGui::TreeNodeEx("Brick Wall Settings"))
 		{
 			ImGui::DragFloat3("Brick Wall Ambient Color", &m_BrickProperties.AmbientColor.x, 0.01);
@@ -512,6 +543,9 @@ void LineLayer::OnImGuiRender()
 			m_Curves.push_back(curve);
 			m_CurveEditIndex = m_Curves.size() - 1;
 		}
+
+		if (m_ChopstickA != nullptr && m_ChopstickB != nullptr)
+			ImGui::Checkbox("Animate Chopsticks", &m_AnimateChopsticks);
 
 		if (m_Curves.size() > 0)
 		{
@@ -658,6 +692,7 @@ void LineLayer::OnImGuiRender()
 	if (ImGui::TreeNodeEx("Bloom"))
 	{
 		ImGui::Checkbox("Enabled", &m_BloomEnabled);
+		ImGui::Checkbox("Enable Bloom Dirt", &m_BloomDirtEnabled);
 		ImGui::DragFloat("Bloom Dirt Intensity", &m_BloomDirtIntensity, 0.01f);
 		ImGui::DragFloat("Bloom Intensity", &m_BloomIntensity, 0.01f);
 		ImGui::DragFloat("Bloom Threshold", &m_BloomThreshold, 0.01f);
@@ -667,7 +702,17 @@ void LineLayer::OnImGuiRender()
 
 		float aspect = (float)m_ViewportWidth / (float)m_ViewportHeight;
 		ImGui::Image((ImTextureID)(m_BloomComputeTextures[0]->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((ImTextureID)(m_BloomComputeTextures[1]->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
 		ImGui::Image((ImTextureID)(m_BloomComputeTextures[2]->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
+
+		//if (m_BloomView == nullptr)
+		//	m_BloomView = Engine::CreateRef<Engine::Texture2DImageView>(m_BloomComputeTextures[2], 0, 1);
+		//ImGui::SliderInt("Mip Level", &m_ViewMipLevel, 0, m_BloomComputeTextures[2]->GetMipLevelCount() - 1);
+		//
+		//if (m_ViewMipLevel != m_BloomView->GetBaseMip())
+		//	m_BloomView->ChangeToMip(m_BloomComputeTextures[2], m_ViewMipLevel, 1);
+		//
+		//ImGui::Image((ImTextureID)(m_BloomView->GetID()), { 300 * aspect, 300 }, { 0, 1 }, { 1, 0 });
 
 		ImGui::TreePop();
 	}
@@ -772,4 +817,5 @@ void LineLayer::OnResize()
 	m_BloomComputeTextures[0]->Resize(halfWidth, halfHeight);
 	m_BloomComputeTextures[1]->Resize(halfWidth, halfHeight);
 	m_BloomComputeTextures[2]->Resize(halfWidth, halfHeight);
+
 }

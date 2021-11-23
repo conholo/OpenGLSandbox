@@ -21,6 +21,7 @@ layout(location = 0) out vec4 o_Color;
 #define MAX_DISTANCE 100.0
 #define MAX_STEPS	 100
 
+uniform float u_MengerScale;
 uniform vec2 u_MousePosition;
 uniform vec2 u_ScreenResolution;
 uniform vec3 u_CameraPosition;
@@ -58,10 +59,67 @@ float sdSphere(vec3 p, float s)
 	return length(p) - s;
 }
 
+float sdBox(vec3 p, vec3 b)
+{
+	vec3 q = abs(p) - b;
+	return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+
+vec3 MengerFold(in vec3 pos)
+{
+	vec3 z = pos;
+	float a = min(z.x - z.y, 0.0);
+	z.x -= a;
+	z.y += a;
+	a = min(z.x - z.z, 0.0);
+	z.x -= a;
+	z.z += a;
+	a = min(z.y - z.z, 0.0);
+	z.y -= a;
+	z.z += a;
+
+	return z;
+}
+
+vec3 MengerBox(in vec3 p)
+{
+	float d = sdBox(p - vec3(0.0, 2.0, 0.0), vec3(2.0));
+
+	vec3 result = vec3(d, 1.0, 0.0);
+
+	float scale = u_MengerScale;
+
+	for (int m = 0; m < 3; m++)
+	{
+		vec3 a = mod(p * scale, 2.0) - 1.0;
+		scale *= 3.0;
+		vec3 r = abs(1.0 - 3.0 * abs(a));
+
+		float da = max(r.x, r.y);
+		float db = max(r.y, r.z);
+		float dc = max(r.z, r.x);
+		float c = (min(da, min(db, dc)) - 1.0) / scale;
+
+		if (c > d)
+		{
+			d = c;
+			result = vec3(d, 0.2 * da * db * dc, (1.0 + float(m)) / 4.0);
+		}
+	}
+
+	result.x = min(result.x, p.y + 1.0);
+	return result;
+}
+
+
+
 vec2 DE(vec3 position)
 {
+	vec3 pos = MengerFold(position);
 	float sphere = sdSphere(position - vec3(0.0, 0.25, 0.0), 0.25);
-	vec2 result = opU(vec2(1e10, 0.0), vec2(sphere, 15.0));
+
+	vec3 mengerSponge = MengerBox(pos);
+	vec2 result = opU(vec2(1e10, 0.0), vec2(mengerSponge.x, 15.0));
 	return result;
 }
 
@@ -90,7 +148,7 @@ vec2 Raycast(vec3 rayOrigin, vec3 rayDirection)
 		result = vec2(tPointOne, 1.0);
 	}
 	
-	vec2 box = iBox(rayOrigin - vec3(0.0, 0.4, -0.5), rayDirection, vec3(2.5, 0.41, 3.0));
+	vec2 box = iBox(rayOrigin - vec3(0.0, 0.4, -0.5), rayDirection, vec3(5.0, 5.0, 5.0));
 
 	if (box.x < box.y && box.y > 0.0 && box.x < tMax)
 	{
@@ -168,8 +226,8 @@ void main()
 	vec2 mouse = u_MousePosition / u_ScreenResolution;
 
 	// Set Camera
-	vec3 target = vec3(0.5, -0.5, -0.6);
-	vec3 cameraPosition = target + vec3(4.5 * cos(0.1 * time + mouse.x * 5.0), 1.3 + mouse.y * 2.0, 4.5 * sin(0.1 * time + mouse.x * 5.0));
+	vec3 target = vec3(0.0f, 0.0f, 0.0f);
+	vec3 cameraPosition = target + vec3(12.0 * cos(0.1 * time + mouse.x * 5.0), 5.0 + mouse.y * 2.0, 12.0 * sin(0.1 * time + mouse.x * 5.0));
 	mat3 cameraView = SetCameraView(cameraPosition, target, 0.0);
 	const float focalLength = 2.5;
 

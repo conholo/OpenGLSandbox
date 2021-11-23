@@ -1,0 +1,40 @@
+Name: NewCurve
+Vertex Count: 16
+
+Curve Color: (10.000000,6.545000,11.910000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (-0.157962,-2.255363,0.000000)
+Line Vertex - 1:
+	Position: (0.204683,-2.409392,0.000000)
+Line Vertex - 2:
+	Position: (3.733539,-3.336545,0.000000)
+Line Vertex - 3:
+	Position: (2.418496,-3.809582,0.000000)
+Line Vertex - 4:
+	Position: (1.103453,-4.282619,0.000000)
+Line Vertex - 5:
+	Position: (0.906371,-4.310136,0.000000)
+Line Vertex - 6:
+	Position: (1.327374,-5.806726,0.000000)
+Line Vertex - 7:
+	Position: (1.748378,-7.303315,0.000000)
+Line Vertex - 8:
+	Position: (-0.527593,-6.138748,0.000000)
+Line Vertex - 9:
+	Position: (-2.803565,-4.974181,0.000000)
+Line Vertex - 10:
+	Position: (-5.079536,-3.809614,0.000000)
+Line Vertex - 11:
+	Position: (-4.144957,-3.559352,0.000000)
+Line Vertex - 12:
+	Position: (-3.210377,-3.309091,0.000000)
+Line Vertex - 13:
+	Position: (-2.275797,-3.058829,0.000000)
+Line Vertex - 14:
+	Position: (-2.592103,-1.221493,0.000000)
+Line Vertex - 15:
+	Position: (-0.157962,-2.255363,0.000000)

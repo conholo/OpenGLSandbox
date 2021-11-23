@@ -90,20 +90,19 @@ vec3 UpsampleTent9(sampler2D tex, float lod, vec2 uv, vec2 texelSize, float samp
 
     vec3 result = vec3(0.0f);
 
-
     result += textureLod(tex, uv - offset.xy, lod).rgb;
     result += textureLod(tex, uv - offset.wy, lod).rgb * 2.0;
     result += textureLod(tex, uv - offset.zy, lod).rgb;
 
     result += textureLod(tex, uv + offset.zw, lod).rgb * 2.0;
-    result += textureLod(tex, uv,             lod).rgb * 1.0f;
+    result += textureLod(tex, uv,             lod).rgb * 4.0f;
     result += textureLod(tex, uv + offset.xw, lod).rgb * 2.0;
 
     result += textureLod(tex, uv + offset.zy, lod).rgb;
     result += textureLod(tex, uv + offset.wy, lod).rgb * 2.0;
     result += textureLod(tex, uv + offset.xy, lod).rgb;
 
-    return result * (1.0f / 16.0f);
+    return result * (1.0f / 20.0f);
 }
 
 layout(local_size_x = 4, local_size_y = 4) in;

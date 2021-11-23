@@ -1,4 +1,5 @@
 #include "Engine/Rendering/FrameBuffer.h"
+
 #include <glad/glad.h>
 
 #include <iostream>
@@ -28,7 +29,9 @@ namespace Engine
 
 	static void AttachColorTexture(uint32_t attachmentId, GLenum internalFormat, GLenum dataFormat, GLenum dataType, uint32_t width, uint32_t height, uint32_t index)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, dataType, nullptr);
+		uint32_t mips = ImageUtils::CalculateMipLevelCount(width, height);
+		glTextureStorage2D(attachmentId, mips, internalFormat, width, height);
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -171,6 +174,20 @@ namespace Engine
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTextureUnit(slot, m_ColorAttachmentIDs[index]);
+	}
+
+	void Framebuffer::BindColorAttachmentToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat, uint32_t index) const
+	{
+		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
+		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(ImageUtils::ImageInternalFormat::RGBA32F);
+
+		if (glShaderDataFormat != internalFormat)
+		{
+			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			return;
+		}
+
+		glBindImageTexture(unit, m_ColorAttachmentIDs[index], level, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 
 	void Framebuffer::UnbindColorAttachment(uint32_t index, uint32_t slot) const

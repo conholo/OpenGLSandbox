@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <stdint.h>
 typedef unsigned int GLenum;
 
 namespace Engine
@@ -21,6 +22,8 @@ namespace Engine
 		enum class ImageDataType { None = 0, UByte, Byte, UShort, Short, UInt, Int, HalfFloat, Float };
 		enum class TextureAccessLevel { None = 0, ReadOnly, WriteOnly, ReadWrite };
 		enum class TextureShaderDataFormat { None = 0, RGBA32F, RGBA16F, RG32F, RG16F, R11FG11FB10F, R32F, R16F, RGBA8 };
+
+		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height);
 
 
 		GLenum ConvertWrapMode(WrapMode wrapMode);

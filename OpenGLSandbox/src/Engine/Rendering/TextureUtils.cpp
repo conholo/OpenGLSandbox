@@ -1,11 +1,17 @@
 #include "Engine/Rendering/TextureUtils.h"
 
+#include <glm/glm.hpp>
 #include <glad/glad.h>
 
 namespace Engine
 {
 	namespace ImageUtils
 	{
+		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height)
+		{
+			return (uint32_t)std::floor(std::log2(glm::min(width, height))) + 1;
+		}
+
 		GLenum ConvertWrapMode(WrapMode wrapMode)
 		{
 			switch (wrapMode)

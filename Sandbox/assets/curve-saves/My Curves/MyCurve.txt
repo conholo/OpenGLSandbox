@@ -1,0 +1,40 @@
+Name: MyCurve
+Vertex Count: 16
+
+Curve Color: (9.894000,5.298000,12.212000)
+Translation: (0.000000,0.000000,0.000000)
+Rotation: (0.000000,0.000000,0.000000)
+Scale: (1.000000,1.000000,1.000000)
+
+Line Vertex - 0:
+	Position: (0.749860,-1.925865,0.000000)
+Line Vertex - 1:
+	Position: (1.109542,-0.679932,0.000000)
+Line Vertex - 2:
+	Position: (1.334708,-1.275013,0.000000)
+Line Vertex - 3:
+	Position: (2.106704,-1.154388,0.000000)
+Line Vertex - 4:
+	Position: (2.878700,-1.033763,0.000000)
+Line Vertex - 5:
+	Position: (2.728178,-2.111909,0.000000)
+Line Vertex - 6:
+	Position: (3.443804,-2.014324,0.000000)
+Line Vertex - 7:
+	Position: (4.328383,-1.893699,0.000000)
+Line Vertex - 8:
+	Position: (4.623912,-2.281708,0.000000)
+Line Vertex - 9:
+	Position: (5.301420,-2.030407,0.000000)
+Line Vertex - 10:
+	Position: (5.978927,-1.779106,0.000000)
+Line Vertex - 11:
+	Position: (5.029010,-2.568191,0.000000)
+Line Vertex - 12:
+	Position: (4.079093,-3.357275,0.000000)
+Line Vertex - 13:
+	Position: (3.129176,-4.146360,0.000000)
+Line Vertex - 14:
+	Position: (0.125216,-4.089621,0.000000)
+Line Vertex - 15:
+	Position: (0.749860,-1.925865,0.000000)

@@ -13,6 +13,7 @@
 //#include "Layers/FractalLayer.h"
 #include "Layers/LineLayer.h"
 //#include "Layers/TestBezierSurfaceLayer.h"
+//#include "Layers/Testing/ComputeTest.h"
 
 class SandboxApplication : public Engine::Application
 {
@@ -32,6 +33,7 @@ public:
 		//PushLayer(new FractalLayer);
 		PushLayer(new LineLayer);
 		//PushLayer(new TestBezierSurfaceLayer);
+		//PushLayer(new ComputeTestLayer);
 	}
 	
 	~SandboxApplication()

@@ -25,6 +25,7 @@ namespace Engine
 
 		uint32_t GetWidth() const { return m_WindowData.Width; }
 		uint32_t GetHeight() const { return m_WindowData.Height; }
+		float GetAspectRatio() const { return (float)m_WindowData.Width / (float)m_WindowData.Height; }
 
 		void SetVSync(bool enable);
 		bool IsVSync() const { return m_WindowData.VSync; }

@@ -34,6 +34,7 @@ namespace Engine
 		uint32_t Width, Height;
 	};
 
+
 	class Texture2D
 	{
 	public:
@@ -58,19 +59,34 @@ namespace Engine
 		void BindToSamplerSlot(uint32_t slot);
 		void Unbind() const;
 		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
-		void UnbindFromImageSlot(uint32_t unit, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
 		void SetData(void* data, uint32_t size);
 
 		static Ref<Texture2D> CreateWhiteTexture();
 		static Ref<Texture2D> CreateBlackTexture();
 
 	private:
-		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height) const;
-	private:
 		Texture2DSpecification m_Specification;
 		uint32_t m_ID;
 	};
 
+	class Texture2DImageView
+	{
+	public:
+		Texture2DImageView(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer = 1, uint32_t layerCount = 0);
+		~Texture2DImageView();
+
+
+		void ChangeToMip(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer = 1, uint32_t layerCount = 0);
+		void Bind() const;
+		void Unbind() const;
+
+		uint32_t GetBaseMip() const { return m_BaseMip; }
+		uint32_t GetID() const { return m_ID; }
+
+	private:
+		uint32_t m_BaseMip = 0;
+		uint32_t m_ID;
+	};
 	
 	class Texture3D
 	{

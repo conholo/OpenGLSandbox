@@ -18,6 +18,7 @@ private:
 	void CheckForResize();
 	void BloomComputePass();
 	void PollCurvePicking();
+	void AnimateChopsticks();
 
 private:
 	bool OnKeyPressed(Engine::KeyPressedEvent& keyPressedEvent);
@@ -26,14 +27,18 @@ private:
 	void OnResize();
 
 private:
+	Engine::Ref<Engine::Texture2DImageView> m_BloomView;
+	int32_t m_ViewMipLevel = 0;
+
 	std::vector<Engine::Ref<Engine::Texture2D>> m_BloomComputeTextures;
 	Engine::Ref<Engine::Texture2D> m_BloomDirtTexture;
 	const uint32_t m_BloomWorkGroupSize = 4;
 	bool m_BloomEnabled = true;
+	bool m_BloomDirtEnabled = true;
 	float m_BloomThreshold = 1.240f;
 	float m_BloomKnee = 0.220f;
 	float UpsampleScale = 1.0f;
-	float m_BloomIntensity = 0.580f;
+	float m_BloomIntensity = 0.790f;
 	float m_BloomDirtIntensity = 1.0f;
 	float m_Exposure = 1.0f;
 
@@ -52,16 +57,27 @@ private:
 	Engine::Ref<Engine::Framebuffer> m_FBO;
 	Engine::Ref<Engine::Texture2D> m_WhiteTexture;
 	Engine::Ref<Engine::Texture2D> m_BrickWallTexture;
+	Engine::Ref<Engine::Texture2D> m_GroundTexture;
 	Engine::Ref<Engine::SimpleEntity> m_FullScreenQuad;
+
+	bool m_ChopSticksAOn = true;
+	bool m_AnimateChopsticks = false;
+	float m_NextChopStickAnimationTime = 2.0f;
+	float m_ChopStickAnimationPeriod = 1.0f;
+	float m_ChopstickCounter = 0.0f;
+	glm::vec3 m_ChopStickAColor;
+	glm::vec3 m_ChopStickBColor;
+	Engine::Ref<Engine::BezierCurve> m_ChopstickA;
+	Engine::Ref<Engine::BezierCurve> m_ChopstickB;
 
 	Engine::Ref<Engine::SimpleEntity> m_Table;
 	Engine::Ref<Engine::SimpleEntity> m_BrickWall;
 	Engine::RendererMaterialProperties m_TableProperties
 	{
-		{0.130, 0.190, 0.880},
-		{1.00,  0.310, 0.660},
+		{0.4f, 0.4f, 0.4f},
+		{1.0f,  1.0f, 1.0f},
+		0.6f,
 		0.8f,
-		0.680f,
 		1.00f,
 		2.0f
 	};
