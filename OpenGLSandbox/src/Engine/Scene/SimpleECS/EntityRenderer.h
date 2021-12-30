@@ -15,6 +15,7 @@ namespace Engine
 		void Begin();
 		void Draw();
 		void End();
+		void DrawPoints();
 
 		void SetShader(const std::string& shaderName) { m_Shader = ShaderLibrary::Get(shaderName); }
 

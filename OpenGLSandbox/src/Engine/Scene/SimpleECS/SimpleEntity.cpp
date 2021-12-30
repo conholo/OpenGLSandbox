@@ -21,5 +21,13 @@ namespace Engine
 		m_EntityRenderer->Draw();
 		m_EntityRenderer->End();
 	}
+
+	void SimpleEntity::DrawEntityPoints(const glm::mat4& viewProjection)
+	{
+		m_EntityRenderer->Begin();
+		m_EntityRenderer->GetShader()->UploadUniformMat4("u_MVP", viewProjection * m_EntityTransform->Transform());
+		m_EntityRenderer->DrawPoints();
+		m_EntityRenderer->End();
+	}
 }
 

@@ -25,11 +25,7 @@ uniform float u_MengerScale;
 uniform vec2 u_MousePosition;
 uniform vec2 u_ScreenResolution;
 uniform vec3 u_CameraPosition;
-uniform vec3 u_LightPosition;
-uniform float u_Elapsed;
-uniform float u_DeltaTime;
-
-mat3 SetCameraView(vec3 cameraPosition, vec3 target, float cr)
+uniform vec3 u_LightPosition;mat3 SetCameraView(vec3 cameraPosition, vec3 target, float cr)
 {
 	vec3 cw = normalize(target - cameraPosition);
 	vec3 cp = vec3(sin(cr), cos(cr), 0.0);
@@ -39,6 +35,10 @@ mat3 SetCameraView(vec3 cameraPosition, vec3 target, float cr)
 }
 
 vec2 iBox(vec3 ro, vec3 rd, vec3 rad)
+
+uniform float u_Elapsed;
+uniform float u_DeltaTime;
+
 {
 	vec3 m = 1.0 / rd;
 	vec3 n = m * ro;

@@ -45,7 +45,7 @@ namespace Engine
 		Engine::ShaderLibrary::Load("assets/shaders/DebugDepth.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/Depth.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/EngineBP.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Fractal.shader");
+		//Engine::ShaderLibrary::Load("assets/shaders/Fractal.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/LineShader.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/LinePointShader.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/PostProcessing.shader");

@@ -49,7 +49,7 @@ vec3 UpsampleTent9(sampler2D tex, float lod, vec2 uv, vec2 texelSize, float scal
 	return result * (1.0f / 16.0f);
 }
 
-// Based on http://www.oscars.org/science-technology/sci-tech-projects/aces
+// Based on https://64.github.io/tonemapping/
 vec3 ACESTonemap(vec3 color)
 {
 	mat3 m1 = mat3(

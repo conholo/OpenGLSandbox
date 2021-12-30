@@ -25,6 +25,7 @@ private:
 private:
 	float m_Counter;
 	Engine::Ref<Engine::SimpleEntity> m_Cube;
+	Engine::Ref<Engine::SimpleEntity> m_NonReflectedCube;
 
 	// Skybox
 	Engine::Ref<Engine::Texture3D> m_CubeTexture;

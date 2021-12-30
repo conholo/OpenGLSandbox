@@ -62,5 +62,10 @@ namespace Engine
 		m_VertexBuffer->Unbind();
 		m_IndexBuffer->Unbind();
 	}
+
+	void EntityRenderer::DrawPoints()
+	{
+		RenderCommand::DrawPoints(m_Mesh->GetVertices().size());
+	}
 }
 

@@ -2,6 +2,7 @@
 
 #include "Engine/Rendering/VertexArray.h"
 #include "Engine/Rendering/Camera.h"
+#include "Engine/Rendering/Mesh.h"
 
 namespace Engine
 {
@@ -20,7 +21,19 @@ namespace Engine
 		float m_Scale = 1.0f;
 
 	private:
+		std::vector<glm::vec3> m_PointVertices;
+		Ref<VertexArray> m_DebugPointVAO;
+		Ref<VertexBuffer> m_DebugPointVBO;
+
+
+		std::vector<glm::vec3> m_LineVertices;
+		Ref<VertexArray> m_DebugLineVAO;
+		Ref<VertexBuffer> m_DebugLineVBO;
+
+
+		Ref<Mesh> m_FSQ;
 		Ref<VertexArray> m_VAO;
+		Ref<IndexBuffer> m_EBO;
 		Ref<VertexBuffer> m_VBO;
 	};
 }

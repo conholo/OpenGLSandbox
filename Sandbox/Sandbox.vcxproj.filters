@@ -60,6 +60,9 @@
     <ClCompile Include="src\Layers\Testing\ComputeTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\Testing\StarMapLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -104,6 +107,9 @@
     <ClInclude Include="src\Layers\Testing\ComputeTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\Testing\StarMapLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -137,5 +143,7 @@
     <None Include="assets\shaders\SurfaceCurve.shader" />
     <None Include="assets\shaders\Testing\TextureCopy.shader" />
     <None Include="assets\shaders\Testing\TestPostProcessing.shader" />
+    <None Include="assets\shaders\Testing\NoTransform.shader" />
+    <None Include="assets\shaders\Testing\ComputeTesting.shader" />
   </ItemGroup>
 </Project>

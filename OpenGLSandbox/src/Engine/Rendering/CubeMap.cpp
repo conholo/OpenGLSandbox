@@ -82,7 +82,7 @@ namespace Engine
 		m_Shader->Bind();
 		m_Texture3D->BindToSamplerSlot(0);
 		m_Shader->UploadUniformMat4("u_ViewProjection", viewProjection);
-		m_Shader->UploadUniformInt("u_Skybox", 0);
+		m_Shader->UploadUniformInt("u_Texture", 0);
 		m_VAO->Bind();
 		RenderCommand::DrawIndexed(m_VAO);
 		m_Texture3D->Unbind();

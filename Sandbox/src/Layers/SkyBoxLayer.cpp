@@ -28,25 +28,16 @@ void SkyboxLayer::OnAttach()
 		1024, 1024
 	};
 
-	Engine::Texture2DSpecification whiteTextureSpec =
-	{
-		Engine::ImageUtils::WrapMode::Repeat,
-		Engine::ImageUtils::WrapMode::Repeat,
-		Engine::ImageUtils::FilterMode::Linear,
-		Engine::ImageUtils::FilterMode::Linear,
-		Engine::ImageUtils::ImageInternalFormat::RGBA8,
-		Engine::ImageUtils::ImageDataLayout::RGBA,
-		Engine::ImageUtils::ImageDataType::UByte,
-		1, 1
-	};
-
 	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "EnvironmentReflection");
 	m_Cube->GetEntityTransform()->SetPosition({ 0.0f, 10.0f, 0.0f });
 	m_Cube->GetEntityTransform()->SetScale({ 2.5f, 2.5f, 2.5f });
 
-	m_WhiteTexture = Engine::CreateRef<Engine::Texture2D>(whiteTextureSpec);
-	uint32_t whiteTextureData = 0xffffffff;
-	m_WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+	m_NonReflectedCube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "FlatColor");
+	m_NonReflectedCube->GetEntityTransform()->SetPosition({ 3.0f, 10.0f, 0.0f });
+	m_NonReflectedCube->GetEntityTransform()->SetScale({ 2.5f, 2.5f, 2.5f });
+
+
+	m_WhiteTexture = Engine::Texture2D::CreateWhiteTexture();
 
 	// Create Texture Cube
 	m_CubeTexture = Engine::CreateRef<Engine::Texture3D>(skyBoxSpec, nullptr);
@@ -71,7 +62,7 @@ void SkyboxLayer::DrawSkybox(float deltaTime)
 	Engine::ShaderLibrary::Get("Preetham")->Bind();
 	Engine::ShaderLibrary::Get("Preetham")->UploadUniformFloat3("u_TAI", m_TAI);
 	Engine::ShaderLibrary::Get("Preetham")->DispatchCompute(m_SkyBox->GetTexture3D()->GetWidth() / 32, m_SkyBox->GetTexture3D()->GetHeight() / 32, 6);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	Engine::ShaderLibrary::Get("Preetham")->EnableShaderImageAccessBarrierBit();;
 
 	// Read from & Render Cubemap
 	Engine::ShaderLibrary::Get("Skybox")->Bind();
@@ -115,8 +106,15 @@ void SkyboxLayer::OnUpdate(float deltaTime)
 
 	Engine::RenderCommand::Clear(true, true);
 	Engine::RenderCommand::ClearColor(m_ClearColor);
+	
 
-	DrawReflectionSpheres();
+	//DrawReflectionSpheres();
+	m_NonReflectedCube->GetEntityRenderer()->GetShader()->Bind();
+	m_NonReflectedCube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", {1.0, 1.0f, 1.0f});
+	m_WhiteTexture->BindToSamplerSlot(0);
+	m_NonReflectedCube->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_NonReflectedCube->DrawEntity(m_Camera.GetViewProjection());
+
 	DrawSkybox(deltaTime);
 	m_EditorGrid->Draw(m_Camera);
 }
