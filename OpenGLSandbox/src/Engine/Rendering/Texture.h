@@ -87,13 +87,38 @@ namespace Engine
 		uint32_t m_BaseMip = 0;
 		uint32_t m_ID;
 	};
-	
+
 	class Texture3D
 	{
 	public:
-		Texture3D(const TextureSpecification& spec, const std::vector<std::string>& cubeFaceFiles);
-		Texture3D(const TextureSpecification& spec, const void* data);
+		Texture3D(const TextureSpecification& spec);
 		~Texture3D();
+
+		void BindToSamplerSlot(uint32_t slot = 0);
+		void Unbind() const;
+		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
+
+		uint32_t GetID() const { return m_ID; }
+		uint32_t GetWidth() const { return m_Specification.Width; }
+		uint32_t GetHeight() const { return m_Specification.Height; }
+
+		const TextureSpecification& GetSpecification() const { return m_Specification; }
+
+		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;
+		uint32_t GetMipLevelCount() const;
+
+	private:
+		TextureSpecification m_Specification;
+		uint32_t m_ID;
+	};
+
+	
+	class TextureCube
+	{
+	public:
+		TextureCube(const TextureSpecification& spec, const std::vector<std::string>& cubeFaceFiles);
+		TextureCube(const TextureSpecification& spec, const void* data);
+		~TextureCube();
 
 		void BindToSamplerSlot(uint32_t slot = 0);
 		void Unbind() const;

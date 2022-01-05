@@ -27,5 +27,5 @@ private:
 private:
 	Engine::Ref<Engine::CubeMap> m_CubeMap;
 	Engine::Ref<Engine::CubeMap> m_SkyMap;
-	Engine::Ref<Engine::Texture3D> m_SkyTexture3D;
+	Engine::Ref<Engine::TextureCube> m_SkyTexture3D;
 };

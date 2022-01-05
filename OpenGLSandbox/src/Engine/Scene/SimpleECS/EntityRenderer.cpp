@@ -67,5 +67,28 @@ namespace Engine
 	{
 		RenderCommand::DrawPoints(m_Mesh->GetVertices().size());
 	}
+
+	void EntityRenderer::SetPrimtiveType(PrimitiveType type)
+	{
+		m_Mesh = MeshFactory::Create(type);
+		float* baseVertexPtr = &m_Mesh->GetVertices().data()->Position.x;
+		m_VertexBuffer = CreateRef<VertexBuffer>(baseVertexPtr, m_Mesh->GetVertices().size() * sizeof(Vertex));
+
+		BufferLayout layout = BufferLayout
+		(
+			{
+				{ "a_Position", ShaderAttributeType::Float3 },
+				{ "a_TexCoord", ShaderAttributeType::Float2 },
+				{ "a_Normal",	ShaderAttributeType::Float3 },
+			}
+		);
+		m_VertexBuffer->SetLayout(layout);
+
+		uint32_t* indexPtr = m_Mesh->GetIndices().data();
+		m_IndexBuffer = CreateRef<IndexBuffer>(indexPtr, m_Mesh->GetIndices().size());
+
+		m_VertexArray->EnableVertexAttributes(m_VertexBuffer);
+		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+	}
 }
 

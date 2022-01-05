@@ -3,6 +3,7 @@
 #include "Engine/Core/Memory.h"
 #include <stdint.h>
 #include <vector>
+#include <string>
 #include <glm/glm.hpp>
 
 
@@ -42,6 +43,8 @@ namespace Engine
 		static Ref<Mesh> Cube();
 		static Ref<Mesh> TessellatedQuad(uint32_t resolution);
 		static Ref<Mesh> Sphere(float radius);
+
+		static std::string PrimitiveTypeToString(PrimitiveType type);
 	};
 }
 

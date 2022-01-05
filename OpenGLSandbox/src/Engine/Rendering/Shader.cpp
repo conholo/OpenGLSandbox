@@ -184,6 +184,13 @@ namespace Engine
 		}
 	}
 
+	GLint Shader::UploadUniformBool(const std::string& name, bool value)
+	{
+		GLint location = glGetUniformLocation(m_ID, name.c_str());
+		glUniform1f(location, value);
+		return location;
+	}
+
 	GLint Shader::UploadUniformFloat(const std::string& name, float value)
 	{
 		GLint location = glGetUniformLocation(m_ID, name.c_str());
@@ -202,6 +209,20 @@ namespace Engine
 	{
 		GLint location = glGetUniformLocation(m_ID, name.c_str());
 		glUniform3f(location, value.x, value.y, value.z);
+		return location;
+	}
+
+	GLint Shader::UploadUniformFloat3Array(const std::string& name, uint32_t count, glm::vec3* value)
+	{
+		GLint location = glGetUniformLocation(m_ID, name.c_str());
+		glUniform3fv(location, count, glm::value_ptr(value[0]));
+		return location;
+	}
+
+	GLint Shader::UploadUniformFloat2Array(const std::string& name, uint32_t count, glm::vec2* value)
+	{
+		GLint location = glGetUniformLocation(m_ID, name.c_str());
+		glUniform2fv(location, count, glm::value_ptr(value[0]));
 		return location;
 	}
 

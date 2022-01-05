@@ -210,6 +210,21 @@ namespace Engine
 		return CreateRef<Mesh>(vertices, indices);
 	}
 
+	std::string MeshFactory::PrimitiveTypeToString(PrimitiveType type)
+	{
+		switch (type)
+		{
+		case PrimitiveType::Cube: return "Cube";
+		case PrimitiveType::Sphere: return "Sphere";
+		case PrimitiveType::Quad: return "Quad";
+		case PrimitiveType::Plane: return "Plane";
+		case PrimitiveType::FullScreenQuad: return "Full Screen Quad";
+		case PrimitiveType::TessellatedQuad: return "Tessellated Quad";
+		}
+
+		return "";
+	}
+
 	static glm::vec3 RemapVector3(const glm::vec3& inVector)
 	{
 		float x = Remap(inVector.x, -0.5f, 0.5f, 0.0f, 1.0f);

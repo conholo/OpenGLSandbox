@@ -40,7 +40,7 @@ void SkyboxLayer::OnAttach()
 	m_WhiteTexture = Engine::Texture2D::CreateWhiteTexture();
 
 	// Create Texture Cube
-	m_CubeTexture = Engine::CreateRef<Engine::Texture3D>(skyBoxSpec, nullptr);
+	m_CubeTexture = Engine::CreateRef<Engine::TextureCube>(skyBoxSpec, nullptr);
 	m_SkyBox = Engine::CreateRef<Engine::CubeMap>(m_CubeTexture, Engine::ShaderLibrary::Get("Skybox"));
 	m_CubeTexture->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
 

@@ -38,7 +38,7 @@ void CubeMapLayer::OnAttach()
 		Engine::ImageUtils::ImageDataType::UByte,
 	};
 
-	m_CubeMap = Engine::CreateRef<Engine::CubeMap>(Engine::CreateRef<Engine::Texture3D>(spec, faceFiles), Engine::ShaderLibrary::Get("SkyboxTest"));
+	m_CubeMap = Engine::CreateRef<Engine::CubeMap>(Engine::CreateRef<Engine::TextureCube>(spec, faceFiles), Engine::ShaderLibrary::Get("SkyboxTest"));
 }
 
 void CubeMapLayer::OnDetach()

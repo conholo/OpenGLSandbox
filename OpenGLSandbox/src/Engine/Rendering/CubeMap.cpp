@@ -48,7 +48,7 @@ namespace Engine
 		 1.0f,  1.0f,  1.0f  // 7
 	};
 
-	CubeMap::CubeMap(const Ref<Texture3D>& textureCube, const Ref<Shader>& shader)
+	CubeMap::CubeMap(const Ref<TextureCube>& textureCube, const Ref<Shader>& shader)
 		:m_Texture3D(textureCube), m_Shader(shader)
 	{
 		ConstructPipelinePrimitives();

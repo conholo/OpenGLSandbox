@@ -23,9 +23,12 @@ namespace Engine
 		uint32_t GetID() const { return m_ID; }
 		std::string GetName() const { return m_Name; }
 
+		GLint UploadUniformBool(const std::string& name, bool value);
 		GLint UploadUniformFloat(const std::string& name, float value);
 		GLint UploadUniformFloat2(const std::string& name, const glm::vec2& value);
 		GLint UploadUniformFloat3(const std::string& name, const glm::vec3& value);
+		GLint UploadUniformFloat3Array(const std::string& name, uint32_t count, glm::vec3* value);
+		GLint UploadUniformFloat2Array(const std::string& name, uint32_t count, glm::vec2* value);
 		GLint UploadUniformFloat4(const std::string& name, const glm::vec4& value);
 		GLint UploadUniformInt(const std::string& name, int value);
 		GLint UploadUniformIntArray(const std::string& name, uint32_t count, int* basePtr);

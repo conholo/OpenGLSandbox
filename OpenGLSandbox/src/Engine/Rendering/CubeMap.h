@@ -16,18 +16,18 @@ namespace Engine
 	class CubeMap
 	{
 	public:
-		CubeMap(const Ref<Texture3D>& textureCube, const Ref<Shader>& shader);
+		CubeMap(const Ref<TextureCube>& textureCube, const Ref<Shader>& shader);
 		~CubeMap();
 
 		void Submit(const glm::mat4& viewProjection);
-		const Ref<Texture3D> GetTexture3D() const { return m_Texture3D; }
+		const Ref<TextureCube> GetTexture3D() const { return m_Texture3D; }
 
 	private:
 		void ConstructPipelinePrimitives();
 
 	private:
 		uint32_t m_ID;
-		Ref<Texture3D> m_Texture3D;
+		Ref<TextureCube> m_Texture3D;
 		Ref<Shader> m_Shader;
 		Ref<VertexArray> m_VAO;
 		Ref<VertexBuffer> m_VBO;

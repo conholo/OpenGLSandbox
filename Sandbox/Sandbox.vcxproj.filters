@@ -63,6 +63,12 @@
     <ClCompile Include="src\Layers\Testing\StarMapLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\457\Project1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\WorleyGeneratorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -110,6 +116,12 @@
     <ClInclude Include="src\Layers\Testing\StarMapLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\457\Project1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\WorleyGeneratorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -145,5 +157,8 @@
     <None Include="assets\shaders\Testing\TestPostProcessing.shader" />
     <None Include="assets\shaders\Testing\NoTransform.shader" />
     <None Include="assets\shaders\Testing\ComputeTesting.shader" />
+    <None Include="assets\457 shaders\Project1.shader" />
+    <None Include="assets\410 shaders\WorleyGenerator.shader" />
+    <None Include="assets\410 shaders\Unlit.shader" />
   </ItemGroup>
 </Project>

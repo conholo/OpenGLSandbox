@@ -28,7 +28,7 @@ private:
 	Engine::Ref<Engine::SimpleEntity> m_NonReflectedCube;
 
 	// Skybox
-	Engine::Ref<Engine::Texture3D> m_CubeTexture;
+	Engine::Ref<Engine::TextureCube> m_CubeTexture;
 	Engine::Ref<Engine::CubeMap> m_SkyBox;
 	bool m_AnimateInclination = true;
 	float m_TAIStep = 1.0f;

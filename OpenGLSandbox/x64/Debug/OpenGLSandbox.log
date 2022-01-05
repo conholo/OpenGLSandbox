@@ -1,29 +1,5 @@
-﻿  CubeMap.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,float(&)[24],unsigned __int64>(_Ty &,float (&)[24],unsigned __int64 &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=Engine::VertexBuffer
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1587): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<float(&)[24],unsigned __int64>(float (&)[24],unsigned __int64 &&)' being compiled
-          with
-          [
-              _Ty=Engine::VertexBuffer
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1588): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<float(&)[24],unsigned __int64>(float (&)[24],unsigned __int64 &&)' being compiled
-          with
-          [
-              _Ty=Engine::VertexBuffer
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.h(21): message : see reference to function template instantiation 'std::shared_ptr<Engine::VertexBuffer> std::make_shared<T,float(&)[24],_Ty>(float (&)[24],_Ty &&)' being compiled
-          with
-          [
-              T=Engine::VertexBuffer,
-              _Ty=size_t
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\CubeMap.cpp(65): message : see reference to function template instantiation 'std::shared_ptr<Engine::VertexBuffer> Engine::CreateRef<Engine::VertexBuffer,float(&)[24],size_t>(float (&)[24],size_t &&)' being compiled
-  RenderCommand.cpp
-  Texture.cpp
+﻿  Application.cpp
+  Random.cpp
   Generating Code...
 ImGuiBuild.obj : warning LNK4006: imgl3wProcs already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "bool __cdecl ImGui_ImplOpenGL3_Init(char const *)" (?ImGui_ImplOpenGL3_Init@@YA_NPEBD@Z) already defined in imgui_impl_opengl3.obj; second definition ignored

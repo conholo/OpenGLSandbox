@@ -6,6 +6,12 @@
 
 namespace Engine
 {
+
+	void Random::Seed(int seed)
+	{
+		srand(static_cast <unsigned> (seed));
+	}
+
 	void Random::Initialize()
 	{
 		srand(static_cast <unsigned> (time(0)));

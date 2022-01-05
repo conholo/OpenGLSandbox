@@ -246,7 +246,7 @@ namespace Engine
 		return blackTexture;
 	}
 
-	Texture3D::Texture3D(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
+	TextureCube::TextureCube(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
 		:m_Specification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
@@ -286,7 +286,7 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 
-	Texture3D::Texture3D(const TextureSpecification& specification, const void* data)
+	TextureCube::TextureCube(const TextureSpecification& specification, const void* data)
 		:m_Specification(specification)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
@@ -301,23 +301,23 @@ namespace Engine
 		glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, ImageUtils::ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
 	}
 
-	Texture3D::~Texture3D()
+	TextureCube::~TextureCube()
 	{
 		glDeleteTextures(1, &m_ID);
 	}
 
-	void Texture3D::BindToSamplerSlot(uint32_t slot)
+	void TextureCube::BindToSamplerSlot(uint32_t slot)
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTextureUnit(slot, m_ID);
 	}
 
-	void Texture3D::Unbind() const
+	void TextureCube::Unbind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void Texture3D::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	void TextureCube::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
 	{
 		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
 		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
@@ -365,6 +365,82 @@ namespace Engine
 	void Texture2DImageView::Unbind() const
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	Texture3D::Texture3D(const TextureSpecification& spec)
+		:m_Specification(spec)
+	{
+		glCreateTextures(GL_TEXTURE_3D, 1, &m_ID);
+		glBindTexture(GL_TEXTURE_3D, m_ID);
+
+		GLenum wrapS = ImageUtils::ConvertWrapMode(spec.SamplerWrap);
+		GLenum wrapT = ImageUtils::ConvertWrapMode(spec.SamplerWrap);
+		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(spec.Filter);
+		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(spec.Filter);
+
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrapS);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrapT);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrapT);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, magFilter);
+
+		// Immutable-format Texture
+		// Contents of the image can be modified, but it's storage requirements may not change.
+		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+		uint32_t mips = GetMipLevelCount();
+
+		// TODO:: Provide Texture3DSpecification
+		glTextureStorage3D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(spec.InternalFormat), spec.Width, spec.Height, spec.Width);
+	}
+
+	Texture3D::~Texture3D()
+	{
+		glDeleteTextures(1, &m_ID);
+	}
+
+	void Texture3D::BindToSamplerSlot(uint32_t slot)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTextureUnit(slot, m_ID);
+	}
+
+	void Texture3D::Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_3D, 0);
+	}
+
+	void Texture3D::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	{
+		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
+		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
+
+		if (glShaderDataFormat != internalFormat)
+		{
+			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			return;
+		}
+
+		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+	}
+
+	std::pair<glm::uint32_t, glm::uint32_t> Texture3D::GetMipSize(uint32_t mip) const
+	{
+		uint32_t width = m_Specification.Width;
+		uint32_t height = m_Specification.Height;
+		while (mip != 0)
+		{
+			width /= 2;
+			height /= 2;
+			mip--;
+		}
+
+		return { width, height };
+	}
+
+	uint32_t Texture3D::GetMipLevelCount() const
+	{
+		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
 	}
 }
 

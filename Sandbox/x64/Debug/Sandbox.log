@@ -1,5 +1,193 @@
-﻿  SkyBoxLayer.cpp
+﻿  WorleyGeneratorLayer.cpp
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(64,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(193,47): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(240,47): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(256,67): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(257,5): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(262,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(263,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(264,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(266,61): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(267,37): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(_Ty &,glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1587): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1588): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.h(21): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> std::make_shared<T,_Ty,unsigned __int64>(_Ty &&,unsigned __int64 &&)' being compiled
+          with
+          [
+              T=Engine::ShaderStorageBuffer,
+              _Ty=glm::vec4 *
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\WorleyGeneratorLayer.cpp(71): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,_Ty*,size_t>(_Ty *&&,size_t &&)' being compiled
+          with
+          [
+              _Ty=glm::vec4
+          ]
+  Project1.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(68,45): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(69,45): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(70,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(71,59): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(72,53): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(74,63): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(75,51): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\457\Project1.cpp(76,64): warning C4305: 'argument': truncation from 'double' to 'float'
+  ComputeParticleLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,Particle*&,unsigned __int64>(_Ty &,Particle *&,unsigned __int64 &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1587): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<Particle*&,unsigned __int64>(Particle *&,unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1588): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<Particle*&,unsigned __int64>(Particle *&,unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=Engine::ShaderStorageBuffer
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.h(21): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> std::make_shared<T,Particle*&,_Ty>(Particle *&,_Ty &&)' being compiled
+          with
+          [
+              T=Engine::ShaderStorageBuffer,
+              _Ty=size_t
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeParticleLayer.cpp(53): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,Particle*&,size_t>(Particle *&,size_t &&)' being compiled
+  ComputeTextureLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeTextureLayer.cpp(59,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeTextureLayer.cpp(60,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeTextureLayer.cpp(70,42): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeTextureLayer.cpp(71,42): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ComputeTextureLayer.cpp(72,38): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  CubeMapLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  FractalLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  LightingLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  LineLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(348,25): warning C4244: '=': conversion from 'uint32_t' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(394,25): warning C4244: '=': conversion from 'int32_t' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(438,84): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(439,84): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(440,99): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(441,99): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(442,101): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(443,88): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(444,93): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(445,87): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(453,89): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(454,89): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(455,104): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(456,104): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(457,106): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(458,93): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(459,102): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(460,96): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(483,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(484,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(485,97): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(486,97): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(487,99): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(488,86): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(493,63): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(494,63): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(495,57): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(544,42): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(553,70): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(704,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(705,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\LineLayer.cpp(706,65): warning C4312: 'type cast': conversion from 'uint32_t' to 'ImTextureID' of greater size
+  ShaderProjectLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(11,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(74,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(75,11): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(80,12): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(85,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(86,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(87,35): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\ShaderProjectLayer.cpp(89,11): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  ShadowsLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SkyBoxLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  TestBezierSurfaceLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  ComputeTest.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Testing\ComputeTest.cpp(105,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Testing\ComputeTest.cpp(106,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  StarMapLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  ToonShadingLayer.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  SandboxApplication.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  Generating Code...
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe
