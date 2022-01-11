@@ -1,6 +1,4 @@
 ﻿  Application.cpp
-  Random.cpp
-  Generating Code...
 ImGuiBuild.obj : warning LNK4006: imgl3wProcs already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "bool __cdecl ImGui_ImplOpenGL3_Init(char const *)" (?ImGui_ImplOpenGL3_Init@@YA_NPEBD@Z) already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "void __cdecl ImGui_ImplOpenGL3_Shutdown(void)" (?ImGui_ImplOpenGL3_Shutdown@@YAXXZ) already defined in imgui_impl_opengl3.obj; second definition ignored

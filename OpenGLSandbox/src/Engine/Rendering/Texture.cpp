@@ -3,6 +3,7 @@
 #include <utility>
 
 #include <stb_image.h>
+#include <stb_image_write.h>
 #include <glad/glad.h>
 
 namespace Engine
@@ -422,6 +423,21 @@ namespace Engine
 		}
 
 		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+	}
+
+	int Texture3D::WriteToFile(const std::string& assetPath)
+	{
+		GLenum dataFormat = ImageUtils::ConverDataLayoutMode(m_Specification.DataLayout);
+		GLenum dataType = ImageUtils::ConvertImageDataType(m_Specification.DataType);
+		GLsizei textureSize = m_Specification.Width * m_Specification.Height * m_Specification.Width * 16;
+		void* pixels = malloc(textureSize);
+		glGetTextureSubImage(m_ID, 0, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.Width, dataFormat, dataType, textureSize, pixels);
+
+		int result = stbi_write_png(assetPath.c_str(), m_Specification.Width, m_Specification.Height, 4, pixels, 4);
+
+		free(pixels);
+
+		return result;
 	}
 
 	std::pair<glm::uint32_t, glm::uint32_t> Texture3D::GetMipSize(uint32_t mip) const

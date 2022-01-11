@@ -66,7 +66,28 @@
     <ClCompile Include="src\Layers\457\Project1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Layers\410\WorleyGeneratorLayer.cpp">
+    <ClCompile Include="src\Layers\410\SkyVolumeGeneratorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\HelperFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudDataStructures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsSceneRenderPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsCompositePass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,7 +140,34 @@
     <ClInclude Include="src\Layers\457\Project1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\410\WorleyGeneratorLayer.h">
+    <ClInclude Include="src\Layers\410\SkyVolumeGeneratorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\BlankLayer\BlankLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\HelperFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudDataStructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsSceneRenderPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsCompositePass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -159,6 +207,12 @@
     <None Include="assets\shaders\Testing\ComputeTesting.shader" />
     <None Include="assets\457 shaders\Project1.shader" />
     <None Include="assets\410 shaders\WorleyGenerator.shader" />
-    <None Include="assets\410 shaders\Unlit.shader" />
+    <None Include="assets\410 shaders\SkyVolume.shader" />
+    <None Include="assets\410 shaders\3DTextureViewer.shader" />
+    <None Include="assets\410 shaders\Perlin2D.shader" />
+    <None Include="assets\410 shaders\Clouds.shader" />
+    <None Include="assets\410 shaders\CloudsComposite.shader" />
+    <None Include="assets\410 shaders\Normalize.compute" />
+    <None Include="assets\410 shaders\TextureDisplay.shader" />
   </ItemGroup>
 </Project>

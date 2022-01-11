@@ -124,6 +124,7 @@
     <ClInclude Include="vendor\imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="vendor\imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="vendor\imgui\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="vendor\stbi\stb_image_write.h" />
     <ClInclude Include="vendor\stbi\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

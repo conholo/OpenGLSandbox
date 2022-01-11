@@ -16,6 +16,7 @@ namespace Engine
 		Camera();
 		Camera(float fov, float aspectRatio, float nearClip, float farClip);
 
+		ProjectionType GetProjectionType() const { return m_ProjectionType; }
 		void SetPerspective();
 		void SetOrthographic();
 		void Update(float deltaTime);

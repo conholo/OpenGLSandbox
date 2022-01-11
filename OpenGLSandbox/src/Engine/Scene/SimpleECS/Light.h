@@ -45,6 +45,7 @@ namespace Engine
 		void SetInnerCutOff(float innerCutoff) { m_Specification.InnerCutOff = innerCutoff; }
 		void SetOuterCutOff(float outerCutoff) { m_Specification.OuterCutOff = outerCutoff; }
 
+		float& GetLightIntensity() { return m_Specification.Intensity; }
 		const glm::vec3& GetLightColor() const { return m_Specification.LightColor; }
 		glm::vec3& GetLightColor() { return m_Specification.LightColor; }
 		float GetLightIntensity() const { return m_Specification.Intensity; }

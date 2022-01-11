@@ -32,6 +32,7 @@ uniform float u_ElapsedTime;
 uniform float u_Ad;
 uniform float u_Bd;
 uniform float u_Tol;
+uniform int u_Factor = 2;
 
 uniform float u_Shininess;
 uniform float u_AmbientStrength;
@@ -53,6 +54,15 @@ float Wave(float a, float f, float v)
 	return a * sin(u_ElapsedTime + f * v * PI);
 }
 
+float LoopPow(float x, int p)
+{
+	float result = x;
+	for (int i = 0; i < p - 1; i++)
+		result *= x;
+
+	return result;
+}
+
 void main()
 {
 	vec3 normal = normalize(v_Normal);
@@ -71,10 +81,14 @@ void main()
 	float sc = float(cellX) * u_Ad + Ar;
 	float tc = float(cellY) * u_Bd + Br;
 
+	
+	float testX = LoopPow((s - sc) / Ar, u_Factor);
+	float testY = LoopPow((t - tc) / Br, u_Factor);
+
 	float dX = ((s - sc) / Ar) * ((s - sc) / Ar);
 	float dY = ((t - tc) / Br) * ((t - tc) / Br);
 
-	float d = dX + dY;
+	float d = testX + testY;
 	float pct = smoothstep(1.0 + u_Tol, 1.0 - u_Tol, d);
 
 	vec3 color = mix(u_BGColor, u_DotColor, pct) * texture(u_Texture, v_TexCoord).rgb;

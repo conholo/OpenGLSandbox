@@ -19,7 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Layers\410\WorleyGeneratorLayer.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsLayer.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudDataStructures.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsCompositePass.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsSceneRenderPass.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\CloudsUI.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\HelperFunctions.cpp" />
+    <ClCompile Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.cpp" />
+    <ClCompile Include="src\Layers\410\SkyVolumeGeneratorLayer.cpp" />
     <ClCompile Include="src\Layers\457\Project1.cpp" />
     <ClCompile Include="src\Layers\ComputeParticleLayer.cpp" />
     <ClCompile Include="src\Layers\ComputeTextureLayer.cpp" />
@@ -39,8 +46,17 @@
     <ClCompile Include="src\Utility\ImGuiUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layers\410\WorleyGeneratorLayer.h" />
+    <ClInclude Include="src\Layers\410\CloudsLayer.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudDataStructures.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudEnums.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsCompositePass.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsSceneRenderPass.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\CloudsUI.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\HelperFunctions.h" />
+    <ClInclude Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.h" />
+    <ClInclude Include="src\Layers\410\SkyVolumeGeneratorLayer.h" />
     <ClInclude Include="src\Layers\457\Project1.h" />
+    <ClInclude Include="src\Layers\BlankLayer\BlankLayer.h" />
     <ClInclude Include="src\Layers\ComputeParticleLayer.h" />
     <ClInclude Include="src\Layers\ComputeTextureLayer.h" />
     <ClInclude Include="src\Layers\CubeMapLayer.h" />
@@ -63,9 +79,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\410 shaders\Unlit.shader" />
+    <None Include="assets\410 shaders\3DTextureViewer.shader" />
+    <None Include="assets\410 shaders\Clouds.shader" />
+    <None Include="assets\410 shaders\CloudsComposite.shader" />
+    <None Include="assets\410 shaders\Normalize.compute" />
+    <None Include="assets\410 shaders\Perlin2D.shader" />
+    <None Include="assets\410 shaders\TextureDisplay.shader" />
     <None Include="assets\410 shaders\WorleyGenerator.shader" />
     <None Include="assets\457 shaders\Project1.shader" />
+    <None Include="assets\410 shaders\SkyVolume.shader" />
     <None Include="assets\shaders\BlinnPhong.shader" />
     <None Include="assets\shaders\BlinnPhongWS.shader" />
     <None Include="assets\shaders\Bloom.shader" />
@@ -170,7 +192,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/;$(SolutionDir)OpenGLSandbox/vendor/stbi/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

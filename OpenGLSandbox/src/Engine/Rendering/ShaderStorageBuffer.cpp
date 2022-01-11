@@ -9,7 +9,7 @@ namespace Engine
 	{
 		glCreateBuffers(1, &m_ID);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ID);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STATIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderStorageBuffer::Bind() const
@@ -20,6 +20,12 @@ namespace Engine
 	void ShaderStorageBuffer::Unbind() const
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	}
+
+	void ShaderStorageBuffer::SetData(void* data, uint32_t offset, uint32_t size)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ID);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, data);
 	}
 
 	void ShaderStorageBuffer::ReadSubData(void* data, uint32_t offset, uint32_t size)

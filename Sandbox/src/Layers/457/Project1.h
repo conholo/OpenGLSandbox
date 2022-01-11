@@ -20,6 +20,7 @@ private:
 
 	Engine::PrimitiveType m_Type = Engine::PrimitiveType::Sphere;
 	bool m_Animate = false;
+	int m_Factor = 2;
 	float m_AD = 0.1f;
 	float m_BD = 0.1f;
 	float m_Tolerance = 0.01f;

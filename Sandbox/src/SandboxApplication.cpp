@@ -17,7 +17,8 @@
 //#include "Layers/Testing/StarMapLayer.h"
 
 //#include "Layers/457/Project1.h"
-#include "Layers/410/WorleyGeneratorLayer.h"
+#include "Layers/410/CloudsLayer.h"
+//#include "Layers/410/SkyVolumeGeneratorLayer.h"
 
 class SandboxApplication : public Engine::Application
 {
@@ -41,7 +42,8 @@ public:
 		//PushLayer(new StarMapLayer);
 
 		//PushLayer(new Project1);
-		PushLayer(new WorleyGeneratorLayer);
+		PushLayer(new CloudsLayer);
+		//PushLayer(new SkyVolumeGeneratorLayer);
 	}
 	
 	~SandboxApplication()

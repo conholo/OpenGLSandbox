@@ -41,6 +41,7 @@ void Project1::OnUpdate(float deltaTime)
 	m_WhiteTexture->BindToSamplerSlot(0);
 	Engine::ShaderLibrary::Get("Project1")->Bind();
 	Engine::ShaderLibrary::Get("Project1")->UploadUniformFloat("u_ElapsedTime", Engine::Time::Elapsed());
+	Engine::ShaderLibrary::Get("Project1")->UploadUniformInt("u_Factor", m_Factor);
 	Engine::ShaderLibrary::Get("Project1")->UploadUniformFloat("u_Ad", m_AD);
 	Engine::ShaderLibrary::Get("Project1")->UploadUniformFloat("u_Bd", m_BD);
 	Engine::ShaderLibrary::Get("Project1")->UploadUniformFloat("u_Tol", m_Tolerance);
@@ -65,6 +66,7 @@ void Project1::OnEvent(Engine::Event& event)
 void Project1::OnImGuiRender()
 {
 	ImGui::Begin("Project 1 Properties");
+	ImGui::DragInt("Factor", &m_Factor, 0.1, 1);
 	ImGui::DragFloat("Diameter A", &m_AD, 0.001);
 	ImGui::DragFloat("Diameter B", &m_BD, 0.001);
 	ImGui::DragFloat("Tolerance", &m_Tolerance, 0.001);

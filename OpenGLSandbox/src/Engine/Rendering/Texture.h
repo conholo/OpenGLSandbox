@@ -102,6 +102,8 @@ namespace Engine
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
 
+		int WriteToFile(const std::string& assetPath);
+
 		const TextureSpecification& GetSpecification() const { return m_Specification; }
 
 		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;

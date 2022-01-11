@@ -20,13 +20,30 @@ void main()
 
 layout(location = 0) out vec4 o_Color;
 
-uniform vec3 u_Color;
+uniform bool u_ShowAllChannels;
+uniform bool u_GreyScale;
 uniform float u_DepthSlice;
+uniform vec4 u_ChannelWeights;
+
 uniform sampler3D u_Texture;
 
 in vec2 v_TexCoord;
 
 void main()
 {
-	o_Color = texture(u_Texture, vec3(v_TexCoord, u_DepthSlice)) * vec4(u_Color, 1.0);
+	vec4 result = texture(u_Texture, vec3(v_TexCoord, u_DepthSlice));
+
+	if (u_ShowAllChannels)
+	{
+		o_Color = result;
+	}
+	else
+	{
+		vec4 channelMask = u_ChannelWeights * result;
+
+		if (u_GreyScale)
+			o_Color = vec4(dot(channelMask, vec4(1.0)));
+		else
+			o_Color = channelMask;
+	}
 }

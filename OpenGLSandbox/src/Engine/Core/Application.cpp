@@ -22,7 +22,6 @@ namespace Engine
 
 		PushLayer(m_ImGuiLayer);
 
-
 		Engine::ShaderLibrary::Load("assets/shaders/FlatColor.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/TestCompute.shader");
 		Engine::ShaderLibrary::Load("assets/shaders/ParticleCompute.shader");
