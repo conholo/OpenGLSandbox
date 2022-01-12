@@ -17,6 +17,7 @@ layout(std140, binding = 2) buffer PointsBufferC
 	vec4 PointsC[];
 };
 
+uniform bool u_IsBaseShape;
 uniform bool u_Invert;
 uniform sampler2D u_PerlinTexture;
 uniform vec4 u_ChannelMask;
@@ -198,7 +199,7 @@ void main()
 	float noise = layerA + (layerB * u_Persistence) + (layerC * u_Persistence * u_Persistence);
 	float maxNoise = 1.0 + (u_Persistence) + (u_Persistence * u_Persistence);
 	
-	if (u_ChannelMask.r == 1.0)
+	if (u_ChannelMask.r == 1.0 && u_IsBaseShape)
 		noise = mix(noise, texture(u_PerlinTexture, texCoord.xy).r, u_PerlinWorleyMix);
 
 	noise /= maxNoise;

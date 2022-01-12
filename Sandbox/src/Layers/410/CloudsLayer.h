@@ -28,6 +28,7 @@ private:
 	Engine::Ref<MainCloudRenderPass> m_MainCloudRenderPass;
 	Engine::Ref<CloudsCompositePass> m_CloudsCompositePass;
 
+	Engine::Ref<CloudsUIData> m_CloudUIData;
 	Engine::Ref<MainCloudPassData> m_MainCloudPassData;
 
 	Engine::Ref<Engine::SimpleEntity> m_CompositeQuad;
@@ -37,5 +38,6 @@ private:
 	Engine::Ref<CloudAnimationSettings> m_CloudAnimationSettings;
 	Engine::Ref<CloudSettings> m_CloudSettings;
 	Engine::Ref<BaseShapeWorleySettings> m_BaseShapeSettings;
+	Engine::Ref<DetailShapeWorleySettings> m_DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> m_PerlinSettings;
 };

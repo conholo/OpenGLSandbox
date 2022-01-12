@@ -28,15 +28,26 @@ void CloudsLayer::OnAttach()
 	m_PerlinSettings = Engine::CreateRef<WorleyPerlinSettings>();
 	m_BaseShapeSettings = Engine::CreateRef<BaseShapeWorleySettings>();
 	m_BaseShapeSettings->UpdateAllChannels(m_PerlinSettings);
+	m_DetailShapeSettings = Engine::CreateRef<DetailShapeWorleySettings>();
+	m_DetailShapeSettings->UpdateAllChannels();
 
 	m_SceneRenderPass = Engine::CreateRef<CloudsSceneRenderPass>();
 	m_MainCloudRenderPass = Engine::CreateRef<MainCloudRenderPass>();
 	m_CloudsCompositePass = Engine::CreateRef<CloudsCompositePass>();
 
+	m_CloudUIData = Engine::CreateRef<CloudsUIData>();
+	m_CloudUIData->AnimationSettings = m_CloudAnimationSettings;
+	m_CloudUIData->MainCloudSettings = m_CloudSettings;
+	m_CloudUIData->BaseShapeSettings = m_BaseShapeSettings;
+	m_CloudUIData->DetailShapeSettings = m_DetailShapeSettings;
+	m_CloudUIData->PerlinSettings = m_PerlinSettings;
+	m_CloudUIData->SceneRenderPass = m_SceneRenderPass;
+
 	m_MainCloudPassData = Engine::CreateRef<MainCloudPassData>();
 	m_MainCloudPassData->AnimationSettings = m_CloudAnimationSettings;
 	m_MainCloudPassData->MainSettings = m_CloudSettings;
 	m_MainCloudPassData->BaseShapeSettings = m_BaseShapeSettings;
+	m_MainCloudPassData->DetailShapeSettings = m_DetailShapeSettings;
 	m_MainCloudPassData->PerlinSettings = m_PerlinSettings;
 	m_MainCloudPassData->SceneRenderPass = m_SceneRenderPass;
 	m_MainCloudPassData->UI = m_CloudsUI;
@@ -48,7 +59,6 @@ void CloudsLayer::OnDetach()
 {
 
 }
-
 
 void CloudsLayer::OnUpdate(float deltaTime)
 {
@@ -66,7 +76,7 @@ void CloudsLayer::OnEvent(Engine::Event& e)
 
 void CloudsLayer::OnImGuiRender()
 {
-	m_CloudsUI->Draw(m_BaseShapeSettings, m_PerlinSettings);
+	m_CloudsUI->Draw(m_CloudUIData);
 }
 
 bool CloudsLayer::Resize(int width, int height)

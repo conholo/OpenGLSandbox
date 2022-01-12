@@ -9,6 +9,7 @@ struct MainCloudPassData
 	Engine::Ref<CloudAnimationSettings> AnimationSettings;
 	Engine::Ref<CloudsSceneRenderPass> SceneRenderPass;
 	Engine::Ref<BaseShapeWorleySettings> BaseShapeSettings;
+	Engine::Ref<DetailShapeWorleySettings> DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> PerlinSettings;
 	Engine::Ref<CloudsUI> UI;
 };

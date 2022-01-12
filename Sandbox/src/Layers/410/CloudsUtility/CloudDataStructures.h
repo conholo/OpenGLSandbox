@@ -10,10 +10,11 @@
 
 struct CloudAnimationSettings
 {
-	bool AnimateClouds = false;
-	float AnimationSpeed = 0.0f;
-	float TimeScale = 0.0001f;
+	bool AnimateClouds = true;
+	float AnimationSpeed = 5.5f;
+	float TimeScale = 0.011f;
 	float CloudScrollOffsetSpeed = 0.00001f;
+	glm::vec3 ShapeTextureOffset{ 0.0f, 0.0f, 0.0f };
 };
 
 struct CloudSettings
@@ -25,16 +26,19 @@ struct CloudSettings
 	int LightSteps = 10;
 
 	glm::vec3 BaseShapeTextureOffset = glm::vec3(0.0);
-	float CloudScale = 15.0f;
-	float DensityThreshold = .18f;
-	float DensityMultiplier = 1.0f;
+	float DetailNoiseWeight = 1.0f;
+	float CloudScale = 1.2f;
+	float DensityThreshold = 0.01f;
+	float DensityMultiplier = 0.43f;
 	float PhaseBlend = 0.5f;
-	glm::vec4 PhaseParams{ 1.0f, 1.0f, 1.0f, 1.0f };
-	float PowderConstant = 0.5f;
-	float SilverLiningConstant = 0.5f;
+	glm::vec4 PhaseParams{ 1.2f, 0.6f, 1.4f, 1.0f };
+	float PowderConstant = 1.0f;
+	float SilverLiningConstant = 0.644f;
+	glm::vec4 ShapeNoiseWeights{ 0.95f, 0.48f, 0.32f, 0.42f };
+	glm::vec3 DetailNoiseWeights{ 0.23f, 0.33f, 0.45f };
 
 	glm::vec3 CloudContainerPosition{ 0.0f, 30.0f, 0.0f };
-	glm::vec3 CloudContainerScale{ 100.0f, 50.0f, 100.0f };
+	glm::vec3 CloudContainerScale{ 300.0f, 230.0f, 300.0f };
 	float ContainerEdgeFadeDistance = 50.0f;
 };
 
@@ -77,20 +81,35 @@ struct WorleyChannelData
 
 	void UpdatePoints();
 	void UpdateChannel(const Engine::Ref<Engine::Texture2D>& perlinTexture, float perlinWorleyMix, uint32_t threadGroups);
+	void UpdateChannel(uint32_t threadGroups);
 };
 
 struct TextureDebugDisplaySettings
 {
+	bool EnableTextureViewer = true;
 	float PercentScreenTextureDisplay = 0.1f;
+	std::vector<CloudUIType> EditorTypes = { CloudUIType::BaseShape, CloudUIType::DetailShape, CloudUIType::Perlin };
+};
+
+struct ShapeTextureDebugDisplaySettings
+{
 	float DepthSlice;
 	bool DisplaySelectedChannelOnly = false;
 	bool ShowAlpha = false;
 	bool DrawAllChannels = true;
 	bool EnableGreyScale = false;
-	bool EnableTextureViewer = true;
 	glm::vec4 ChannelWeights{ 0.0f, 0.0f,0.0f, 0.0f };
-	std::vector<CloudUIType> EditorTypes = { CloudUIType::BaseShape, CloudUIType::DetailNoise, CloudUIType::Perlin };
 	std::vector<WorleyChannelMask> ChannelTypes = { WorleyChannelMask::R, WorleyChannelMask::G, WorleyChannelMask::B, WorleyChannelMask::A };
+};
+
+struct DetailTextureDebugDisplaySettings
+{
+	float DepthSlice;
+	bool DisplaySelectedChannelOnly = false;
+	bool DrawAllChannels = true;
+	bool EnableGreyScale = false;
+	glm::vec3 ChannelWeights{ 0.0f, 0.0f,0.0f };
+	std::vector<WorleyChannelMask> ChannelTypes = { WorleyChannelMask::R, WorleyChannelMask::G, WorleyChannelMask::B };
 };
 
 struct BaseShapeWorleySettings
@@ -106,8 +125,7 @@ struct BaseShapeWorleySettings
 	glm::ivec3 DefaultLayerCellsA{ 14, 22, 33 };
 	glm::vec4 DefaultPersistence{ 0.1f, 0.3f, 0.5f, 0.8f };
 
-	glm::vec4 ShapeNoiseWeights{ 0.4f, 0.3f, 0.2f, 0.1f };
-	float PerlinWorleyMix = 0.21f;
+	float PerlinWorleyMix = 0.1f;
 	Engine::Ref<Engine::Texture3D> BaseShapeTexture;
 	Engine::Ref<WorleyChannelData> ChannelR;
 	Engine::Ref<WorleyChannelData> ChannelG;
@@ -115,7 +133,24 @@ struct BaseShapeWorleySettings
 	Engine::Ref<WorleyChannelData> ChannelA;
 
 	void UpdateAllChannels(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
+};
 
-private:
-	Engine::Ref<WorleyChannelData> CreateChannelData(WorleyChannelMask mask, const glm::ivec3& defaultCells, float persistence);
+struct DetailShapeWorleySettings
+{
+	DetailShapeWorleySettings();
+
+	const uint32_t DetailThreadGroupSize = 8;
+	uint32_t DetailResolution = 32;
+
+	glm::ivec3 DefaultLayerCellsR{ 2, 6, 10 };
+	glm::ivec3 DefaultLayerCellsG{ 5, 8, 12 };
+	glm::ivec3 DefaultLayerCellsB{ 8, 16, 25 };
+	glm::vec3 DefaultPersistence{ 0.1f, 0.3f, 0.5f };
+
+	Engine::Ref<Engine::Texture3D> DetailShapeTexture;
+	Engine::Ref<WorleyChannelData> ChannelR;
+	Engine::Ref<WorleyChannelData> ChannelG;
+	Engine::Ref<WorleyChannelData> ChannelB;
+
+	void UpdateAllChannels();
 };

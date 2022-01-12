@@ -50,6 +50,7 @@ uniform sampler2D u_DepthTexture;
 uniform sampler2D u_SceneTexture;
 uniform sampler2D u_WeatherMap;
 uniform sampler3D u_BaseShapeTexture;
+uniform sampler3D u_DetailShapeTexture;
 
 uniform float u_ContainerEdgeFadeDistance;
 uniform float u_PhaseBlend;
@@ -59,8 +60,10 @@ uniform float u_SilverLiningConstant;
 uniform float u_DensityMultiplier;
 uniform float u_DensityThreshold;
 uniform float u_CloudScale;
-uniform vec3 u_CloudOffset;
+uniform float u_DetailNoiseWeight;
+uniform vec3 u_ShapeTextureOffset;
 uniform vec4 u_ShapeNoiseWeights;
+uniform vec3 u_DetailNoiseWeights;
 
 uniform int u_LightSteps;
 uniform int u_DensitySteps;
@@ -137,11 +140,11 @@ float SampleDensity(vec3 rayPosition)
 {
     vec3 containerSize = u_BoundsMax - u_BoundsMin;
     vec3 containerCenter = (u_BoundsMax + u_BoundsMin) * 0.5;
-    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / 1000.0) * u_CloudScale;
+    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / containerSize) * u_CloudScale;
     float animationSpeed = u_Animate ? u_AnimationSpeed : 0.0;
     float time = u_TimeScale * u_ElapsedTime;
     vec3 animationOffset = vec3(time, time * 0.1, time * 0.2) * animationSpeed;
-    vec3 shapeSamplePosition = uvw + u_CloudOffset * u_CloudOffsetScrollSpeed + animationOffset;
+    vec3 shapeSamplePosition = uvw + u_ShapeTextureOffset * u_CloudOffsetScrollSpeed + animationOffset;
 
     float distanceFromEdgeX = min(u_ContainerEdgeFadeDistance, min(rayPosition.x - u_BoundsMin.x, u_BoundsMax.x - rayPosition.x));
     float distanceFromEdgeZ = min(u_ContainerEdgeFadeDistance, min(rayPosition.z - u_BoundsMin.z, u_BoundsMax.z - rayPosition.z));
@@ -160,8 +163,18 @@ float SampleDensity(vec3 rayPosition)
     float shapeFBM = dot(shape, normalizedShapeWeights) * heightGradient;
     float baseShapeDensity = max(0.0, shapeFBM - u_DensityThreshold) * u_DensityMultiplier;
 
-    return baseShapeDensity * edgeWeight;
+    if (baseShapeDensity <= 0.0)
+        return 0.0;
+
+    vec3 detailAnimationOffset = vec3(time, time * 0.15, time * 0.25) * animationSpeed;
+    vec3 detailSamplePosition = uvw + animationOffset;
+    vec3 detail = texture(u_DetailShapeTexture, detailSamplePosition).rgb;
+    vec3 normalizedDetailWeights = u_DetailNoiseWeights / dot(u_DetailNoiseWeights, vec3(1.0));
+    float detailFBM = dot(detail, normalizedDetailWeights) * edgeWeight * u_DetailNoiseWeight;
+
+    return baseShapeDensity - detailFBM;
 }
+
 
 float HG(float a, float g)
 {
@@ -173,7 +186,6 @@ float Beers(float density)
 {
     return exp(-density);
 }
-
 
 float BeersPowder(float density)
 {

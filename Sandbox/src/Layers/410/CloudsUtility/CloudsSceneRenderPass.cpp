@@ -15,7 +15,7 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 	};
 
 	m_Sun = Engine::CreateRef<Engine::Light>(sunSpec);
-	m_Sun->GetLightTransform()->SetPosition({ 30.0f, 100.0f, 0.0f });
+	m_Sun->GetLightTransform()->SetPosition({ 30.0f, 300.0f, 0.0f });
 
 	m_GroundPlane = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Plane, "FlatColor");
 	m_GroundPlane->GetEntityTransform()->SetScale({ 10.0f, 1.0f, 10.0f });
