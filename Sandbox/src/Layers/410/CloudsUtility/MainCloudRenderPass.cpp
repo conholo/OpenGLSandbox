@@ -33,6 +33,7 @@ static int GetTextureDisplayIndex(CloudUIType activeUIType)
 {
 	switch (activeUIType)
 	{
+	case CloudUIType::Curl:
 	case CloudUIType::Perlin:		return 0;
 	case CloudUIType::DetailShape:
 	case CloudUIType::BaseShape:	return 1;
@@ -53,6 +54,7 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	passData->BaseShapeSettings->BaseShapeTexture->BindToSamplerSlot(2);
 	passData->PerlinSettings->PerlinTexture->BindToSamplerSlot(3);
 	passData->DetailShapeSettings->DetailShapeTexture->BindToSamplerSlot(4);
+	passData->CurlSettings->CurlTexture->BindToSamplerSlot(5);
 
 	m_CloudQuad->GetEntityRenderer()->GetShader()->Bind();
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SceneTexture", 0);
@@ -60,6 +62,7 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BaseShapeTexture", 2);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_WeatherMap", 3);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DetailShapeTexture", 4);
+	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_CurlNoise", 5);
 
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_NearClip", camera.GetNearClip());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_FarClip", camera.GetFarClip());
@@ -87,7 +90,8 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_PhaseBlend", passData->MainSettings->PhaseBlend);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_CloudScale", passData->MainSettings->CloudScale);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SilverLiningConstant", passData->MainSettings->SilverLiningConstant);
-	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat4("u_PhaseParams", passData->MainSettings->PhaseParams);
+	glm::vec4 phaseParams = glm::vec4(passData->MainSettings->ForwardScattering, passData->MainSettings->BackScattering, passData->MainSettings->BaseBrightness, passData->MainSettings->PhaseFactor);
+	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat4("u_PhaseParams", phaseParams);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_PowderConstant", passData->MainSettings->PowderConstant);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DensityThreshold", passData->MainSettings->DensityThreshold);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DensityMultiplier", passData->MainSettings->DensityMultiplier);
@@ -102,7 +106,7 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_PercentOfScreen", passData->UI->GetTextureDisplaySettings()->PercentScreenTextureDisplay);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DisplayIndex", GetTextureDisplayIndex(passData->UI->GetActiveUIType()));
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DisplayTexture3D", passData->UI->GetActiveShapeType() == ActiveDebugShapeType::BaseShape ?  2 : 4);
-	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DisplayTexture2D", 3);
+	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DisplayTexture2D",passData->UI->GetActiveUIType() == CloudUIType::Perlin ?  3 : 5);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformBool("u_ShowAlpha", passData->UI->GetDisplayAlpha());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformBool("u_ShowAllChannels", passData->UI->GetShowAllChannels());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformBool("u_GreyScale", passData->UI->GetEnableGreyScale());

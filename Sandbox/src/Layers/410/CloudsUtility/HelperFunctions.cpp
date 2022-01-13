@@ -57,6 +57,7 @@ std::string NameFromUIType(CloudUIType type)
 	case CloudUIType::BaseShape:		return "Base Shape";
 	case CloudUIType::DetailShape:		return "Detail Noise";
 	case CloudUIType::Perlin:			return "Perlin";
+	case CloudUIType::Curl:				return "Curl";
 	}
 
 	return "";

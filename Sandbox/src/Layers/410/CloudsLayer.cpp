@@ -1,6 +1,5 @@
 #include "Layers/410/CloudsLayer.h"
 #include "Layers/410/CloudsUtility/HelperFunctions.h"
-
 #include <imgui/imgui.h>
 
 CloudsLayer::CloudsLayer()
@@ -12,6 +11,7 @@ CloudsLayer::CloudsLayer()
 	Engine::ShaderLibrary::Load("assets/410 shaders/Clouds.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/CloudsComposite.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/TextureDisplay.shader");
+	Engine::ShaderLibrary::Load("assets/410 shaders/Curl.shader");
 }
 
 CloudsLayer::~CloudsLayer()
@@ -21,11 +21,14 @@ CloudsLayer::~CloudsLayer()
 
 void CloudsLayer::OnAttach()
 {
+	m_Camera.SetPosition({ 65.0f, 65.0f, 452.0f });
+
 	m_CloudsUI = Engine::CreateRef<CloudsUI>();
 	m_CloudSettings = Engine::CreateRef<CloudSettings>();
 	m_CloudAnimationSettings = Engine::CreateRef<CloudAnimationSettings>();
 
 	m_PerlinSettings = Engine::CreateRef<WorleyPerlinSettings>();
+	m_CurlSettings = Engine::CreateRef<CurlSettings>();
 	m_BaseShapeSettings = Engine::CreateRef<BaseShapeWorleySettings>();
 	m_BaseShapeSettings->UpdateAllChannels(m_PerlinSettings);
 	m_DetailShapeSettings = Engine::CreateRef<DetailShapeWorleySettings>();
@@ -41,11 +44,13 @@ void CloudsLayer::OnAttach()
 	m_CloudUIData->BaseShapeSettings = m_BaseShapeSettings;
 	m_CloudUIData->DetailShapeSettings = m_DetailShapeSettings;
 	m_CloudUIData->PerlinSettings = m_PerlinSettings;
+	m_CloudUIData->CurlSettings = m_CurlSettings;
 	m_CloudUIData->SceneRenderPass = m_SceneRenderPass;
 
 	m_MainCloudPassData = Engine::CreateRef<MainCloudPassData>();
 	m_MainCloudPassData->AnimationSettings = m_CloudAnimationSettings;
 	m_MainCloudPassData->MainSettings = m_CloudSettings;
+	m_MainCloudPassData->CurlSettings = m_CurlSettings;
 	m_MainCloudPassData->BaseShapeSettings = m_BaseShapeSettings;
 	m_MainCloudPassData->DetailShapeSettings = m_DetailShapeSettings;
 	m_MainCloudPassData->PerlinSettings = m_PerlinSettings;
@@ -63,7 +68,6 @@ void CloudsLayer::OnDetach()
 void CloudsLayer::OnUpdate(float deltaTime)
 {
 	m_Camera.Update(deltaTime);
-
 	m_SceneRenderPass->ExecutePass(m_Camera);
 	m_MainCloudRenderPass->ExecutePass(m_Camera, m_MainCloudPassData);
 	m_CloudsCompositePass->ExecutePass(m_Camera, m_MainCloudRenderPass);

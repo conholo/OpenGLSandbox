@@ -12,6 +12,7 @@ struct CloudsUIData
 	Engine::Ref<CloudSettings> MainCloudSettings;
 	Engine::Ref<CloudAnimationSettings> AnimationSettings;
 	Engine::Ref<CloudsSceneRenderPass> SceneRenderPass;
+	Engine::Ref<CurlSettings> CurlSettings;
 };
 
 
@@ -38,6 +39,7 @@ private:
 	void DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseShapeSettings, const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 	void DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
 	void DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
+	void DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings);
 
 	void DrawBaseShapeSelectionUI();
 	void DrawDetailShapeSelectionUI();

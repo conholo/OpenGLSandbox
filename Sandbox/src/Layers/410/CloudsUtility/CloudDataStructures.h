@@ -28,10 +28,13 @@ struct CloudSettings
 	glm::vec3 BaseShapeTextureOffset = glm::vec3(0.0);
 	float DetailNoiseWeight = 1.0f;
 	float CloudScale = 1.2f;
-	float DensityThreshold = 0.01f;
+	float DensityThreshold = 0.12f;
 	float DensityMultiplier = 0.43f;
 	float PhaseBlend = 0.5f;
-	glm::vec4 PhaseParams{ 1.2f, 0.6f, 1.4f, 1.0f };
+	float ForwardScattering = 0.91f;
+	float BackScattering = 0.33f;
+	float BaseBrightness = 1.0f;
+	float PhaseFactor = 0.74f;
 	float PowderConstant = 1.0f;
 	float SilverLiningConstant = 0.644f;
 	glm::vec4 ShapeNoiseWeights{ 0.95f, 0.48f, 0.32f, 0.42f };
@@ -42,6 +45,22 @@ struct CloudSettings
 	float ContainerEdgeFadeDistance = 50.0f;
 };
 
+struct CurlSettings
+{
+	CurlSettings();
+
+	const uint32_t CurlThreadGroupSize = 8;
+	uint32_t CurlResolution = 128;
+
+	float Strength = 0.5f;
+	float Tiling = 3.5f;
+	glm::vec2 TilingOffset{ 0.0f, 0.0f };
+
+	Engine::Ref<Engine::Texture2D> CurlTexture;
+
+	void UpdateTexture();
+};
+
 struct WorleyPerlinSettings
 {
 	WorleyPerlinSettings();
@@ -49,9 +68,9 @@ struct WorleyPerlinSettings
 	const uint32_t PerlinThreadGroupSize = 8;
 	uint32_t PerlinResolution = 128;
 
-	int Octaves = 4;
-	float NoiseScale = 5.0f;
-	float Lacunarity = 32.0f;
+	int Octaves = 5;
+	float NoiseScale = 2.1f;
+	float Lacunarity = 2.0f;
 	float Persistence = .65f;
 	glm::vec2 TextureOffset{ 0.0f, 0.0f };
 
@@ -69,6 +88,7 @@ struct WorleyChannelData
 	bool InvertWorley = false;
 	float WorleyTiling = 1.0f;
 	float WorleyLayerPersistence = 0.1f;
+	float InversionWeight = 0.0f;
 	glm::ivec3 LayerCells;
 	glm::ivec3 LayerSeeds;
 
@@ -88,7 +108,7 @@ struct TextureDebugDisplaySettings
 {
 	bool EnableTextureViewer = true;
 	float PercentScreenTextureDisplay = 0.1f;
-	std::vector<CloudUIType> EditorTypes = { CloudUIType::BaseShape, CloudUIType::DetailShape, CloudUIType::Perlin };
+	std::vector<CloudUIType> EditorTypes = { CloudUIType::BaseShape, CloudUIType::DetailShape, CloudUIType::Perlin, CloudUIType::Curl };
 };
 
 struct ShapeTextureDebugDisplaySettings
@@ -132,6 +152,7 @@ struct BaseShapeWorleySettings
 	Engine::Ref<WorleyChannelData> ChannelB;
 	Engine::Ref<WorleyChannelData> ChannelA;
 
+	void UpdateChannel(WorleyChannelMask mask, const Engine::Ref<Engine::Texture2D>& perlinTexture);
 	void UpdateAllChannels(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 };
 
@@ -152,5 +173,6 @@ struct DetailShapeWorleySettings
 	Engine::Ref<WorleyChannelData> ChannelG;
 	Engine::Ref<WorleyChannelData> ChannelB;
 
+	void UpdateChannel(WorleyChannelMask mask);
 	void UpdateAllChannels();
 };

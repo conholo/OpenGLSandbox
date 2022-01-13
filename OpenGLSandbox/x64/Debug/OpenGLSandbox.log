@@ -1,4 +1,6 @@
-﻿  Application.cpp
+﻿  Shader.cpp
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Shader.cpp(14,48): warning C4129: '/': unrecognized character escape sequence
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Shader.cpp(318): warning C4172: returning address of local variable or temporary
 ImGuiBuild.obj : warning LNK4006: imgl3wProcs already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "bool __cdecl ImGui_ImplOpenGL3_Init(char const *)" (?ImGui_ImplOpenGL3_Init@@YA_NPEBD@Z) already defined in imgui_impl_opengl3.obj; second definition ignored
 imgui_impl_opengl3.obj : warning LNK4006: "void __cdecl ImGui_ImplOpenGL3_Shutdown(void)" (?ImGui_ImplOpenGL3_Shutdown@@YAXXZ) already defined in imgui_impl_opengl3.obj; second definition ignored

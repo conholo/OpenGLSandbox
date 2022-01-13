@@ -40,4 +40,5 @@ private:
 	Engine::Ref<BaseShapeWorleySettings> m_BaseShapeSettings;
 	Engine::Ref<DetailShapeWorleySettings> m_DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> m_PerlinSettings;
+	Engine::Ref<CurlSettings> m_CurlSettings;
 };

@@ -11,6 +11,7 @@ struct MainCloudPassData
 	Engine::Ref<BaseShapeWorleySettings> BaseShapeSettings;
 	Engine::Ref<DetailShapeWorleySettings> DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> PerlinSettings;
+	Engine::Ref<CurlSettings> CurlSettings;
 	Engine::Ref<CloudsUI> UI;
 };
 

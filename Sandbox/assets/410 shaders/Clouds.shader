@@ -48,6 +48,8 @@ uniform float u_AnimationSpeed;
 
 uniform sampler2D u_DepthTexture;
 uniform sampler2D u_SceneTexture;
+
+uniform sampler2D u_CurlNoise;
 uniform sampler2D u_WeatherMap;
 uniform sampler3D u_BaseShapeTexture;
 uniform sampler3D u_DetailShapeTexture;
@@ -90,8 +92,8 @@ uniform bool u_ShowAlpha;
 uniform float u_DepthSlice;
 uniform vec4 u_ChannelWeights;
 
-#define PERLIN_DISPLAY 0
-#define SHAPE_DISPLAY 1
+#define DISPLAY_2D_TEXTURE 0
+#define DISPLAY_3D_TEXTURE 1
 
 
 float Remap(float v, float minOld, float maxOld, float minNew, float maxNew)
@@ -169,8 +171,11 @@ float SampleDensity(vec3 rayPosition)
     vec3 detailAnimationOffset = vec3(time, time * 0.15, time * 0.25) * animationSpeed;
     vec3 detailSamplePosition = uvw + animationOffset;
     vec3 detail = texture(u_DetailShapeTexture, detailSamplePosition).rgb;
+    float curl = texture(u_CurlNoise, weatherMapUV).x;
+    detail *= curl;
+
     vec3 normalizedDetailWeights = u_DetailNoiseWeights / dot(u_DetailNoiseWeights, vec3(1.0));
-    float detailFBM = dot(detail, normalizedDetailWeights) * edgeWeight * u_DetailNoiseWeight;
+    float detailFBM = max(0.0, dot(detail, normalizedDetailWeights) * edgeWeight * u_DetailNoiseWeight * (1.0 - u_DensityMultiplier));
 
     return baseShapeDensity - detailFBM;
 }
@@ -244,12 +249,12 @@ void main()
 
         switch (u_DisplayIndex)
         {
-            case PERLIN_DISPLAY:
+            case DISPLAY_2D_TEXTURE:
             {
                 color = texture(u_DisplayTexture2D, coord);
                 break;
             }
-            case SHAPE_DISPLAY:
+            case DISPLAY_3D_TEXTURE:
             {
                 vec4 result = texture(u_DisplayTexture3D, vec3(coord, u_DepthSlice));
 

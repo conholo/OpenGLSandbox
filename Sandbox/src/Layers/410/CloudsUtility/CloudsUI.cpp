@@ -134,7 +134,7 @@ void CloudsUI::DrawBaseShapeSelectionUI()
 
 void CloudsUI::DrawDetailShapeSelectionUI()
 {
-	std::string currentChannel = NameFromWorleyChannel(m_ActiveShapeMask);
+	std::string currentChannel = NameFromWorleyChannel(m_ActiveDetailMask);
 	if (ImGui::BeginCombo("Channel Selection", currentChannel.c_str()))
 	{
 		for (auto channelType : m_DetailTextureDisplaySettings->ChannelTypes)
@@ -192,12 +192,14 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 	if (ImGui::Checkbox("Display Texture Viewer", &m_MainTextureDebugSettings->EnableTextureViewer))
 		m_MainTextureDebugSettings->PercentScreenTextureDisplay = m_MainTextureDebugSettings->EnableTextureViewer ? 0.1f : 0.0f;
 
+
+	DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
+
 	if (!m_MainTextureDebugSettings->EnableTextureViewer)
 	{
 		ImGui::End();
 		return;
 	}
-
 	ImGui::DragFloat("Percent Screen Display", &m_MainTextureDebugSettings->PercentScreenTextureDisplay, 0.001, 0.0f, 1.0f);
 
 	std::string currentTextureEditor = NameFromUIType(m_ActiveUIType);
@@ -210,7 +212,7 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 			if (ImGui::Selectable(NameFromUIType(editorType).c_str(), isSelect))
 			{
 				m_ActiveUIType = editorType;
-				m_ActiveDebugShapeType = m_ActiveUIType == CloudUIType::Perlin ? ActiveDebugShapeType::None : (m_ActiveUIType == CloudUIType::BaseShape ? ActiveDebugShapeType::BaseShape : ActiveDebugShapeType::DetailNoise);
+				m_ActiveDebugShapeType = m_ActiveUIType == CloudUIType::Perlin || m_ActiveUIType == CloudUIType::Curl ? ActiveDebugShapeType::None : (m_ActiveUIType == CloudUIType::BaseShape ? ActiveDebugShapeType::BaseShape : ActiveDebugShapeType::DetailNoise);
 			}
 		}
 		ImGui::EndCombo();
@@ -229,8 +231,8 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 		DrawDetailShapeUI(uiData->DetailShapeSettings);
 	else if (m_ActiveUIType == CloudUIType::Perlin)
 		DrawPerlinUI(uiData->PerlinSettings);
-
-	DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
+	else if (m_ActiveUIType == CloudUIType::Curl)
+		DrawCurlUI(uiData->CurlSettings);
 }
 
 void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettings, const Engine::Ref<CloudAnimationSettings>& animationSettings, const Engine::Ref<CloudsSceneRenderPass>& sceneRenderPass)
@@ -271,7 +273,11 @@ void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettin
 	ImGui::DragFloat("Density Threshold", &cloudSettings->DensityThreshold, 0.001, 0.0);
 	ImGui::DragFloat("Powder Constant", &cloudSettings->PowderConstant, 0.001, 0.0);
 	ImGui::DragFloat("Phase Blend", &cloudSettings->PhaseBlend, 0.001, 0.0);
-	ImGui::DragFloat4("Phase Params", &cloudSettings->PhaseParams.x, 0.001, 0.0);
+	ImGui::DragFloat("Forward Scattering", &cloudSettings->ForwardScattering, 0.001, 0.0, 1.0);
+	ImGui::DragFloat("Back Scattering", &cloudSettings->BackScattering, 0.001, 0.0, 1.0);
+	ImGui::DragFloat("Base Brightness", &cloudSettings->BaseBrightness, 0.001, 0.0, 1.0);
+	ImGui::DragFloat("Phase Factor", &cloudSettings->PhaseFactor, 0.001, 0.0, 1.0);
+
 	ImGui::DragFloat("Silver Lining Constant", &cloudSettings->SilverLiningConstant, 0.001, 0.0);
 	ImGui::DragFloat("Cloud Scale", &cloudSettings->CloudScale, 0.01, 0.0);
 	ImGui::DragFloat4("Shape Noise Weights", &cloudSettings->ShapeNoiseWeights.x, 0.01, 0.0f, 1.0f);
@@ -294,6 +300,11 @@ void CloudsUI::DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseS
 
 	if (ImGui::Checkbox("Invert", &activeWorleyChannelData->InvertWorley))
 		updated = true;
+
+	if (activeWorleyChannelData->InvertWorley)
+		if (ImGui::DragFloat("Inversion Weight", &activeWorleyChannelData->InversionWeight, 0.01, 0.0, 1.0))
+			updated = true;
+
 	if (ImGui::DragInt3("Layer Cells", &activeWorleyChannelData->LayerCells.x, 0.1, 1))
 	{
 		updated = true;
@@ -306,13 +317,12 @@ void CloudsUI::DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseS
 	if (ImGui::DragFloat("Tiling", &activeWorleyChannelData->WorleyTiling, 0.01))
 		updated = true;
 
+
 	if (activeWorleyChannelData->Mask == WorleyChannelMask::R)
 	{
 		if (ImGui::DragFloat("Perlin Worley Mix", &baseShapeSettings->PerlinWorleyMix, 0.01))
 			updated = true;
 	}
-
-	uint32_t threadGroups = glm::ceil(baseShapeSettings->ShapeResolution / (float)baseShapeSettings->ShapeThreadGroupSize);
 
 	if (ImGui::Button("Generate New Points") || updatedPoints)
 	{
@@ -320,7 +330,7 @@ void CloudsUI::DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseS
 		updated = true;
 	}
 	if (ImGui::Button("Update Channel") || updated)
-		activeWorleyChannelData->UpdateChannel(perlinSettings->PerlinTexture, baseShapeSettings->PerlinWorleyMix, threadGroups);
+		baseShapeSettings->UpdateChannel(m_ActiveShapeMask, perlinSettings->PerlinTexture);
 
 	ImGui::End();
 }
@@ -338,6 +348,9 @@ void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& d
 
 	if (ImGui::Checkbox("Invert", &activeDetailChannelData->InvertWorley))
 		updated = true;
+	if (activeDetailChannelData->InvertWorley)
+		if (ImGui::DragFloat("Inversion Weight", &activeDetailChannelData->InversionWeight, 0.01, 0.0, 1.0))
+			updated = true;
 	if (ImGui::DragInt3("Layer Cells", &activeDetailChannelData->LayerCells.x, 0.1, 1))
 	{
 		updated = true;
@@ -351,7 +364,6 @@ void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& d
 		updated = true;
 
 
-	uint32_t threadGroups = glm::ceil(detailShapeSettings->DetailResolution / (float)detailShapeSettings->DetailThreadGroupSize);
 
 	if (ImGui::Button("Generate New Points") || updatedPoints)
 	{
@@ -359,7 +371,7 @@ void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& d
 		updated = true;
 	}
 	if (ImGui::Button("Update Channel") || updated)
-		activeDetailChannelData->UpdateChannel(threadGroups);
+		detailShapeSettings->UpdateChannel(m_ActiveDetailMask);
 
 	ImGui::End();
 }
@@ -389,6 +401,23 @@ void CloudsUI::DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSetti
 
 	if (updated)
 		perlinSettings->UpdateTexture();
+
+	ImGui::End();
+}
+
+void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
+{
+	ImGui::Begin("Curl Editor");
+	bool updated = false;
+	if (ImGui::DragFloat("Strength", &curlSettings->Strength, 0.001f))
+		updated = true;
+	if (ImGui::DragFloat("Tiling", &curlSettings->Tiling, 0.001, 0.01))
+		updated = true;
+	if (ImGui::DragFloat2("Texture Offset", &curlSettings->TilingOffset.x, 1.0f))
+		updated = true;
+
+	if (ImGui::Button("Update Noise") || updated)
+		curlSettings->UpdateTexture();
 
 	ImGui::End();
 }

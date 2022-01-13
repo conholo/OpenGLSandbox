@@ -90,6 +90,9 @@
     <ClCompile Include="src\Layers\410\CloudsUtility\CloudsCompositePass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\410\CurlTestLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -170,6 +173,9 @@
     <ClInclude Include="src\Layers\410\CloudsUtility\CloudsCompositePass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\410\CurlTestLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -214,5 +220,6 @@
     <None Include="assets\410 shaders\CloudsComposite.shader" />
     <None Include="assets\410 shaders\Normalize.compute" />
     <None Include="assets\410 shaders\TextureDisplay.shader" />
+    <None Include="assets\410 shaders\Curl.shader" />
   </ItemGroup>
 </Project>

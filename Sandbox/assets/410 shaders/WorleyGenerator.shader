@@ -24,6 +24,7 @@ uniform vec4 u_ChannelMask;
 uniform float u_Persistence;
 uniform float u_Tiling;
 uniform float u_PerlinWorleyMix;
+uniform float u_InversionWeight;
 
 uniform int u_CellsA;
 uniform int u_CellsB;
@@ -198,13 +199,13 @@ void main()
 	
 	float noise = layerA + (layerB * u_Persistence) + (layerC * u_Persistence * u_Persistence);
 	float maxNoise = 1.0 + (u_Persistence) + (u_Persistence * u_Persistence);
-	
-	if (u_ChannelMask.r == 1.0 && u_IsBaseShape)
-		noise = mix(noise, texture(u_PerlinTexture, texCoord.xy).r, u_PerlinWorleyMix);
 
 	noise /= maxNoise;
 	if(u_Invert)
-		noise = 1 - noise;
+		noise = (1.0 - noise) * u_InversionWeight;
+
+	if (u_ChannelMask.r == 1.0 && u_IsBaseShape)
+		noise = mix(noise, texture(u_PerlinTexture, texCoord.xy).r, u_PerlinWorleyMix);
 
 	vec4 current = imageLoad(o_Image, ivec3(gl_GlobalInvocationID));
 	vec4 result = current * (1.0 - u_ChannelMask) + noise * u_ChannelMask;
