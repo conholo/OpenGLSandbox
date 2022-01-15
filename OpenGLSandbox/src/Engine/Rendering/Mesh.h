@@ -21,11 +21,19 @@ namespace Engine
 	class Mesh
 	{
 	public:
+		Mesh();
+		Mesh(float* vertices, uint32_t vertexCount, uint32_t* indices, uint32_t indexCount);
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 			:m_Vertices(vertices), m_Indices(indices) { }
 
+		void ResetVertices(float* vertices, uint32_t vertexCount);
+		void ResetIndices(uint32_t* indices, uint32_t indexCount);
+
 		std::vector<Vertex>& GetVertices() { return m_Vertices; }
 		std::vector<uint32_t>& GetIndices() { return m_Indices; }
+
+		void ResizeAndClearVertices(uint32_t size) { m_Vertices.clear(); m_Vertices.resize(size); }
+		void ResizeAndClearIndices(uint32_t size) { m_Indices.clear(); m_Indices.resize(size); }
 
 	private:
 		std::vector<Vertex> m_Vertices;

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Engine\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Engine\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Engine\Rendering\AtomicCounterBuffer.cpp" />
     <ClCompile Include="src\Engine\Rendering\BezierSurface.cpp" />
     <ClCompile Include="src\Engine\Rendering\Framebuffer.cpp" />
     <ClCompile Include="src\Engine\Rendering\Line.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="src\Engine\Core\Time.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
     <ClCompile Include="src\Engine\Scene\SimpleECS\Light.cpp" />
+    <ClCompile Include="src\Engine\Experimental\Terrain.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\imgui\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="vendor\imgui\imgui\backends\imgui_impl_opengl3.cpp" />
@@ -69,6 +71,7 @@
     <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\Engine\Core\Buffer.h" />
     <ClInclude Include="src\Engine\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Engine\Rendering\AtomicCounterBuffer.h" />
     <ClInclude Include="src\Engine\Rendering\BezierSurface.h" />
     <ClInclude Include="src\Engine\Rendering\CubeMap.h" />
     <ClInclude Include="src\Engine\Rendering\Line.h" />
@@ -113,6 +116,7 @@
     <ClInclude Include="src\Engine\Event\WindowEvent.h" />
     <ClInclude Include="src\Engine\Core\EntryPoint.h" />
     <ClInclude Include="src\Engine\Scene\SimpleECS\Light.h" />
+    <ClInclude Include="src\Engine\Experimental\Terrain.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\imgui\imgui\backends\imgui_impl_glfw.h" />

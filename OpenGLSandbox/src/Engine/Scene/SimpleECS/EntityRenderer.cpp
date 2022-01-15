@@ -68,6 +68,20 @@ namespace Engine
 		RenderCommand::DrawPoints(m_Mesh->GetVertices().size());
 	}
 
+	void EntityRenderer::Bind()
+	{
+		m_VertexArray->Bind();
+		m_Shader->Bind();
+	}
+
+	void EntityRenderer::Unbind()
+	{
+		m_Shader->Unbind();
+		m_VertexArray->Unbind();
+		m_VertexBuffer->Unbind();
+		m_IndexBuffer->Unbind();
+	}
+
 	void EntityRenderer::SetPrimtiveType(PrimitiveType type)
 	{
 		m_Mesh = MeshFactory::Create(type);
@@ -89,6 +103,11 @@ namespace Engine
 
 		m_VertexArray->EnableVertexAttributes(m_VertexBuffer);
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+	}
+
+	void EntityRenderer::InvalidatePrimitives()
+	{
+		Initialize();
 	}
 }
 

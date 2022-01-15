@@ -7,6 +7,7 @@ namespace Engine
 	class IndexBuffer
 	{
 	public:
+		IndexBuffer(uint32_t count);
 		IndexBuffer(uint32_t* indices, uint32_t count);
 		~IndexBuffer();
 

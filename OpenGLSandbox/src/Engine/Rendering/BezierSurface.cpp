@@ -221,7 +221,7 @@ namespace Engine
 		m_PointVBO->ResizeAndSetData(vertexDataPtr, sizeOfData);
 		if (m_WireFrame)
 			RenderCommand::SetDrawMode(DrawMode::WireFrame);
-		RenderCommand::DrawIndexed(m_VAO, m_PointEBO->GetIndexCount(), IndexedTopology::Quads);
+		RenderCommand::DrawIndexed(m_VAO, m_PointEBO->GetIndexCount(), RenderTopology::Quads);
 		RenderCommand::SetDrawMode(DrawMode::Fill);
 		m_PointShader->Unbind();
 		m_VAO->Unbind();

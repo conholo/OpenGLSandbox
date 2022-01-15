@@ -12,6 +12,10 @@ CloudsLayer::CloudsLayer()
 	Engine::ShaderLibrary::Load("assets/410 shaders/CloudsComposite.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/TextureDisplay.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/Curl.shader");
+
+	Engine::ShaderLibrary::Load("assets/410 shaders/TerrainGenerator.shader");
+	Engine::ShaderLibrary::Load("assets/410 shaders/TerrainLighting.shader");
+
 }
 
 CloudsLayer::~CloudsLayer()

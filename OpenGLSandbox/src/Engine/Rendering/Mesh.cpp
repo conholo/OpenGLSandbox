@@ -6,6 +6,34 @@ namespace Engine
 {
 #define PI 3.14159265359
 
+	Mesh::Mesh(float* vertices, uint32_t vertexCount, uint32_t* indices, uint32_t indexCount)
+	{
+		m_Vertices.resize(vertexCount);
+		memcpy(m_Vertices.data(), vertices, vertexCount * sizeof(Vertex));
+
+		m_Indices.resize(indexCount);
+		memcpy(m_Indices.data(), indices, indexCount * sizeof(uint32_t));
+	}
+
+	Mesh::Mesh()
+	{
+
+	}
+
+	void Mesh::ResetVertices(float* vertices, uint32_t vertexCount)
+	{
+		m_Vertices.clear();
+		m_Vertices.resize(vertexCount);
+		memcpy(m_Vertices.data(), vertices, vertexCount * sizeof(Vertex));
+	}
+
+	void Mesh::ResetIndices(uint32_t* indices, uint32_t indexCount)
+	{
+		m_Indices.clear();
+		m_Indices.resize(indexCount);
+		memcpy(m_Indices.data(), indices, indexCount * sizeof(uint32_t));
+	}
+
 	Ref<Mesh> MeshFactory::Create(PrimitiveType primitiveType)
 	{
 		switch (primitiveType)
@@ -275,5 +303,7 @@ namespace Engine
 
 		return CreateRef<Mesh>(vertices, indices);
 	}
+
+
 }
 

@@ -278,6 +278,21 @@ namespace Engine
 		glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 	}
 
+	void Shader::EnableShaderStorageBarrierBit()
+	{
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	}
+
+	void Shader::EnableAtomicCounterBarrierBit()
+	{
+		glMemoryBarrier(GL_ATOMIC_COUNTER_BARRIER_BIT);
+	}
+
+	void Shader::EnableBufferUpdateBarrierBit()
+	{
+		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
+	}
+
 	void Shader::DispatchCompute(uint32_t groupX, uint32_t groupY, uint32_t groupZ)
 	{
 		if (!m_IsCompute)

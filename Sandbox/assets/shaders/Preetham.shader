@@ -16,7 +16,7 @@ float SaturatedDot(in vec3 a, in vec3 b)
 
 vec3 GetCubeMapTexCoord()
 {
-	vec2 st = gl_GlobalInvocationID.xy / vec2(imageSize(o_SkyMap));
+	vec2 st = (gl_GlobalInvocationID.xy) / vec2(imageSize(o_SkyMap) - 1.0);
 	// flip
 	vec2 uv = 2.0 * vec2(st.x, 1.0 - st.y) - vec2(1.0);
 

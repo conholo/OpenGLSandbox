@@ -36,6 +36,7 @@
 #include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
+#include "Engine/Rendering/AtomicCounterBuffer.h"
 #include "Engine/Rendering/Mesh.h"
 #include "Engine/Rendering/Texture.h"
 #include "Engine/Rendering/CubeMap.h"
@@ -46,3 +47,7 @@
 #include "Engine/Rendering/SceneRenderer.h"
 #include "Engine/Rendering/UniformBuffer.h"
 //--------------------- RENDERING ---------------------//
+
+//--------------------- EXPERIMENTAL ---------------------//
+#include "Engine/Experimental/Terrain.h"
+//--------------------- EXPERIMENTAL ---------------------//

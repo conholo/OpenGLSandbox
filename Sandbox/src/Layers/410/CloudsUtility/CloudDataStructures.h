@@ -19,8 +19,8 @@ struct CloudAnimationSettings
 
 struct CloudSettings
 {
-	glm::vec3 SkyColorA = { 0.2f, 0.4f, 0.5f };
-	glm::vec3 SkyColorB = { 0.3f, 0.4f, 0.9f };
+	glm::vec3 SkyColorA = { 0.18f, 0.184f, 0.188f };
+	glm::vec3 SkyColorB = { 0.67f, 0.78f, 0.79f };
 
 	int DensitySteps = 50;
 	int LightSteps = 10;

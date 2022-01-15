@@ -17,11 +17,15 @@ namespace Engine
 		void End();
 		void DrawPoints();
 
+		void Bind();
+		void Unbind();
 		void SetPrimtiveType(PrimitiveType type);
 		void SetShader(const std::string& shaderName) { m_Shader = ShaderLibrary::Get(shaderName); }
 
 		const Ref<Mesh> GetMesh() const { return m_Mesh; }
 		const Ref<Shader> GetShader() const { return m_Shader; }
+
+		void InvalidatePrimitives();
 
 	private:
 		void Initialize();

@@ -115,11 +115,11 @@ float PerlinNoise2D(vec2 coord)
 }
 
 
-layout(local_size_x = 8, local_size_y = 8) in;
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 void main()
 {
 	vec2 size = imageSize(o_Image);
-	vec2 texCoord = ivec2(gl_GlobalInvocationID.xy) / size * u_Settings.NoiseScale;
+	vec2 texCoord = ivec2(gl_GlobalInvocationID.x - size.x / 2.0, gl_GlobalInvocationID.y - size.y / 2.0) / size * u_Settings.NoiseScale;
 
 	float amplitude = 1.0;
 	float frequency = u_Settings.NoiseScale;

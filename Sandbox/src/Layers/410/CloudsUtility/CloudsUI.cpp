@@ -192,7 +192,7 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 	if (ImGui::Checkbox("Display Texture Viewer", &m_MainTextureDebugSettings->EnableTextureViewer))
 		m_MainTextureDebugSettings->PercentScreenTextureDisplay = m_MainTextureDebugSettings->EnableTextureViewer ? 0.1f : 0.0f;
 
-
+	DrawTerrainSettingsUI(uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
 	DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
 
 	if (!m_MainTextureDebugSettings->EnableTextureViewer)
@@ -418,6 +418,69 @@ void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
 
 	if (ImGui::Button("Update Noise") || updated)
 		curlSettings->UpdateTexture();
+
+	ImGui::End();
+}
+
+void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
+{
+	ImGui::Begin("Terrain Settings");
+	bool updated = false;
+
+	ImGui::Checkbox("Wireframe Mode", wireFrame);
+
+	if (ImGui::TreeNode("Detail Parameters"))
+	{
+		ImGui::Text(("Resolution: " + std::to_string(terrain->GetResolution())).c_str());
+		ImGui::Text(("LOD: " + std::to_string(terrain->GetLOD())).c_str());
+
+		if (ImGui::DragInt("LOD", terrainLOD, 0.01, terrain->GetMaxLOD(), terrain->GetMinLOD()))
+		{
+			terrain->SetLOD(*terrainLOD);
+			updated = true;
+		}
+
+		ImGui::DragFloat3("Terrain Color", &terrain->GetProperties()->Color.x, 0.01);
+
+
+		if (ImGui::DragFloat3("Terrain Size", &terrain->GetProperties()->Scale.x, 0.1))
+		{
+			terrain->GetTransform()->SetScale(terrain->GetProperties()->Scale);
+			updated = true;
+		}
+
+		if (ImGui::DragFloat3("Terrain Position", &terrain->GetProperties()->Position.x, 0.1))
+		{
+			terrain->GetTransform()->SetPosition(terrain->GetProperties()->Position);
+			updated = true;
+		}
+
+		ImGui::TreePop();
+	}
+
+
+	if (ImGui::TreeNodeEx("Terrain Noise Settings"))
+	{
+		if (ImGui::DragInt("Octaves##", &terrain->GetProperties()->NoiseSettings->Octaves, 0.01))
+			updated = true;
+		if (ImGui::DragFloat("Height Scale Factor##", &terrain->GetProperties()->HeightScaleFactor, 0.1))
+			updated = true;
+		if (ImGui::DragFloat("Height Threshold##", &terrain->GetProperties()->HeightThreshold, 0.01))
+			updated = true;
+		if (ImGui::DragFloat("Noise Scale##", &terrain->GetProperties()->NoiseSettings->NoiseScale, 0.01))
+			updated = true;
+		if (ImGui::DragFloat("Lacunarity##", &terrain->GetProperties()->NoiseSettings->Lacunarity, 0.01, 1.0f))
+			updated = true;
+		if (ImGui::DragFloat("Persistence##", &terrain->GetProperties()->NoiseSettings->Persistence, 0.01, 0.0f, 1.0f))
+			updated = true;
+		if (ImGui::DragFloat2("Offsets##", &terrain->GetProperties()->NoiseSettings->TextureOffset.x, 0.1f))
+			updated = true;
+
+		ImGui::TreePop();
+	}
+
+	if (updated)
+		terrain->UpdateTerrain();
 
 	ImGui::End();
 }

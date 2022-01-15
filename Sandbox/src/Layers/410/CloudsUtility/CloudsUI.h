@@ -15,7 +15,6 @@ struct CloudsUIData
 	Engine::Ref<CurlSettings> CurlSettings;
 };
 
-
 class CloudsUI
 {
 public:
@@ -40,6 +39,8 @@ private:
 	void DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
 	void DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 	void DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings);
+
+	void DrawTerrainSettingsUI(const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame);
 
 	void DrawBaseShapeSelectionUI();
 	void DrawDetailShapeSelectionUI();

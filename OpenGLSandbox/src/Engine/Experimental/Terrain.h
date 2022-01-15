@@ -1,0 +1,81 @@
+#pragma once
+
+#include "Engine/Rendering/VertexArray.h"
+#include "Engine/Core/Memory.h"
+#include "Engine/Scene/SimpleECS/EntityTransform.h"
+#include "Engine/Rendering/ShaderStorageBuffer.h"
+#include "Engine/Rendering/Shader.h"
+
+namespace Engine
+{
+	struct TerrainVertex
+	{
+		glm::vec4 Position_UV_x;
+		glm::vec4 Normal_UV_y;
+	};
+
+	struct TerrainNoiseSettings
+	{
+		int Octaves = 4;
+		float Lacunarity = 2.0f;
+		float Persistence = 0.5f;;
+		float NoiseScale = 1.0f;;
+		glm::vec2 TextureOffset{ 0.0f, 0.0f };
+	};
+
+	struct TerrainProperties
+	{
+		glm::vec3 Color{ 1.0f, 1.0f, 1.0f };
+		glm::vec3 Scale{ 5.0f, 5.0f, 5.0f };
+		glm::vec3 Position{ 0.0f, 0.0f, 0.0f };
+
+		float HeightThreshold = 0.1f;
+		float HeightScaleFactor = 1.0f;
+
+		Ref<TerrainNoiseSettings> NoiseSettings;
+	};
+
+	class Terrain
+	{
+	public:
+		Terrain();
+		~Terrain();
+
+		void Draw();
+		void UpdateTerrain();
+
+		const Ref<TerrainProperties>& GetProperties() const { return m_Properties; }
+		const Ref<EntityTransform>& GetTransform() const { return m_Transform; }
+
+		uint32_t GetResolution() const { return glm::pow(m_BaseResolution, m_MinLOD - m_MaxLOD - m_LOD + 3); }
+		uint32_t GetLOD() const { return m_LOD; }
+
+		void SetLOD(uint32_t lodLevel);
+		uint32_t GetMinLOD() const { return m_MinLOD; }
+		uint32_t GetMaxLOD() const { return m_MaxLOD; }
+
+	private:
+		Ref<VertexArray> m_VAO;
+		Ref<VertexBuffer> m_VBO;
+		Ref<IndexBuffer> m_EBO;;
+
+		Ref<ShaderStorageBuffer> m_VertexSSBO;
+		Ref<ShaderStorageBuffer> m_IndexSSBO;
+
+		std::vector<glm::vec4> m_NoiseOffsets;
+		Ref<ShaderStorageBuffer> m_NoiseOffsetsSSBO;
+
+	private:
+		Ref<TerrainProperties> m_Properties;
+		Ref<EntityTransform> m_Transform;
+
+	private:
+		int m_LOD = 3;
+		int m_Resolution = 8;
+
+		const uint32_t m_BaseResolution = 2;
+		const uint32_t m_MinLOD = 8;
+		const uint32_t m_MaxLOD = 0;
+		const uint32_t m_WorkGroupLocalSize = 8;
+	};
+}

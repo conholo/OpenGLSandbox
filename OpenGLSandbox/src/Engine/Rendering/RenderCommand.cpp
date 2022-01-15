@@ -30,12 +30,15 @@ namespace Engine
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_CULL_FACE);
 	}
 
 	void RenderCommand::SetFaceCullMode(FaceCullMode cullMode)
 	{
+		glEnable(GL_CULL_FACE);
 		glCullFace(cullMode == FaceCullMode::Front ? GL_FRONT : GL_BACK);
+
+		if (cullMode == FaceCullMode::None)
+			glDisable(GL_CULL_FACE);
 	}
 
 	void RenderCommand::SetFlags(uint32_t flags)
@@ -90,26 +93,26 @@ namespace Engine
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	static GLenum GLTopologyFromEngineTopology(IndexedTopology topology)
+	static GLenum GLTopologyFromEngineTopology(RenderTopology topology)
 	{
 		switch (topology)
 		{
-			case IndexedTopology::Quads: return GL_QUADS;
-			case IndexedTopology::Triangles: return GL_TRIANGLES;
+			case RenderTopology::Quads: return GL_QUADS;
+			case RenderTopology::Triangles: return GL_TRIANGLES;
 		}
 
 		return 0;
 	}
 
-	void RenderCommand::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount, IndexedTopology topology)
+	void RenderCommand::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount, RenderTopology topology)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetIndexCount();
 		glDrawElements(GLTopologyFromEngineTopology(topology), count, GL_UNSIGNED_INT, nullptr);
 	}
 
-	void RenderCommand::DrawQuads(uint32_t vertexCount, uint32_t first)
+	void RenderCommand::DrawArrays(uint32_t vertexCount, uint32_t first, RenderTopology topology)
 	{
-		glDrawArrays(GL_QUADS, first, vertexCount);
+		glDrawArrays(GLTopologyFromEngineTopology(topology), first, vertexCount);
 	}
 
 	void RenderCommand::DrawLine(LineTopology topology, uint32_t vertexCount, uint32_t first)

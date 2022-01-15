@@ -171,7 +171,7 @@ void WorleyPerlinSettings::UpdateTexture()
 	Engine::ShaderLibrary::Get("Perlin2D")->UploadUniformFloat("u_Settings.Persistence", Persistence);
 	Engine::ShaderLibrary::Get("Perlin2D")->UploadUniformInt("u_Settings.Octaves", Octaves);
 	Engine::ShaderLibrary::Get("Perlin2D")->UploadUniformFloat2("u_Settings.TextureOffset", TextureOffset);
-	Engine::ShaderLibrary::Get("Perlin2D")->DispatchCompute(threadGroups, threadGroups, threadGroups);
+	Engine::ShaderLibrary::Get("Perlin2D")->DispatchCompute(threadGroups, threadGroups, 1);
 	Engine::ShaderLibrary::Get("Perlin2D")->EnableShaderImageAccessBarrierBit();
 }
 

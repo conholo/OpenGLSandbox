@@ -34,6 +34,11 @@ private:
 	Engine::Ref<Engine::SimpleEntity> m_CompositeQuad;
 
 private:
+
+	bool m_Wireframe = false;
+	int m_LOD = 3;
+
+	Engine::Ref<Engine::Terrain> m_Terrain;
 	Engine::Ref<CloudsUI> m_CloudsUI;
 	Engine::Ref<CloudAnimationSettings> m_CloudAnimationSettings;
 	Engine::Ref<CloudSettings> m_CloudSettings;
