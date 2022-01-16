@@ -34,6 +34,28 @@ namespace Engine
 		uint32_t Width, Height;
 	};
 
+	class Texture2DArray
+	{
+	public:
+		Texture2DArray(const std::vector<std::string>& filePaths, const Texture2DSpecification& specification);
+		~Texture2DArray();
+
+		uint32_t GetID() const { return m_ID; }
+		const Texture2DSpecification& GetSpecification() const { return m_Specification; }
+
+		std::pair<uint32_t, uint32_t> GetMipSize(uint32_t mip) const;
+		uint32_t GetMipLevelCount() const;
+		uint32_t GetWidth() const { return m_Specification.Width; }
+		uint32_t GetHeight() const { return m_Specification.Height; }
+
+		void BindToSamplerSlot(uint32_t slot);
+		void Unbind() const;
+		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
+
+	private:
+		Texture2DSpecification m_Specification;
+		uint32_t m_ID;
+	};
 
 	class Texture2D
 	{

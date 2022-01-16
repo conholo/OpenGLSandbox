@@ -189,10 +189,12 @@ void CloudsUI::DrawDetailShapeSelectionUI()
 void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 {
 	ImGui::Begin("Settings");
+	ImGui::Checkbox("Draw Clouds", &uiData->MainCloudSettings->DrawClouds);
+	ImGui::Checkbox("Draw Terrain", uiData->SceneRenderPass->GetDrawTerrain());
 	if (ImGui::Checkbox("Display Texture Viewer", &m_MainTextureDebugSettings->EnableTextureViewer))
 		m_MainTextureDebugSettings->PercentScreenTextureDisplay = m_MainTextureDebugSettings->EnableTextureViewer ? 0.1f : 0.0f;
 
-	DrawTerrainSettingsUI(uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
+	DrawTerrainSettingsUI(uiData->SceneRenderPass, uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
 	DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
 
 	if (!m_MainTextureDebugSettings->EnableTextureViewer)
@@ -422,19 +424,25 @@ void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
 	ImGui::End();
 }
 
-void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
+void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& cloudPass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
 {
 	ImGui::Begin("Terrain Settings");
 	bool updated = false;
 
+	std::string minText = "Min Height: " + std::to_string(terrain->GetMinHeightLocalSpace());
+	std::string maxText = "Max Height: " + std::to_string(terrain->GetMaxHeightLocalSpace());
+
+	ImGui::Text(minText.c_str());
+	ImGui::Text(maxText.c_str());
 	ImGui::Checkbox("Wireframe Mode", wireFrame);
+
 
 	if (ImGui::TreeNode("Detail Parameters"))
 	{
 		ImGui::Text(("Resolution: " + std::to_string(terrain->GetResolution())).c_str());
 		ImGui::Text(("LOD: " + std::to_string(terrain->GetLOD())).c_str());
 
-		if (ImGui::DragInt("LOD", terrainLOD, 0.01, terrain->GetMaxLOD(), terrain->GetMinLOD()))
+		if (ImGui::DragInt("LOD", terrainLOD, 0.01, terrain->GetMaxLOD() - 3, terrain->GetMinLOD() - 3))
 		{
 			terrain->SetLOD(*terrainLOD);
 			updated = true;
@@ -475,6 +483,21 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<Engine::Terrain>& terrain
 			updated = true;
 		if (ImGui::DragFloat2("Offsets##", &terrain->GetProperties()->NoiseSettings->TextureOffset.x, 0.1f))
 			updated = true;
+
+		ImGui::TreePop();
+	}
+
+	if (ImGui::TreeNodeEx("Terrain Layer Settings"))
+	{
+		for (uint32_t i = 0; i < cloudPass->GetTerrainHeightLayers().size(); i++)
+		{
+			ImGui::Separator();
+			std::string heightThresholdName = "Layer " + std::to_string(i) + ": Height Threshold##";
+			ImGui::DragFloat(heightThresholdName.c_str(), &cloudPass->GetTerrainHeightLayers()[i]->HeightThreshold, 0.01f, -1.0f, 1.0f);
+			std::string blendWeightName = "Layer " + std::to_string(i) + ": Blend Weight##";
+			ImGui::DragFloat(blendWeightName.c_str(), &cloudPass->GetTerrainHeightLayers()[i]->BlendStrength, 0.01f);
+			ImGui::Separator();
+		}
 
 		ImGui::TreePop();
 	}

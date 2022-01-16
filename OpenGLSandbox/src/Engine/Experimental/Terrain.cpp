@@ -3,6 +3,8 @@
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/Camera.h"
 
+#include <iostream>
+
 namespace Engine
 {
 	std::vector<glm::vec4> GenerateOffsets(int octaves)
@@ -27,6 +29,10 @@ namespace Engine
 
 		m_VertexSSBO = CreateRef<ShaderStorageBuffer>(maxSizeVerticesBuffer);
 		m_IndexSSBO = CreateRef<ShaderStorageBuffer>(maxSizeIndicesBuffer);
+
+		m_MinMax[0] = INT_MAX;
+		m_MinMax[1] = INT_MIN;
+		m_MinMaxSSBO = CreateRef<ShaderStorageBuffer>(m_MinMax, sizeof(float) * 2);
 
 		m_VAO = CreateRef<VertexArray>();
 		m_VBO = CreateRef<VertexBuffer>(maxSizeVerticesBuffer);
@@ -59,7 +65,6 @@ namespace Engine
 
 	Terrain::~Terrain()
 	{
-
 	}
 
 	void Terrain::Draw()
@@ -73,6 +78,11 @@ namespace Engine
 	void Terrain::UpdateTerrain()
 	{
 		uint32_t workGroupCount = glm::ceil(m_Resolution / (float)m_WorkGroupLocalSize);
+
+		m_MinMax[0] = INT_MAX;
+		m_MinMax[1] = INT_MIN;
+
+		m_MinMaxSSBO->SetData(m_MinMax, 0, sizeof(float) * 2);
 
 		m_Transform->SetPosition(m_Properties->Position);
 		m_Transform->SetScale(m_Properties->Scale);
@@ -98,6 +108,7 @@ namespace Engine
 		m_VertexSSBO->BindToComputeShader(0, ShaderLibrary::Get("TerrainGenerator")->GetID());
 		m_IndexSSBO->BindToComputeShader(1, ShaderLibrary::Get("TerrainGenerator")->GetID());
 		m_NoiseOffsetsSSBO->BindToComputeShader(2, ShaderLibrary::Get("TerrainGenerator")->GetID());
+		m_MinMaxSSBO->BindToComputeShader(3, ShaderLibrary::Get("TerrainGenerator")->GetID());
 		ShaderLibrary::Get("TerrainGenerator")->DispatchCompute(workGroupCount, workGroupCount, 1);
 		ShaderLibrary::Get("TerrainGenerator")->EnableShaderStorageBarrierBit();
 		ShaderLibrary::Get("TerrainGenerator")->EnableBufferUpdateBarrierBit();
@@ -106,6 +117,11 @@ namespace Engine
 		uint32_t vertexBufferSize = (m_Resolution * m_Resolution) * sizeof(TerrainVertex);
 		m_VertexSSBO->CopyData(m_VBO->GetID(), 0, 0, vertexBufferSize);
 		m_IndexSSBO->CopyData(m_EBO->GetID(), 0, 0, indexBufferSize);
+
+		float* minMax = (float*)m_MinMaxSSBO->GetData();
+
+		m_MinHeight = minMax[0];
+		m_MaxHeight = minMax[1];
 	}
 
 	void Terrain::SetLOD(uint32_t lodLevel)

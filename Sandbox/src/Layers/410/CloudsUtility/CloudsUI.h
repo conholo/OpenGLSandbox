@@ -40,7 +40,7 @@ private:
 	void DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 	void DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings);
 
-	void DrawTerrainSettingsUI(const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame);
+	void DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& cloudPass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame);
 
 	void DrawBaseShapeSelectionUI();
 	void DrawDetailShapeSelectionUI();

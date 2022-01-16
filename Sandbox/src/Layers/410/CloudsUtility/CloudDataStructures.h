@@ -19,6 +19,7 @@ struct CloudAnimationSettings
 
 struct CloudSettings
 {
+	bool DrawClouds = true;
 	glm::vec3 SkyColorA = { 0.18f, 0.184f, 0.188f };
 	glm::vec3 SkyColorB = { 0.67f, 0.78f, 0.79f };
 
@@ -27,7 +28,7 @@ struct CloudSettings
 
 	glm::vec3 BaseShapeTextureOffset = glm::vec3(0.0);
 	float DetailNoiseWeight = 1.0f;
-	float CloudScale = 1.2f;
+	float CloudScale = 5.0f;
 	float DensityThreshold = 0.12f;
 	float DensityMultiplier = 0.43f;
 	float PhaseBlend = 0.5f;
@@ -40,8 +41,8 @@ struct CloudSettings
 	glm::vec4 ShapeNoiseWeights{ 0.95f, 0.48f, 0.32f, 0.42f };
 	glm::vec3 DetailNoiseWeights{ 0.23f, 0.33f, 0.45f };
 
-	glm::vec3 CloudContainerPosition{ 0.0f, 30.0f, 0.0f };
-	glm::vec3 CloudContainerScale{ 300.0f, 230.0f, 300.0f };
+	glm::vec3 CloudContainerPosition{ 0.0f, 75.0f, 0.0f };
+	glm::vec3 CloudContainerScale{ 400.0f, 300.0f, 300.0f };
 	float ContainerEdgeFadeDistance = 50.0f;
 };
 

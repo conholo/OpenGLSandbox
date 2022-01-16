@@ -57,6 +57,7 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	passData->CurlSettings->CurlTexture->BindToSamplerSlot(5);
 
 	m_CloudQuad->GetEntityRenderer()->GetShader()->Bind();
+	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformBool("u_DrawClouds", passData->MainSettings->DrawClouds);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SceneTexture", 0);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DepthTexture", 1);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BaseShapeTexture", 2);

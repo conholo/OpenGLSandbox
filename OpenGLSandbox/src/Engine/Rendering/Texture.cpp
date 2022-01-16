@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 
+#include <memory>
 #include <stb_image.h>
 #include <stb_image_write.h>
 #include <glad/glad.h>
@@ -457,6 +458,86 @@ namespace Engine
 	uint32_t Texture3D::GetMipLevelCount() const
 	{
 		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
+	}
+
+	Texture2DArray::Texture2DArray(const std::vector<std::string>& filePaths, const Texture2DSpecification& specification)
+		:m_Specification(specification)
+	{
+		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, filePaths.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+		int width, height, channels;
+
+		for (uint32_t i = 0; i < filePaths.size(); i++)
+		{
+			unsigned char* data = stbi_load(filePaths[i].c_str(), &width, &height, &channels, 0);
+			m_Specification.InternalFormat = channels == 4 ? ImageUtils::ImageInternalFormat::RGBA8 : ImageUtils::ImageInternalFormat::RGB8;
+			m_Specification.PixelLayoutFormat = channels == 4 ? ImageUtils::ImageDataLayout::RGBA : ImageUtils::ImageDataLayout::RGB;
+
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, m_Specification.Width, m_Specification.Height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+
+		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MinFilterMode);
+		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MagFilterMode);
+		GLenum wrapModeS = ImageUtils::ConvertWrapMode(m_Specification.WrapModeS);
+		GLenum wrapModeT = ImageUtils::ConvertWrapMode(m_Specification.WrapModeT);
+
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, wrapModeS);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, wrapModeT);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, magFilter);
+		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+	}
+
+	Texture2DArray::~Texture2DArray()
+	{
+		glDeleteTextures(1, &m_ID);
+	}
+
+	std::pair<glm::uint32_t, glm::uint32_t> Texture2DArray::GetMipSize(uint32_t mip) const
+	{
+		uint32_t width = m_Specification.Width;
+		uint32_t height = m_Specification.Height;
+		while (mip != 0)
+		{
+			width /= 2;
+			height /= 2;
+			mip--;
+		}
+
+		return { width, height };
+	}
+
+	uint32_t Texture2DArray::GetMipLevelCount() const
+	{
+		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
+	}
+
+	void Texture2DArray::BindToSamplerSlot(uint32_t slot)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTextureUnit(slot, m_ID);
+	}
+
+	void Texture2DArray::Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_3D, 0);
+	}
+
+	void Texture2DArray::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	{
+		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
+		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
+
+		if (glShaderDataFormat != internalFormat)
+		{
+			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			return;
+		}
+
+		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 }
 

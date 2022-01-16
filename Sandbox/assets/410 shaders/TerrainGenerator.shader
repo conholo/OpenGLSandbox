@@ -24,6 +24,11 @@ layout(std140, binding = 2) buffer RandomOffsets
 	vec4 Offsets[];
 };
 
+layout(std430, binding = 3) restrict buffer MinMaxBuffer
+{
+	float MinMax[2];
+};
+
 struct PerlinSettings
 {
 	int Octaves;
@@ -132,7 +137,7 @@ vec3 CalculateNeighborPosition(ivec2 id, ivec2 maxSize)
 vec3 NormalizeCheck(vec3 n)
 {
 	float len = length(n);
-	vec3 normal = len == 0.0 || isnan(len) ? vec3(0.0, 1.0, 0.0) : n / len;
+	vec3 normal = len == 0.0 || isnan(len) ? vec3(1.0, 1.0, 1.0) : n / len;
 	return normal;
 }
 
@@ -169,10 +174,14 @@ void main()
 	vec2 size = u_Resolution;
 	vec2 imageSizeMinusOne = size - 1.0;
 	ivec2 id = ivec2(gl_GlobalInvocationID.xy);
-	int vertexIndex = id.x + id.y * int(size.x);
+	int vertexIndex = id.y + id.x * int(size.x);
 	vec2 texCoord = vec2(id) / imageSizeMinusOne;
 
 	Vertices[vertexIndex].Position_UV_x.xyz = CalculatePosition(texCoord);
+
+	MinMax[0] = min(MinMax[0], Vertices[vertexIndex].Position_UV_x.y);
+	MinMax[1] = max(MinMax[1], Vertices[vertexIndex].Position_UV_x.y);
+
 	Vertices[vertexIndex].Position_UV_x.w = texCoord.x;
 	Vertices[vertexIndex].Normal_UV_y.x = texCoord.y;
 	Vertices[vertexIndex].Normal_UV_y.yzw = CalculateNormals(id, ivec2(imageSizeMinusOne));
@@ -180,7 +189,7 @@ void main()
 	if (id.x < size.x - 1 && id.y < size.y - 1)
 	{
 		// Index * 6 gets us the start of the quad.  Subtracting by the row * 6 accounts for the number of vertices we've skipped on the extents.
-		int startTriangleIndex = vertexIndex * 6 - id.y * 6;
+		int startTriangleIndex = vertexIndex * 6 - id.x * 6;
 
 		Indices[startTriangleIndex] = vertexIndex;
 		Indices[startTriangleIndex + 1] = vertexIndex + int(size.x) + 1;

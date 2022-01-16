@@ -37,6 +37,8 @@ struct Sun
 
 uniform Sun u_Sun;
 
+uniform bool u_DrawClouds;
+
 uniform vec3 u_SkyColorA;
 uniform vec3 u_SkyColorB;
 
@@ -142,7 +144,7 @@ float SampleDensity(vec3 rayPosition)
 {
     vec3 containerSize = u_BoundsMax - u_BoundsMin;
     vec3 containerCenter = (u_BoundsMax + u_BoundsMin) * 0.5;
-    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / containerSize) * u_CloudScale;
+    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / 1000.0) * u_CloudScale;
     float animationSpeed = u_Animate ? u_AnimationSpeed : 0.0;
     float time = u_TimeScale * u_ElapsedTime;
     vec3 animationOffset = vec3(time, time * 0.1, time * 0.2) * animationSpeed;
@@ -291,55 +293,62 @@ void main()
     {
         vec3 rayPosition = u_WorldSpaceCameraPosition;
         vec3 rayDirection = normalize(v_WorldSpaceViewDirection);
+        vec3 directionToLight = normalize(u_Sun.LightPosition - u_WorldSpaceCameraPosition);
 
-        vec2 rayBoxInfo = RayBoxDst(u_BoundsMin, u_BoundsMax, rayPosition, 1.0f / rayDirection);
-        float distanceToBox = rayBoxInfo.x;
-        float distanceInsideBox = rayBoxInfo.y;
-
+        float transmittance = 1.0;
+        vec3 cloudColor = vec3(0.0);
         float nonLinearDepth = texture(u_DepthTexture, v_UV).r;
         float linearDepth = CalculateLinearDepth(nonLinearDepth);
 
-        vec3 intersectionPoint = rayPosition + rayDirection * distanceToBox;
-
-        float distanceTravelled = 0.0;
-        float distanceLimit = min(linearDepth - distanceToBox, distanceInsideBox);
-
-        vec3 directionToLight = normalize(u_Sun.LightPosition - u_WorldSpaceCameraPosition);
-
-        float cosLightViewer = dot(rayDirection, directionToLight);
-        float phaseValue = PhaseFn(cosLightViewer);
-
-        float stepSize = distanceLimit / float(u_DensitySteps);
-        float totalDensity = 0.0;
-        float transmittance = 1.0;
-        vec3 lightEnergy = vec3(0.0);
-
-        while (distanceTravelled < distanceLimit)
+        if (u_DrawClouds)
         {
-            rayPosition = intersectionPoint + rayDirection * distanceTravelled;
+            vec2 rayBoxInfo = RayBoxDst(u_BoundsMin, u_BoundsMax, rayPosition, 1.0f / rayDirection);
+            float distanceToBox = rayBoxInfo.x;
+            float distanceInsideBox = rayBoxInfo.y;
 
-            float density = SampleDensity(rayPosition);
+            vec3 intersectionPoint = rayPosition + rayDirection * distanceToBox;
 
-            if (density > 0)
+            float distanceTravelled = 0.0;
+            float distanceLimit = min(linearDepth - distanceToBox, distanceInsideBox);
+
+            float cosLightViewer = dot(rayDirection, directionToLight);
+            float phaseValue = PhaseFn(cosLightViewer);
+
+            float stepSize = distanceLimit / float(u_DensitySteps);
+            float totalDensity = 0.0;
+            vec3 lightEnergy = vec3(0.0);
+
+            while (distanceTravelled < distanceLimit)
             {
-                float lightTransmittance = LightMarch(rayPosition);
-                lightEnergy += density * stepSize * transmittance * lightTransmittance * phaseValue;
-                transmittance *= exp(-density * stepSize * u_PowderConstant);
-                if (transmittance < 0.01)
-                    break;
+                rayPosition = intersectionPoint + rayDirection * distanceTravelled;
+
+                float density = SampleDensity(rayPosition);
+
+                if (density > 0)
+                {
+                    float lightTransmittance = LightMarch(rayPosition);
+                    lightEnergy += density * stepSize * transmittance * lightTransmittance * phaseValue;
+                    transmittance *= exp(-density * stepSize * u_PowderConstant);
+                    if (transmittance < 0.01)
+                        break;
+                }
+
+                distanceTravelled += stepSize;
             }
 
-            distanceTravelled += stepSize;
+            cloudColor = lightEnergy * u_Sun.LightColor;
         }
 
+
+        float dstFog = 1.0 - exp(-max(0, linearDepth) * 8 * .0001);
         vec3 skyColor = mix(u_SkyColorA, u_SkyColorB, sqrt(abs(clamp(rayDirection.y, 0.0, 1.0))));
+        skyColor = dstFog * skyColor;
         vec3 background = texture(u_SceneTexture, v_UV).rgb;
 
-        float focusedEye = pow(clamp(cosLightViewer, 0.0, 1.0), u_PhaseParams.x);
+        float focusedEye = pow(clamp(dot(rayDirection, directionToLight), 0.0, 1.0), u_PhaseParams.x);
         float sunValue = clamp(HG(focusedEye, 0.9995), 0.0, 1.0) * transmittance;
 
-        vec3 backgroundColor = background + skyColor;
-        vec3 cloudColor = lightEnergy * u_Sun.LightColor;
+        vec3 backgroundColor = background * (1 - dstFog) + skyColor;
 
         vec3 col = backgroundColor * transmittance + cloudColor;
         color = vec4(col * (1.0 - sunValue) + u_Sun.LightColor * sunValue, 1.0);

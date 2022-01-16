@@ -5,9 +5,20 @@
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
 #include "Engine/Rendering/Shader.h"
+#include "Engine/Rendering/Texture.h"
+
+
 
 namespace Engine
 {
+	struct TerrainHeightLayer
+	{
+		float HeightThreshold;
+		float BlendStrength = 0.5f;
+		glm::vec3 TintColor = glm::vec3(1.0f);
+		Ref<Texture2D> HeightTexture;
+	};
+
 	struct TerrainVertex
 	{
 		glm::vec4 Position_UV_x;
@@ -54,6 +65,9 @@ namespace Engine
 		uint32_t GetMinLOD() const { return m_MinLOD; }
 		uint32_t GetMaxLOD() const { return m_MaxLOD; }
 
+		float GetMinHeightLocalSpace() const { return m_MinHeight; }
+		float GetMaxHeightLocalSpace() const { return m_MaxHeight; }
+
 	private:
 		Ref<VertexArray> m_VAO;
 		Ref<VertexBuffer> m_VBO;
@@ -61,6 +75,8 @@ namespace Engine
 
 		Ref<ShaderStorageBuffer> m_VertexSSBO;
 		Ref<ShaderStorageBuffer> m_IndexSSBO;
+		Ref<ShaderStorageBuffer> m_MinMaxSSBO;
+		float m_MinMax[2];
 
 		std::vector<glm::vec4> m_NoiseOffsets;
 		Ref<ShaderStorageBuffer> m_NoiseOffsetsSSBO;
@@ -70,8 +86,11 @@ namespace Engine
 		Ref<EntityTransform> m_Transform;
 
 	private:
-		int m_LOD = 3;
+		int m_LOD = 0;
 		int m_Resolution = 8;
+
+		float m_MinHeight = 0.0f;
+		float m_MaxHeight = 0.0f;
 
 		const uint32_t m_BaseResolution = 2;
 		const uint32_t m_MinLOD = 8;
@@ -79,3 +98,4 @@ namespace Engine
 		const uint32_t m_WorkGroupLocalSize = 8;
 	};
 }
+
