@@ -73,6 +73,7 @@ uniform int u_LightSteps;
 uniform int u_DensitySteps;
 uniform vec3 u_BoundsMin;
 uniform vec3 u_BoundsMax;
+uniform float u_CloudScaleFactor;
 uniform vec3 u_WorldSpaceCameraPosition;
 
 uniform float u_NearClip;
@@ -144,7 +145,7 @@ float SampleDensity(vec3 rayPosition)
 {
     vec3 containerSize = u_BoundsMax - u_BoundsMin;
     vec3 containerCenter = (u_BoundsMax + u_BoundsMin) * 0.5;
-    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / 1000.0) * u_CloudScale;
+    vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / u_CloudScaleFactor) * u_CloudScale;
     float animationSpeed = u_Animate ? u_AnimationSpeed : 0.0;
     float time = u_TimeScale * u_ElapsedTime;
     vec3 animationOffset = vec3(time, time * 0.1, time * 0.2) * animationSpeed;

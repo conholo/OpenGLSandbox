@@ -15,6 +15,7 @@ namespace Engine
 	{
 		float HeightThreshold;
 		float BlendStrength = 0.5f;
+		float TextureTiling = 1.0f;
 		glm::vec3 TintColor = glm::vec3(1.0f);
 		Ref<Texture2D> HeightTexture;
 	};

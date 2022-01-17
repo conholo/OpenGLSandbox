@@ -188,20 +188,61 @@ void CloudsUI::DrawDetailShapeSelectionUI()
 
 void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 {
-	ImGui::Begin("Settings");
+	ImGui::Begin("Editor");
+
+	if (ImGui::BeginTabBar("Scene Settings"))
+	{
+		for (uint32_t i = 0; i < m_AvailableTabTypes.size(); i++)
+		{
+			if (ImGui::BeginTabItem(NameFromUITabType(m_AvailableTabTypes[i]).c_str()))
+			{
+				m_ActiveTabType = m_AvailableTabTypes[i];
+
+				if (m_ActiveTabType == UITabTypes::MainSettings)
+					DrawMainSettings(uiData);
+				else if (m_ActiveTabType == UITabTypes::CloudSettings)
+					DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
+				else if (m_ActiveTabType == UITabTypes::NoiseTextureSettings)
+				{
+					DrawNoiseEditorSettings();
+					if (m_ActiveUIType == CloudUIType::BaseShape)
+						DrawBaseShapeUI(uiData->BaseShapeSettings, uiData->PerlinSettings);
+					else if (m_ActiveUIType == CloudUIType::DetailShape)
+						DrawDetailShapeUI(uiData->DetailShapeSettings);
+					else if (m_ActiveUIType == CloudUIType::Perlin)
+						DrawPerlinUI(uiData->PerlinSettings);
+					else if (m_ActiveUIType == CloudUIType::Curl)
+						DrawCurlUI(uiData->CurlSettings);
+				}
+				else if (m_ActiveTabType == UITabTypes::TerrainSettings)
+					DrawTerrainSettingsUI(uiData->SceneRenderPass, uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
+
+				ImGui::EndTabItem();
+			}
+		}
+
+		ImGui::EndTabBar();
+	}
+
+	ImGui::End();
+
+
+}
+
+void CloudsUI::DrawMainSettings(const Engine::Ref<CloudsUIData>& uiData)
+{
 	ImGui::Checkbox("Draw Clouds", &uiData->MainCloudSettings->DrawClouds);
 	ImGui::Checkbox("Draw Terrain", uiData->SceneRenderPass->GetDrawTerrain());
+}
+
+void CloudsUI::DrawNoiseEditorSettings()
+{
 	if (ImGui::Checkbox("Display Texture Viewer", &m_MainTextureDebugSettings->EnableTextureViewer))
 		m_MainTextureDebugSettings->PercentScreenTextureDisplay = m_MainTextureDebugSettings->EnableTextureViewer ? 0.1f : 0.0f;
 
-	DrawTerrainSettingsUI(uiData->SceneRenderPass, uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
-	DrawCloudSettingsUI(uiData->MainCloudSettings, uiData->AnimationSettings, uiData->SceneRenderPass);
-
 	if (!m_MainTextureDebugSettings->EnableTextureViewer)
-	{
-		ImGui::End();
 		return;
-	}
+
 	ImGui::DragFloat("Percent Screen Display", &m_MainTextureDebugSettings->PercentScreenTextureDisplay, 0.001, 0.0f, 1.0f);
 
 	std::string currentTextureEditor = NameFromUIType(m_ActiveUIType);
@@ -224,78 +265,80 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 		DrawBaseShapeSelectionUI();
 	if (m_ActiveUIType == CloudUIType::DetailShape)
 		DrawDetailShapeSelectionUI();
-
-	ImGui::End();
-
-	if (m_ActiveUIType == CloudUIType::BaseShape)
-		DrawBaseShapeUI(uiData->BaseShapeSettings, uiData->PerlinSettings);
-	else if (m_ActiveUIType == CloudUIType::DetailShape)
-		DrawDetailShapeUI(uiData->DetailShapeSettings);
-	else if (m_ActiveUIType == CloudUIType::Perlin)
-		DrawPerlinUI(uiData->PerlinSettings);
-	else if (m_ActiveUIType == CloudUIType::Curl)
-		DrawCurlUI(uiData->CurlSettings);
 }
 
 void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettings, const Engine::Ref<CloudAnimationSettings>& animationSettings, const Engine::Ref<CloudsSceneRenderPass>& sceneRenderPass)
 {
-	ImGui::Begin("Cloud Settings");
+	if (ImGui::TreeNodeEx("Sun/Sky Settings"))
+	{
+		ImGui::DragFloat3("Sun Position", &sceneRenderPass->GetSunLight()->GetLightTransform()->GetPosition().x, 0.1);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::ColorEdit3("Sun Color", &sceneRenderPass->GetSunLight()->GetLightColor().r, ImGuiColorEditFlags_NoInputs);
+		ImGui::PopStyleVar();
+		ImGui::DragFloat("Sun Intensity", &sceneRenderPass->GetSunLight()->GetLightIntensity(), 0.1);
 
-	ImGui::DragFloat3("Sun Position", &sceneRenderPass->GetSunLight()->GetLightTransform()->GetPosition().x, 0.1);
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-	ImGui::ColorEdit3("Sun Color", &sceneRenderPass->GetSunLight()->GetLightColor().r, ImGuiColorEditFlags_NoInputs);
-	ImGui::PopStyleVar();
-	ImGui::DragFloat("Sun Intensity", &sceneRenderPass->GetSunLight()->GetLightIntensity(), 0.1);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::ColorEdit3("Sky Color A", &cloudSettings->SkyColorA.r, ImGuiColorEditFlags_NoInputs);
+		ImGui::PopStyleVar();
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+		ImGui::ColorEdit3("Sky Color B", &cloudSettings->SkyColorB.r, ImGuiColorEditFlags_NoInputs);
+		ImGui::PopStyleVar();
+		ImGui::Separator();
 
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-	ImGui::ColorEdit3("Sky Color A", &cloudSettings->SkyColorA.r, ImGuiColorEditFlags_NoInputs);
-	ImGui::PopStyleVar();
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-	ImGui::ColorEdit3("Sky Color B", &cloudSettings->SkyColorB.r, ImGuiColorEditFlags_NoInputs);
-	ImGui::PopStyleVar();
-	ImGui::Separator();
+		ImGui::TreePop();
+	}
 
-	ImGui::DragFloat3("Cloud Container Position", &cloudSettings->CloudContainerPosition.x, 0.1);
-	ImGui::DragFloat3("Cloud Container Scale", &cloudSettings->CloudContainerScale.x, 0.1);
-	ImGui::DragFloat("Container Edge Fade Distance", &cloudSettings->ContainerEdgeFadeDistance, 0.1);
+	if (ImGui::TreeNodeEx("Cloud Scale/Container Settings"))
+	{
+		ImGui::DragFloat3("Cloud Container Position", &cloudSettings->CloudContainerPosition.x, 0.1);
+		ImGui::DragFloat3("Cloud Container Scale", &cloudSettings->CloudContainerScale.x, 0.1);
+		ImGui::DragFloat("Container Edge Fade Distance", &cloudSettings->ContainerEdgeFadeDistance, 0.1);
+		ImGui::DragFloat("Cloud Scale", &cloudSettings->CloudScale, 0.01, 0.0);
+		ImGui::DragFloat("Cloud Scale Factor", &cloudSettings->CloudScaleFactor, 0.1);
+		ImGui::TreePop();
+	}
 
-	ImGui::Separator();
-	if (ImGui::DragInt("Density Steps", &cloudSettings->DensitySteps, 0.1, 1))
-		if (cloudSettings->DensitySteps < 1) cloudSettings->DensitySteps = 1;
-	if (ImGui::DragInt("Light Steps", &cloudSettings->LightSteps, 0.1, 1))
-		if (cloudSettings->LightSteps < 1) cloudSettings->LightSteps = 1;
+	if (ImGui::TreeNodeEx("Animation Settings"))
+	{
+		ImGui::Checkbox("Animate Clouds", &animationSettings->AnimateClouds);
+		ImGui::DragFloat("Animation Speed", &animationSettings->AnimationSpeed, 0.1);
+		ImGui::DragFloat("Time Scale", &animationSettings->TimeScale, 0.001);
+		ImGui::DragFloat("Cloud Scroll Offset Speed", &animationSettings->CloudScrollOffsetSpeed, 0.1f);
+		ImGui::DragFloat3("Shape Texture Offset", &animationSettings->ShapeTextureOffset.x, 1.0f);
+		ImGui::TreePop();
+	}
 
-	ImGui::Checkbox("Animate Clouds", &animationSettings->AnimateClouds);
-	ImGui::DragFloat("Animation Speed", &animationSettings->AnimationSpeed, 0.1);
-	ImGui::DragFloat("Time Scale", &animationSettings->TimeScale, 0.001);
-	ImGui::DragFloat("Cloud Scroll Offset Speed", &animationSettings->CloudScrollOffsetSpeed, 0.1f);
-	ImGui::DragFloat3("Shape Texture Offset", &animationSettings->ShapeTextureOffset.x, 1.0f);
+	if (ImGui::TreeNodeEx("Density Settings"))
+	{
+		if (ImGui::DragInt("Density Steps", &cloudSettings->DensitySteps, 0.1, 1))
+			if (cloudSettings->DensitySteps < 1) cloudSettings->DensitySteps = 1;
+		ImGui::DragFloat("Density Multiplier", &cloudSettings->DensityMultiplier, 0.001, 0.0);
+		ImGui::DragFloat("Density Threshold", &cloudSettings->DensityThreshold, 0.001, 0.0);
+		ImGui::DragFloat4("Shape Noise Weights", &cloudSettings->ShapeNoiseWeights.x, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat3("Detail Noise Weights", &cloudSettings->DetailNoiseWeights.x, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Detail Noise Weight", &cloudSettings->DetailNoiseWeight, 0.01, 0.0);
+		ImGui::TreePop();
+	}
 
-	ImGui::DragFloat("Density Multiplier", &cloudSettings->DensityMultiplier, 0.001, 0.0);
-	ImGui::DragFloat("Density Threshold", &cloudSettings->DensityThreshold, 0.001, 0.0);
-	ImGui::DragFloat("Powder Constant", &cloudSettings->PowderConstant, 0.001, 0.0);
-	ImGui::DragFloat("Phase Blend", &cloudSettings->PhaseBlend, 0.001, 0.0);
-	ImGui::DragFloat("Forward Scattering", &cloudSettings->ForwardScattering, 0.001, 0.0, 1.0);
-	ImGui::DragFloat("Back Scattering", &cloudSettings->BackScattering, 0.001, 0.0, 1.0);
-	ImGui::DragFloat("Base Brightness", &cloudSettings->BaseBrightness, 0.001, 0.0, 1.0);
-	ImGui::DragFloat("Phase Factor", &cloudSettings->PhaseFactor, 0.001, 0.0, 1.0);
-
-	ImGui::DragFloat("Silver Lining Constant", &cloudSettings->SilverLiningConstant, 0.001, 0.0);
-	ImGui::DragFloat("Cloud Scale", &cloudSettings->CloudScale, 0.01, 0.0);
-	ImGui::DragFloat4("Shape Noise Weights", &cloudSettings->ShapeNoiseWeights.x, 0.01, 0.0f, 1.0f);
-	ImGui::DragFloat3("Detail Noise Weights", &cloudSettings->DetailNoiseWeights.x, 0.01, 0.0f, 1.0f);
-	ImGui::DragFloat("Detail Noise Weight", &cloudSettings->DetailNoiseWeight, 0.01, 0.0);
-
-	ImGui::End();
+	if (ImGui::TreeNodeEx("Lighting Settings"))
+	{
+		if (ImGui::DragInt("Light Steps", &cloudSettings->LightSteps, 0.1, 1))
+			if (cloudSettings->LightSteps < 1) cloudSettings->LightSteps = 1;
+		ImGui::DragFloat("Powder Constant", &cloudSettings->PowderConstant, 0.001, 0.0);
+		ImGui::DragFloat("Silver Lining Constant", &cloudSettings->SilverLiningConstant, 0.001, 0.0);
+		ImGui::DragFloat("Phase Blend", &cloudSettings->PhaseBlend, 0.001, 0.0);
+		ImGui::DragFloat("Forward Scattering", &cloudSettings->ForwardScattering, 0.001, 0.0, 1.0);
+		ImGui::DragFloat("Back Scattering", &cloudSettings->BackScattering, 0.001, 0.0, 1.0);
+		ImGui::DragFloat("Base Brightness", &cloudSettings->BaseBrightness, 0.001, 0.0, 1.0);
+		ImGui::DragFloat("Phase Factor", &cloudSettings->PhaseFactor, 0.001, 0.0, 1.0);
+		ImGui::TreePop();
+	}
 }
 
 void CloudsUI::DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseShapeSettings, const Engine::Ref<WorleyPerlinSettings>& perlinSettings)
 {
 	Engine::Ref<WorleyChannelData> activeWorleyChannelData = ShapeChannelFromMask(baseShapeSettings);
 	if (activeWorleyChannelData == nullptr) return;
-
-	std::string editorName = "Shape Editor: " + NameFromWorleyChannel(activeWorleyChannelData->Mask) + "###";
-	ImGui::Begin(editorName.c_str());
 
 	bool updated = false;
 	bool updatedPoints = false;
@@ -333,17 +376,12 @@ void CloudsUI::DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseS
 	}
 	if (ImGui::Button("Update Channel") || updated)
 		baseShapeSettings->UpdateChannel(m_ActiveShapeMask, perlinSettings->PerlinTexture);
-
-	ImGui::End();
 }
 
 void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings)
 {
 	Engine::Ref<WorleyChannelData> activeDetailChannelData = DetailChannelFromMask(detailShapeSettings);
 	if (activeDetailChannelData == nullptr) return;
-
-	std::string editorName = "Detail Editor: " + NameFromWorleyChannel(activeDetailChannelData->Mask) + "###";
-	ImGui::Begin(editorName.c_str());
 
 	bool updated = false;
 	bool updatedPoints = false;
@@ -365,8 +403,6 @@ void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& d
 	if (ImGui::DragFloat("Tiling", &activeDetailChannelData->WorleyTiling, 0.01))
 		updated = true;
 
-
-
 	if (ImGui::Button("Generate New Points") || updatedPoints)
 	{
 		activeDetailChannelData->UpdatePoints();
@@ -374,13 +410,10 @@ void CloudsUI::DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& d
 	}
 	if (ImGui::Button("Update Channel") || updated)
 		detailShapeSettings->UpdateChannel(m_ActiveDetailMask);
-
-	ImGui::End();
 }
 
 void CloudsUI::DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSettings)
 {
-	ImGui::Begin("Perlin Editor");
 	bool updated = false;
 	if (ImGui::DragInt("Octaves", &perlinSettings->Octaves, 0.1, 0, 8))
 		updated = true;
@@ -403,13 +436,10 @@ void CloudsUI::DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSetti
 
 	if (updated)
 		perlinSettings->UpdateTexture();
-
-	ImGui::End();
 }
 
 void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
 {
-	ImGui::Begin("Curl Editor");
 	bool updated = false;
 	if (ImGui::DragFloat("Strength", &curlSettings->Strength, 0.001f))
 		updated = true;
@@ -417,16 +447,12 @@ void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
 		updated = true;
 	if (ImGui::DragFloat2("Texture Offset", &curlSettings->TilingOffset.x, 1.0f))
 		updated = true;
-
 	if (ImGui::Button("Update Noise") || updated)
 		curlSettings->UpdateTexture();
-
-	ImGui::End();
 }
 
-void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& cloudPass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
+void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& scenePass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
 {
-	ImGui::Begin("Terrain Settings");
 	bool updated = false;
 
 	std::string minText = "Min Height: " + std::to_string(terrain->GetMinHeightLocalSpace());
@@ -435,7 +461,6 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& c
 	ImGui::Text(minText.c_str());
 	ImGui::Text(maxText.c_str());
 	ImGui::Checkbox("Wireframe Mode", wireFrame);
-
 
 	if (ImGui::TreeNode("Detail Parameters"))
 	{
@@ -466,7 +491,6 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& c
 		ImGui::TreePop();
 	}
 
-
 	if (ImGui::TreeNodeEx("Terrain Noise Settings"))
 	{
 		if (ImGui::DragInt("Octaves##", &terrain->GetProperties()->NoiseSettings->Octaves, 0.01))
@@ -489,14 +513,24 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& c
 
 	if (ImGui::TreeNodeEx("Terrain Layer Settings"))
 	{
-		for (uint32_t i = 0; i < cloudPass->GetTerrainHeightLayers().size(); i++)
+		for (uint32_t i = 0; i < scenePass->GetTerrainHeightLayers().size(); i++)
 		{
-			ImGui::Separator();
-			std::string heightThresholdName = "Layer " + std::to_string(i) + ": Height Threshold##";
-			ImGui::DragFloat(heightThresholdName.c_str(), &cloudPass->GetTerrainHeightLayers()[i]->HeightThreshold, 0.01f, -1.0f, 1.0f);
-			std::string blendWeightName = "Layer " + std::to_string(i) + ": Blend Weight##";
-			ImGui::DragFloat(blendWeightName.c_str(), &cloudPass->GetTerrainHeightLayers()[i]->BlendStrength, 0.01f);
-			ImGui::Separator();
+			std::string layerName = "Layer " + std::to_string(i);
+			if (ImGui::TreeNodeEx(layerName.c_str()))
+			{
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::ColorEdit3("Tint Color", &scenePass->GetTerrainHeightLayers()[i]->TintColor.r, ImGuiColorEditFlags_NoInputs);
+				ImGui::PopStyleVar();
+				ImGui::Image((void*)scenePass->GetTerrainHeightLayers()[i]->HeightTexture->GetID(), {25, 25}, { 0, 1 }, { 1, 0 });
+
+				ImGui::Separator();
+				ImGui::DragFloat("Height Threshold##", &scenePass->GetTerrainHeightLayers()[i]->HeightThreshold, 0.01f, -1.0f, 1.0f);
+				ImGui::DragFloat("Blend Weight##", &scenePass->GetTerrainHeightLayers()[i]->BlendStrength, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Texture Tiling##", &scenePass->GetTerrainHeightLayers()[i]->TextureTiling, 0.01f);
+				ImGui::Separator();
+
+				ImGui::TreePop();
+			}
 		}
 
 		ImGui::TreePop();
@@ -504,7 +538,5 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& c
 
 	if (updated)
 		terrain->UpdateTerrain();
-
-	ImGui::End();
 }
 

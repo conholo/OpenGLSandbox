@@ -101,6 +101,7 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_DetailNoiseWeights", passData->MainSettings->DetailNoiseWeights);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_BoundsMin", passData->MainSettings->CloudContainerPosition - passData->MainSettings->CloudContainerScale / 2.0f);
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_BoundsMax", passData->MainSettings->CloudContainerPosition + passData->MainSettings->CloudContainerScale / 2.0f);
+	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_CloudScaleFactor", passData->MainSettings->CloudScaleFactor);
 
 	// Debug
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat2("u_ScreenResolution", { Engine::Application::GetApplication().GetWindow().GetWidth(), Engine::Application::GetApplication().GetWindow().GetHeight() });

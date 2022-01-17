@@ -3,10 +3,9 @@
 #include "Engine/Core/Application.h"
 #include "Engine/Rendering/RenderCommand.h"
 
-static Engine::Ref<Engine::TerrainHeightLayer> CreateHeightLayer(const std::string& filePath, float heightThreshold)
+static Engine::Ref<Engine::TerrainHeightLayer> CreateHeightLayer(const std::string& filePath, float heightThreshold, float tiling, float blendStrength)
 {
 	Engine::Ref<Engine::TerrainHeightLayer> layer = Engine::CreateRef<Engine::TerrainHeightLayer>();
-	layer->HeightThreshold = heightThreshold;
 	Engine::Texture2DSpecification textureArraySpec =
 	{
 		Engine::ImageUtils::WrapMode::Repeat,
@@ -19,6 +18,9 @@ static Engine::Ref<Engine::TerrainHeightLayer> CreateHeightLayer(const std::stri
 	};
 
 	layer->HeightTexture = Engine::CreateRef<Engine::Texture2D>(filePath, textureArraySpec);
+	layer->BlendStrength = blendStrength;
+	layer->TextureTiling = tiling;
+	layer->HeightThreshold = heightThreshold;
 	return layer;
 }
 
@@ -64,13 +66,13 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 	m_FBO = Engine::CreateRef<Engine::Framebuffer>(fboSpec);
 
 	m_HeightLayers.resize(m_HeightLayerCount);
-	m_HeightLayers[0] = CreateHeightLayer("assets/textures/Height Textures/Water.png", 0.0f);
-	m_HeightLayers[1] = CreateHeightLayer("assets/textures/Height Textures/Sandy grass.png", 0.21f);
-	m_HeightLayers[2] = CreateHeightLayer("assets/textures/Height Textures/Grass.png", 0.46f);
-	m_HeightLayers[3] = CreateHeightLayer("assets/textures/Height Textures/Stony ground.png", 0.59f);
-	m_HeightLayers[4] = CreateHeightLayer("assets/textures/Height Textures/Rocks 1.png", 0.69f);
-	m_HeightLayers[5] = CreateHeightLayer("assets/textures/Height Textures/Rocks 2.png", 0.78f);
-	m_HeightLayers[6] = CreateHeightLayer("assets/textures/Height Textures/Snow.png", 0.85f);
+	m_HeightLayers[0] = CreateHeightLayer("assets/textures/Height Textures/Water.png", -0.3f, 15.0f, 0.4);
+	m_HeightLayers[1] = CreateHeightLayer("assets/textures/Height Textures/Sandy grass.png", 0.13f, 20.0f, 0.32f);
+	m_HeightLayers[2] = CreateHeightLayer("assets/textures/Height Textures/Grass.png", 0.28f, 6.30f, 0.29f);
+	m_HeightLayers[3] = CreateHeightLayer("assets/textures/Height Textures/Stony ground.png", 0.59f, 6.0f, 0.5f);
+	m_HeightLayers[4] = CreateHeightLayer("assets/textures/Height Textures/Rocks 1.png", 0.69f, 9.2f, 0.5f);
+	m_HeightLayers[5] = CreateHeightLayer("assets/textures/Height Textures/Rocks 2.png", 0.78f, 5.7f, 0.5f);
+	m_HeightLayers[6] = CreateHeightLayer("assets/textures/Height Textures/Snow.png", 0.85f, 12.0f, 0.5f);
 }
 
 CloudsSceneRenderPass::~CloudsSceneRenderPass()
@@ -98,14 +100,18 @@ void CloudsSceneRenderPass::DrawSceneEntities(const Engine::Camera& camera)
 	Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat("u_Light.Intensity", m_Sun->GetLightIntensity());
 	for (uint32_t i = 0; i < m_HeightLayers.size(); i++)
 	{
+		std::string heightTilingName = "u_TextureTiling[" + std::to_string(i) + "]";
 		std::string heightThresholdName = "u_HeightThresholds[" + std::to_string(i) + "]";
 		std::string blendStrengthName = "u_Blends[" + std::to_string(i) + "]";
 		std::string heightTextureName = "u_HeightTextures[" + std::to_string(i) + "]";
+		std::string heightTintColors = "u_TintColors[" + std::to_string(i) + "]";
 		m_HeightLayers[i]->HeightTexture->BindToSamplerSlot(i);
 
 		Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformInt(heightTextureName, i);
+		Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat(heightTilingName, m_HeightLayers[i]->TextureTiling);
 		Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat(heightThresholdName, m_HeightLayers[i]->HeightThreshold);
 		Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat(blendStrengthName, m_HeightLayers[i]->BlendStrength);
+		Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat3(heightTintColors, m_HeightLayers[i]->TintColor);
 	}
 	Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformInt("u_LayerCount", m_HeightLayerCount);
 	Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat("u_MinHeight", m_Terrain->GetMinHeightLocalSpace());

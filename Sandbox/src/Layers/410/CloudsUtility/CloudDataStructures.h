@@ -43,6 +43,7 @@ struct CloudSettings
 
 	glm::vec3 CloudContainerPosition{ 0.0f, 75.0f, 0.0f };
 	glm::vec3 CloudContainerScale{ 400.0f, 300.0f, 300.0f };
+	float CloudScaleFactor = 1000.0f;
 	float ContainerEdgeFadeDistance = 50.0f;
 };
 

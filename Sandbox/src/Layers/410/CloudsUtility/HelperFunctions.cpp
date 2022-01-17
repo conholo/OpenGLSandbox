@@ -50,6 +50,19 @@ std::vector<glm::vec4> GeneratePerlinOffsets(int octaves)
 	return result;
 }
 
+std::string NameFromUITabType(UITabTypes tabType)
+{
+	switch (tabType)
+	{
+	case UITabTypes::MainSettings:			return "Main Settings";
+	case UITabTypes::CloudSettings:			return "Cloud Settings";
+	case UITabTypes::NoiseTextureSettings:	return "Noise Texture Settings";
+	case UITabTypes::TerrainSettings:		return "Terrain Settings";
+	}
+
+	return "";
+}
+
 std::string NameFromUIType(CloudUIType type)
 {
 	switch (type)

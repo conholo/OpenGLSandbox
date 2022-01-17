@@ -56,6 +56,8 @@ uniform float u_MinHeight;
 uniform sampler2D u_HeightTextures[7];
 uniform float u_Blends[7];
 uniform float u_HeightThresholds[7];
+uniform float u_TextureTiling[7];
+uniform vec3 u_TintColors[7];
 
 float InverseLerp(float a, float b, float v)
 {
@@ -77,7 +79,7 @@ void main()
 	for (int i = 0; i < u_LayerCount; i++)
 	{
 		float strength = InverseLerp(-u_Blends[i] / 2.0 - Epsilon, u_Blends[i] / 2.0, heightPercent - u_HeightThresholds[i]);
-		textureBlend = textureBlend * (1.0 - strength) + texture(u_HeightTextures[i], v_UV).rgb * strength;
+		textureBlend = textureBlend * (1.0 - strength) + (texture(u_HeightTextures[i], v_UV * u_TextureTiling[i]).rgb * u_TintColors[i]) * strength;
 	}
 
 	vec3 lighting = u_Light.Color * u_Light.Intensity * diffuse * textureBlend;

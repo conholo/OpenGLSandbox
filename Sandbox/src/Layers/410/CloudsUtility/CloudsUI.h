@@ -15,6 +15,12 @@ struct CloudsUIData
 	Engine::Ref<CurlSettings> CurlSettings;
 };
 
+struct UITab
+{
+	int Index = -1;
+	std::string TabName;
+};
+
 class CloudsUI
 {
 public:
@@ -34,6 +40,8 @@ public:
 	CloudUIType GetActiveUIType() const { return m_ActiveUIType; }
 
 private:
+	void DrawMainSettings(const Engine::Ref<CloudsUIData>& uiData);
+	void DrawNoiseEditorSettings();
 	void DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettings, const Engine::Ref<CloudAnimationSettings>& animationSettings, const Engine::Ref<CloudsSceneRenderPass>& sceneRenderPass);
 	void DrawBaseShapeUI(const Engine::Ref<BaseShapeWorleySettings>& baseShapeSettings, const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 	void DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
@@ -50,6 +58,8 @@ private:
 	const Engine::Ref<WorleyChannelData>& DetailChannelFromMask(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
 
 private:
+	std::vector<UITabTypes> m_AvailableTabTypes{ UITabTypes::MainSettings, UITabTypes::CloudSettings, UITabTypes::NoiseTextureSettings, UITabTypes::TerrainSettings };
+	UITabTypes m_ActiveTabType = UITabTypes::MainSettings;
 	ActiveDebugShapeType m_ActiveDebugShapeType = ActiveDebugShapeType::BaseShape;
 	WorleyChannelMask m_ActiveShapeMask = WorleyChannelMask::R;
 	WorleyChannelMask m_ActiveDetailMask = WorleyChannelMask::R;
