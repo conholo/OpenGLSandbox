@@ -18,7 +18,8 @@
 
 //#include "Layers/457/Project1.h"
 
-#include "Layers/410/CloudsLayer.h"
+//#include "Layers/410/CloudsLayer.h"
+#include "Layers/410/Planet/PlanetLayer.h"
 
 //#include "Layers/410/CurlTestLayer.h"
 //#include "Layers/410/SkyVolumeGeneratorLayer.h"
@@ -51,8 +52,9 @@ public:
 		//PushLayer(new CurlTestLayer);
 		//PushLayer(new TerrainTestLayer);
 
-		PushLayer(new CloudsLayer);
+		//PushLayer(new CloudsLayer);
 		//PushLayer(new TestSSBOReadWriteLayer);
+		PushLayer(new PlanetLayer);
 	}
 	
 	~SandboxApplication()

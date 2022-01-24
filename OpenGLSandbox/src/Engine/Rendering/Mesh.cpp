@@ -1,6 +1,7 @@
 #include "Engine/Rendering/Mesh.h"
 #include "Engine/Core/Math.h"
 #include <iostream>
+#include <unordered_map>
 
 namespace Engine
 {
@@ -233,6 +234,117 @@ namespace Engine
 				indices.push_back(first + 1);
 				indices.push_back(second + 1);
 			}
+		}
+
+		return CreateRef<Mesh>(vertices, indices);
+	}
+
+	static int AddIcosphereVertex(const glm::vec3& v, std::vector<Vertex>& vertices, uint32_t* index)
+	{
+		float length = glm::length(v);
+		glm::vec3 unitSphereV = v / length;
+		vertices.push_back({ {unitSphereV.x, unitSphereV.y, unitSphereV.z}, {0.0f, 0.0f}, {unitSphereV.x, unitSphereV.y, unitSphereV.z} });
+		return (*(index))++;
+	}
+
+	static uint32_t GetIcosphereMidpoint(int p1, int p2, std::unordered_map<uint64_t, int>& midpointCache, std::vector<Vertex>& vertices, uint32_t* index)
+	{
+		bool firstIsSmaller = p1 < p2;
+		uint64_t smallerIndex = firstIsSmaller ? p1 : p2;
+		uint64_t largerIndex = firstIsSmaller ? p2 : p1;
+		uint64_t key = (smallerIndex << 32) + largerIndex;
+
+		if (midpointCache.find(key) != midpointCache.end())
+			return midpointCache[key];
+
+		Vertex v1 = vertices[p1];
+		Vertex v2 = vertices[p2];
+		glm::vec3 mid = (v1.Position + v2.Position) / 2.0f;
+		int vertexIndex = AddIcosphereVertex(mid, vertices, index);
+		midpointCache[key] = vertexIndex;
+		return vertexIndex;
+	}
+
+	Ref<Mesh> MeshFactory::Icosphere(uint32_t level, float radius)
+	{
+		float t = (1.0f + glm::sqrt(5.0f)) / 2.0f;
+		
+		uint32_t vertexIndex = 0;
+		std::vector<Vertex> vertices;
+
+		AddIcosphereVertex({ -1.0f,  t, 0.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({  1.0f,  t, 0.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -1.0f, -t, 0.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({  1.0f, -t, 0.0f }, vertices, &vertexIndex);
+
+		AddIcosphereVertex({ -0.0f, -1.0f,  t }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -0.0f,  1.0f,  t }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -0.0f, -1.0f, -t }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -0.0f,  1.0f, -t }, vertices, &vertexIndex);
+
+		AddIcosphereVertex({  t, 0.0f, -1.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({  t, 0.0f,  1.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -t, 0.0f, -1.0f }, vertices, &vertexIndex);
+		AddIcosphereVertex({ -t, 0.0f,  1.0f }, vertices, &vertexIndex);
+
+		struct Triangle { uint32_t A, B, C; };
+
+		std::vector<Triangle> facesOne;
+
+		facesOne.push_back({ 0, 11, 5 });
+		facesOne.push_back({ 0, 5, 1 });
+		facesOne.push_back({ 0, 1, 7 });
+		facesOne.push_back({ 0, 7, 10 });
+		facesOne.push_back({ 0, 10, 11 });
+
+		// 5 adjacent faces
+		facesOne.push_back({ 1, 5, 9 });
+		facesOne.push_back({ 5, 11, 4 });
+		facesOne.push_back({ 11, 10, 2 });
+		facesOne.push_back({ 10, 7, 6 });
+		facesOne.push_back({ 7, 1, 8 });;
+
+		// 5 faces around point 3
+		facesOne.push_back({ 3, 9, 4 });
+		facesOne.push_back({ 3, 4, 2 });
+		facesOne.push_back({ 3, 2, 6 });
+		facesOne.push_back({ 3, 6, 8 });
+		facesOne.push_back({ 3, 8, 9 });
+
+		// 5 adjacent faces
+		facesOne.push_back({ 4, 9, 5 });
+		facesOne.push_back({ 2, 4, 11 });
+		facesOne.push_back({ 6, 2, 10 });
+		facesOne.push_back({ 8, 6, 7 });
+		facesOne.push_back({ 9, 8, 1 });
+
+		std::unordered_map<uint64_t, int> midpointCache;
+
+		for (uint32_t i = 0; i < level; i++)
+		{
+			std::vector<Triangle> facesTwo;
+
+			for (auto triangle : facesOne)
+			{
+				uint32_t a = GetIcosphereMidpoint(triangle.A, triangle.B, midpointCache, vertices, &vertexIndex);
+				uint32_t b = GetIcosphereMidpoint(triangle.B, triangle.C, midpointCache, vertices, &vertexIndex);
+				uint32_t c = GetIcosphereMidpoint(triangle.C, triangle.A, midpointCache, vertices, &vertexIndex);
+
+				facesTwo.push_back({ triangle.A, a, c });
+				facesTwo.push_back({ triangle.B, b, a });
+				facesTwo.push_back({ triangle.C, c, b });
+				facesTwo.push_back({ a, b, c });
+			}
+
+			facesOne = facesTwo;
+		}
+
+		std::vector<uint32_t> indices;
+		for (auto triangle : facesOne)
+		{
+			indices.push_back(triangle.A);
+			indices.push_back(triangle.B);
+			indices.push_back(triangle.C);
 		}
 
 		return CreateRef<Mesh>(vertices, indices);

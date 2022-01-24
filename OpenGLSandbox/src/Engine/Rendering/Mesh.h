@@ -9,7 +9,7 @@
 
 namespace Engine
 {
-	enum class PrimitiveType { None = 0, Triangle, Quad, FullScreenQuad, Plane, Cube, Sphere, TessellatedQuad };
+	enum class PrimitiveType { None = 0, Triangle, Quad, FullScreenQuad, Plane, Cube, Sphere, TessellatedQuad, Icosphere };
 
 	struct Vertex
 	{
@@ -51,6 +51,7 @@ namespace Engine
 		static Ref<Mesh> Cube();
 		static Ref<Mesh> TessellatedQuad(uint32_t resolution);
 		static Ref<Mesh> Sphere(float radius);
+		static Ref<Mesh> Icosphere(uint32_t level, float radius);
 
 		static std::string PrimitiveTypeToString(PrimitiveType type);
 	};

@@ -99,6 +99,12 @@
     <ClCompile Include="src\Layers\Testing\TestSSBOReadWriteLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\410\Planet\PlanetLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\410\Planet\Planet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -188,6 +194,12 @@
     <ClInclude Include="src\Layers\Testing\TestSSBOReadWriteLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\410\Planet\PlanetLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\410\Planet\Planet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -236,5 +248,8 @@
     <None Include="assets\410 shaders\TerrainGenerator.shader" />
     <None Include="assets\shaders\Testing\TestSSBORW.shader" />
     <None Include="assets\410 shaders\TerrainLighting.shader" />
+    <None Include="assets\410 shaders\Clouds2.shader" />
+    <None Include="assets\410 shaders\Planet.shader" />
+    <None Include="assets\410 shaders\PlanetAtmosphereComposite.shader" />
   </ItemGroup>
 </Project>

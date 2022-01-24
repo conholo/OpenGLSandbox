@@ -1,6 +1,5 @@
 #include "Layers/410/CloudsUtility/MainCloudRenderPass.h"
 
-
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Memory.h"
 #include "Engine/Scene/SimpleECS/Light.h"
@@ -9,6 +8,8 @@
 #include "Engine/Rendering/FrameBuffer.h"
 #include "Engine/Rendering/Camera.h"
 
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
 #include <glm/glm.hpp>
 
 MainCloudRenderPass::MainCloudRenderPass()
@@ -68,9 +69,9 @@ void MainCloudRenderPass::ExecutePass(const Engine::Camera& camera, const Engine
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_NearClip", camera.GetNearClip());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_FarClip", camera.GetFarClip());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_WorldSpaceCameraPosition", camera.GetPosition());
+
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseProjection", glm::inverse(camera.GetProjection()));
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseView", glm::inverse(camera.GetView()));
-
 
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Sun.LightPosition", passData->SceneRenderPass->GetSunLight()->GetLightTransform()->GetPosition());
 	m_CloudQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Sun.Intensity", passData->SceneRenderPass->GetSunLight()->GetLightIntensity());

@@ -26,8 +26,10 @@ public:
 	void Resize(uint32_t width, uint32_t height);
 
 private:
-	glm::vec4 m_ClearColor{ 0.1f, 0.1f, 0.1f, 0.1f };
 
+	glm::vec4 m_ClearColor{ 0.1f, 0.1f, 0.1f, 0.1f };
+	//Engine::Ref<Engine::ShaderStorageBuffer> m_DensitySettingsSSBO;
+	//Engine::Ref<Engine::ShaderStorageBuffer> m_AnimationSettings;
 	Engine::Ref<Engine::Framebuffer> m_CloudFBO;
 	Engine::Ref<Engine::SimpleEntity> m_CloudQuad;
 };

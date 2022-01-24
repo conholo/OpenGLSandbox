@@ -27,6 +27,8 @@
     <ClCompile Include="src\Layers\410\CloudsUtility\HelperFunctions.cpp" />
     <ClCompile Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.cpp" />
     <ClCompile Include="src\Layers\410\CurlTestLayer.cpp" />
+    <ClCompile Include="src\Layers\410\Planet\Planet.cpp" />
+    <ClCompile Include="src\Layers\410\Planet\PlanetLayer.cpp" />
     <ClCompile Include="src\Layers\410\SkyVolumeGeneratorLayer.cpp" />
     <ClCompile Include="src\Layers\410\TerrainTestLayer.cpp" />
     <ClCompile Include="src\Layers\457\Project1.cpp" />
@@ -58,6 +60,8 @@
     <ClInclude Include="src\Layers\410\CloudsUtility\HelperFunctions.h" />
     <ClInclude Include="src\Layers\410\CloudsUtility\MainCloudRenderPass.h" />
     <ClInclude Include="src\Layers\410\CurlTestLayer.h" />
+    <ClInclude Include="src\Layers\410\Planet\Planet.h" />
+    <ClInclude Include="src\Layers\410\Planet\PlanetLayer.h" />
     <ClInclude Include="src\Layers\410\SkyVolumeGeneratorLayer.h" />
     <ClInclude Include="src\Layers\410\TerrainTestLayer.h" />
     <ClInclude Include="src\Layers\457\Project1.h" />
@@ -87,10 +91,13 @@
   <ItemGroup>
     <None Include="assets\410 shaders\3DTextureViewer.shader" />
     <None Include="assets\410 shaders\Clouds.shader" />
+    <None Include="assets\410 shaders\Clouds2.shader" />
     <None Include="assets\410 shaders\CloudsComposite.shader" />
     <None Include="assets\410 shaders\Curl.shader" />
     <None Include="assets\410 shaders\Normalize.compute" />
     <None Include="assets\410 shaders\Perlin2D.shader" />
+    <None Include="assets\410 shaders\Planet.shader" />
+    <None Include="assets\410 shaders\PlanetAtmosphereComposite.shader" />
     <None Include="assets\410 shaders\TerrainLighting.shader" />
     <None Include="assets\410 shaders\TerrainGenerator.shader" />
     <None Include="assets\410 shaders\TextureDisplay.shader" />

@@ -1,153 +1,28 @@
-﻿  CloudsLayer.cpp
+﻿  PlanetLayer.cpp
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-  CloudDataStructures.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(14,50): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(15,50): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(16,50): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(54,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(70,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(80,44): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(81,44): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(82,44): warning C4244: '=': conversion from 'float' to 'T', possible loss of data
-          with
-          [
-              T=int
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(161,114): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(166,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(202,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(217,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(246,24): warning C4244: 'initializing': conversion from 'float' to 'uint32_t', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(_Ty &,glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&) noexcept(false)' being compiled
-          with
-          [
-              _Ty=Engine::ShaderStorageBuffer
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1587): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&)' being compiled
-          with
-          [
-              _Ty=Engine::ShaderStorageBuffer
-          ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1588): message : see reference to function template instantiation 'std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<glm::vec<4,float,glm::packed_highp>*,unsigned __int64>(glm::vec<4,float,glm::packed_highp> *&&,unsigned __int64 &&)' being compiled
-          with
-          [
-              _Ty=Engine::ShaderStorageBuffer
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.h(21): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> std::make_shared<T,_Ty,unsigned __int64>(_Ty &&,unsigned __int64 &&)' being compiled
-          with
-          [
-              T=Engine::ShaderStorageBuffer,
-              _Ty=glm::vec4 *
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudDataStructures.cpp(20): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,_Ty*,size_t>(_Ty *&&,size_t &&)' being compiled
-          with
-          [
-              _Ty=glm::vec4
-          ]
-  CloudsCompositePass.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-  CloudsUI.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(115,83): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(129,105): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(131,93): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(184,106): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(186,94): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(246,120): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(274,111): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(278,94): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(293,94): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(294,88): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(295,98): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(296,72): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(297,79): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(304,78): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(305,70): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(313,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(315,87): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(316,85): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(317,97): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(318,99): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(319,87): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(325,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(327,81): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(328,94): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(329,73): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(330,92): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(331,86): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(332,86): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(333,80): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(350,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(353,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(358,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(360,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(362,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(368,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(392,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(394,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(399,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(401,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(403,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(418,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(420,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(422,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(446,5): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(470,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(476,78): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(479,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(485,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(496,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(498,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(500,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(502,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(504,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(506,6): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(524,87): warning C4312: 'type cast': conversion from 'uint32_t' to 'void *' of greater size
-  MainCloudRenderPass.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(158,5): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(160,89): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(161,70): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(163,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(164,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(172,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(173,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(174,82): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(175,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(176,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(177,67): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(178,65): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(179,71): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(183,61): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(184,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\Planet\PlanetLayer.cpp(192,5): warning C4305: 'argument': truncation from 'double' to 'float'
   SandboxApplication.cpp
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
   Generating Code...
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(40): warning C4172: returning address of local variable or temporary
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\410\CloudsUtility\CloudsUI.cpp(28): warning C4172: returning address of local variable or temporary
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

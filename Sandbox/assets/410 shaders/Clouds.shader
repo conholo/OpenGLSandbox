@@ -15,9 +15,13 @@ out vec3 v_WorldSpaceViewDirection;
 void main()
 {
 	v_UV = a_TexCoord;
+    // Put the coordidnate into view space.  Keep w as 1.0 to maintain z information.
 	vec3 viewVector = (u_InverseProjection * vec4(a_TexCoord * 2.0 - 1.0, 0.0, 1.0)).xyz;
+    // Put the coordinate into world space, but convert it to a direction.
+    // We don't want the 4th columns data from the view matrix - as that would give us a point.
 	v_WorldSpaceViewDirection = (u_InverseView * vec4(viewVector, 0.0)).xyz;
 
+    // Draw fullscreen quad.
 	gl_Position = vec4(a_Position.xy, 0.0, 1.0);
 }
 
@@ -340,16 +344,16 @@ void main()
             cloudColor = lightEnergy * u_Sun.LightColor;
         }
 
-
-        float dstFog = 1.0 - exp(-max(0, linearDepth) * 8 * .0001);
+        // 0 when linearDepth is 0 at camera frustrum base.
+        float dstFog = 1.0 - exp(-max(0, linearDepth) * 10 * .0001);
         vec3 skyColor = mix(u_SkyColorA, u_SkyColorB, sqrt(abs(clamp(rayDirection.y, 0.0, 1.0))));
         skyColor = dstFog * skyColor;
-        vec3 background = texture(u_SceneTexture, v_UV).rgb;
+        vec3 sceneColor = texture(u_SceneTexture, v_UV).rgb;
 
         float focusedEye = pow(clamp(dot(rayDirection, directionToLight), 0.0, 1.0), u_PhaseParams.x);
         float sunValue = clamp(HG(focusedEye, 0.9995), 0.0, 1.0) * transmittance;
 
-        vec3 backgroundColor = background * (1 - dstFog) + skyColor;
+        vec3 backgroundColor = sceneColor * (1 - dstFog) + skyColor;
 
         vec3 col = backgroundColor * transmittance + cloudColor;
         color = vec4(col * (1.0 - sunValue) + u_Sun.LightColor * sunValue, 1.0);

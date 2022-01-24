@@ -66,7 +66,7 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 	m_FBO = Engine::CreateRef<Engine::Framebuffer>(fboSpec);
 
 	m_HeightLayers.resize(m_HeightLayerCount);
-	m_HeightLayers[0] = CreateHeightLayer("assets/textures/Height Textures/Water.png", -0.3f, 15.0f, 0.4);
+	m_HeightLayers[0] = CreateHeightLayer("assets/textures/Height Textures/Water.png", -0.15f, 15.0f, 0.4);
 	m_HeightLayers[1] = CreateHeightLayer("assets/textures/Height Textures/Sandy grass.png", 0.13f, 20.0f, 0.32f);
 	m_HeightLayers[2] = CreateHeightLayer("assets/textures/Height Textures/Grass.png", 0.28f, 6.30f, 0.29f);
 	m_HeightLayers[3] = CreateHeightLayer("assets/textures/Height Textures/Stony ground.png", 0.59f, 6.0f, 0.5f);
