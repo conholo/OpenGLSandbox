@@ -1,4 +1,6 @@
 #include "Layers/AtmosphereLayer.h"
+#include <iostream>
+#include <glm/gtx/compatibility.hpp>
 
 AtmosphereLayer::AtmosphereLayer()
 {
@@ -18,15 +20,15 @@ void AtmosphereLayer::OnAttach()
 		Engine::ImageUtils::Usage::Storage,
 		Engine::ImageUtils::WrapMode::ClampToEdge,
 		Engine::ImageUtils::FilterMode::Linear,
-		Engine::ImageUtils::ImageInternalFormat::RGBA8,
+		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
 		Engine::ImageUtils::ImageDataLayout::RGBA,
-		Engine::ImageUtils::ImageDataType::UByte,
+		Engine::ImageUtils::ImageDataType::Float,
 		128, 128
 	};
 
 	m_CubeTexture = Engine::CreateRef<Engine::TextureCube>(skyBoxSpec, nullptr);
 	m_SkyBox = Engine::CreateRef<Engine::CubeMap>(m_CubeTexture, Engine::ShaderLibrary::Get("Skybox"));
-	m_CubeTexture->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA8);
+	m_CubeTexture->BindToImageSlot(0, 0, Engine::ImageUtils::TextureAccessLevel::WriteOnly, Engine::ImageUtils::TextureShaderDataFormat::RGBA32F);
 	m_EditorGrid = Engine::CreateRef<Engine::EditorGrid>();
 
 	Engine::Application::GetApplication().GetWindow().ToggleMaximize(true);
@@ -67,6 +69,8 @@ void AtmosphereLayer::OnUpdate(float deltaTime)
 {
 	m_Camera.Update(deltaTime);
 
+	m_Timer += deltaTime;
+
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
 	m_WhiteTexture->BindToSamplerSlot(0);
@@ -83,13 +87,21 @@ void AtmosphereLayer::OnUpdate(float deltaTime)
 
 	if (m_SkyModel == nullptr || !m_SkyModel->isInitialized()) return;
 
+	if (m_Animate)
+	{
+		m_Direction = m_Elevation >= m_AvailableData.elevationMax ? -1 : m_Elevation <= m_AvailableData.elevationMin ? 1 : m_Direction;
+		m_Elevation += m_Direction * m_AnimationSpeed * deltaTime;
+		UpdateSkyBox();
+	}
+
 	// Read from & Render Cubemap
 	Engine::ShaderLibrary::Get("Skybox")->Bind();
 	Engine::ShaderLibrary::Get("Skybox")->UploadUniformFloat("u_TextureLOD", 0);
 	Engine::ShaderLibrary::Get("Skybox")->UploadUniformFloat("u_Intensity", 1.0f);
 	m_SkyBox->Submit(glm::inverse(m_Camera.GetViewProjection()));
 
-	m_EditorGrid->Draw(m_Camera);
+	if(m_DisplayGrid)
+		m_EditorGrid->Draw(m_Camera);
 }
 
 void AtmosphereLayer::OnEvent(Engine::Event& e)
@@ -129,27 +141,10 @@ void AtmosphereLayer::OnImGuiRender()
 	static std::string loadError = "";
 	static bool        loaded = false;
 	static bool        loading = false;
-	static bool		   loadedToGPU = false;
-	static bool		   loadingToGPU = false;
 	static std::string datasetName = "PragueSkyModelDatasetGround.dat";
 	static std::string datasetPath = "PragueSkyModelDatasetGround.dat";
-	static int         mode = 0;
-	static std::string outputName = "test.exr";
-	static std::string outputPath = "test.exr";
-	static int         resolution = 128;
-	static int         renderedResolution = resolution;
-	static bool        rendered = false;
-	static bool        rendering = false;
-	static std::string renderError = "";
-	static long long   renderTime = 0;
-	static bool        saved = false;
-	static std::string saveError = "";
-	static bool        updateTexture = false;
-	static int         view = 0;
 	static float       visibility = 59.4f;
 	static int         visibilityToLoad = 0;
-	static int         wavelength = 280;
-	static float       zoom = 1.f;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Prague Sky Model");
@@ -216,9 +211,7 @@ void AtmosphereLayer::OnImGuiRender()
 				singleVisibility = 0.0;
 				break;
 			}
-			m_SkyModel->initialize(datasetPath, singleVisibility);
-			loaded = true;
-			m_AvailableData = m_SkyModel->getAvailableData();
+			LoadDataset(datasetPath, singleVisibility);
 		}
 		catch (std::exception& e)
 		{
@@ -226,7 +219,6 @@ void AtmosphereLayer::OnImGuiRender()
 			loaded = false;
 		}
 		loading = false;
-		loadedToGPU = false;
 	}
 	if (ImGui::Button("Load"))
 	{
@@ -246,67 +238,6 @@ void AtmosphereLayer::OnImGuiRender()
 	}
 
 
-
-	if (loaded)
-	{
-		if (ImGui::Button("Upload To GPU"))
-		{
-			loadingToGPU = true;
-			ImGui::SameLine();
-			ImGui::Text("Uploading via SSBO ...");
-		}
-		if (!loadedToGPU && loadingToGPU)
-		{
-			Engine::ShaderLibrary::Get("PragueSky")->Bind();
-			m_RadianceDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetRadianceData().data(), m_SkyModel->GetRadianceDataSize());
-			m_RadianceDataSSBO->BindToComputeShader(1, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-
-			m_SunMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetSunMetaDataBreaks().data(), m_SkyModel->GetSunMetaDataBreaksSize());
-			m_SunMetaDataSSBO->BindToComputeShader(2, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("sunOffset", m_SkyModel->GetRadianceMetaData().sunOffset);
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("sunStride", m_SkyModel->GetRadianceMetaData().sunStride);
-
-			m_ZenithMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetZenithMetaDataBreaks().data(), m_SkyModel->GetZenithMetaDataBreaksSize());
-			m_ZenithMetaDataSSBO->BindToComputeShader(3, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("zenithOffset", m_SkyModel->GetRadianceMetaData().zenithOffset);
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("zenithStride", m_SkyModel->GetRadianceMetaData().zenithStride);
-
-			m_EmphMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetEmphMetaDataBreaks().data(), m_SkyModel->GetEmphMetaDataBreaksSize());
-			m_EmphMetaDataSSBO->BindToComputeShader(4, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("emphOffset", m_SkyModel->GetRadianceMetaData().emphOffset);
-
-			m_VisibilitiesRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetVisibilitiesRadiance().data(), m_SkyModel->GetVisibilitiesRadianceSize());
-			m_VisibilitiesRadianceSSBO->BindToComputeShader(5, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-
-			m_AlbedosRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetAlbedosRadiance().data(), m_SkyModel->GetAlbedosRadianceSize());
-			m_AlbedosRadianceSSBO->BindToComputeShader(6, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-
-			m_AltitudesRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetAltitudesRadiance().data(), m_SkyModel->GetAltitudesRadianceSize());
-			m_AltitudesRadianceSSBO->BindToComputeShader(7, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-
-			m_ElevationsRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetElevationsRadiance().data(), m_SkyModel->GetElevationsRadianceSize());
-			m_ElevationsRadianceSSBO->BindToComputeShader(8, Engine::ShaderLibrary::Get("PragueSky")->GetID());
-
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_TotalCoefsSingleConfig", m_SkyModel->GetRadianceMetaData().totalCoefsSingleConfig);
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_TotalCoefsAllConfigs", m_SkyModel->GetRadianceMetaData().totalCoefsAllConfigs);
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_Rank", m_SkyModel->GetRadianceMetaData().rank);
-
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_Channels", m_SkyModel->GetChannels());
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_ChannelStart", (float)m_SkyModel->GetChannelStart());
-			Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_ChannelWidth", (float)m_SkyModel->GetChannelWidth());
-
-			UpdateSkyBox();
-			loadedToGPU = true;
-			loadingToGPU = false;
-		}
-		if (loadedToGPU && !loadingToGPU)
-		{
-			ImGui::SameLine();
-			ImGui::Text("OK");
-		}
-	}
-
-
 	// Dataset section end
 	ImGui::Dummy(ImVec2(0.0f, 1.0f));
 	ImGui::Separator();
@@ -320,40 +251,43 @@ void AtmosphereLayer::OnImGuiRender()
 
 	char        label[150];
 
-	if (m_SkyModel->isInitialized() && loadedToGPU)
-	{
-		PragueSkyModel::AvailableData available = m_SkyModel->getAvailableData();
+	ImGui::Checkbox("Show Grid", &m_DisplayGrid);
+	ImGui::Checkbox("Animate Elevation", &m_Animate);
+	ImGui::DragFloat("Elevation Animation Speed", &m_AnimationSpeed, 0.0f, 5.0f, 0.01f);
 
-		if (ImGui::SliderFloat("Albedo", &m_Albedo, available.albedoMin, available.albedoMax, "%.2f", ImGuiSliderFlags_AlwaysClamp))
-			UpdateSkyBox();
+
+	if (m_SkyModel->isInitialized() && m_IsLoaded)
+	{
+		bool requestDraw = false;
+		PragueSkyModel::AvailableData available = m_AvailableData;
+
+		requestDraw |= ImGui::SliderFloat("Albedo", &m_Albedo, available.albedoMin, available.albedoMax, "%.2f", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SameLine();
 		sprintf(label, "Ground albedo, value in range [%.1f, %.1f]", m_SkyModel->getAvailableData().albedoMin, m_SkyModel->getAvailableData().albedoMax);
 		helpMarker(label);
 
-		if (ImGui::SliderFloat("altitude", &m_Altitude, available.altitudeMin, available.altitudeMax, "%.0f m", ImGuiSliderFlags_AlwaysClamp))
-			UpdateSkyBox();
+		requestDraw |= ImGui::SliderFloat("altitude", &m_Altitude, available.altitudeMin, available.altitudeMax, "%.0f m", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SameLine();
 		sprintf(label, "Altitude of view point in meters, value in range [%.1f, %.1f]", available.altitudeMin, available.altitudeMax);
 		helpMarker(label);
 
-		if (ImGui::SliderAngle("azimuth", &m_Azimuth, 0.0f, 360.0f, "%.1f deg", ImGuiSliderFlags_AlwaysClamp))
-			UpdateSkyBox();
+		requestDraw |= ImGui::SliderAngle("azimuth", &m_Azimuth, 0.0f, 360.0f, "%.1f deg", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SameLine();
 		helpMarker("Sun azimuth at view point in degrees, value in range [0, 360]");
 
-		if (ImGui::SliderAngle("elevation", &m_Elevation, available.elevationMin, available.elevationMax, "%.1f deg", ImGuiSliderFlags_AlwaysClamp))
-			UpdateSkyBox();
+		requestDraw |= ImGui::SliderAngle("elevation", &m_Elevation, available.elevationMin, available.elevationMax, "%.1f deg", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SameLine();
 		sprintf(label, "Sun elevation at view point in degrees, value in range [%.1f, %.1f]", available.elevationMin, available.elevationMax);
 		helpMarker(label);
 
-		if (ImGui::SliderFloat("visibility", &m_Visibility, available.visibilityMin, available.visibilityMax, "%.1f km", ImGuiSliderFlags_AlwaysClamp))
-			UpdateSkyBox();
+		requestDraw |= ImGui::SliderFloat("visibility", &m_Visibility, available.visibilityMin, available.visibilityMax, "%.1f km", ImGuiSliderFlags_AlwaysClamp);
 		ImGui::SameLine();
 		sprintf(label, "Horizontal visibility (meteorological range) at ground level in kilometers, value in range [%.1f, %.1f]", available.visibilityMin, available.visibilityMax);
 		helpMarker(label);
 
-		if (ImGui::SliderFloat("exposure", &m_Exposure, -25.0f, 25.0f, "%.1f"))
+		requestDraw |= ImGui::SliderFloat("exposure", &m_Exposure, -25.0f, 25.0f, "%.1f");
+
+		if (requestDraw && !m_IsDrawing)
 			UpdateSkyBox();
 	}
 	else
@@ -366,6 +300,7 @@ void AtmosphereLayer::OnImGuiRender()
 
 void AtmosphereLayer::UpdateSkyBox()
 {
+	m_IsDrawing = true;
 	Engine::ShaderLibrary::Get("PragueSky")->Bind();
 	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_Visibility", m_Visibility);
 	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_Elevation", m_Elevation);
@@ -377,4 +312,58 @@ void AtmosphereLayer::UpdateSkyBox()
 	Engine::ShaderLibrary::Get("PragueSky")->DispatchCompute(m_SkyBox->GetTexture3D()->GetWidth() / m_ThreadsPerGroup, m_SkyBox->GetTexture3D()->GetHeight() / m_ThreadsPerGroup, 6);
 	Engine::ShaderLibrary::Get("PragueSky")->EnableShaderImageAccessBarrierBit();;
 	Engine::ShaderLibrary::Get("PragueSky")->EnableBufferUpdateBarrierBit();
+	m_IsDrawing = false;
+}
+
+void AtmosphereLayer::LoadDataset(const std::string& datasetPath, double singleVisibility)
+{
+	m_IsLoaded = false;
+	std::cout << "Loading Dataset from file..." << "\n";
+	m_SkyModel->initialize(datasetPath, singleVisibility);
+	m_AvailableData = m_SkyModel->getAvailableData();
+	std::cout << "Dataset loaded." << "\n";
+
+	std::cout << "Uploading dataset to GPU..." << "\n";
+	Engine::ShaderLibrary::Get("PragueSky")->Bind();
+	m_RadianceDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetRadianceData().data(), m_SkyModel->GetRadianceDataSize());
+	m_RadianceDataSSBO->BindToComputeShader(1, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+
+	m_SunMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetSunMetaDataBreaks().data(), m_SkyModel->GetSunMetaDataBreaksSize());
+	m_SunMetaDataSSBO->BindToComputeShader(2, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("sunOffset", m_SkyModel->GetRadianceMetaData().sunOffset);
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("sunStride", m_SkyModel->GetRadianceMetaData().sunStride);
+
+	m_ZenithMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetZenithMetaDataBreaks().data(), m_SkyModel->GetZenithMetaDataBreaksSize());
+	m_ZenithMetaDataSSBO->BindToComputeShader(3, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("zenithOffset", m_SkyModel->GetRadianceMetaData().zenithOffset);
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("zenithStride", m_SkyModel->GetRadianceMetaData().zenithStride);
+
+	m_EmphMetaDataSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetEmphMetaDataBreaks().data(), m_SkyModel->GetEmphMetaDataBreaksSize());
+	m_EmphMetaDataSSBO->BindToComputeShader(4, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("emphOffset", m_SkyModel->GetRadianceMetaData().emphOffset);
+
+	m_VisibilitiesRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetVisibilitiesRadiance().data(), m_SkyModel->GetVisibilitiesRadianceSize());
+	m_VisibilitiesRadianceSSBO->BindToComputeShader(5, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+
+	m_AlbedosRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetAlbedosRadiance().data(), m_SkyModel->GetAlbedosRadianceSize());
+	m_AlbedosRadianceSSBO->BindToComputeShader(6, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+
+	m_AltitudesRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetAltitudesRadiance().data(), m_SkyModel->GetAltitudesRadianceSize());
+	m_AltitudesRadianceSSBO->BindToComputeShader(7, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+
+	m_ElevationsRadianceSSBO = Engine::CreateRef<Engine::ShaderStorageBuffer>((void*)m_SkyModel->GetElevationsRadiance().data(), m_SkyModel->GetElevationsRadianceSize());
+	m_ElevationsRadianceSSBO->BindToComputeShader(8, Engine::ShaderLibrary::Get("PragueSky")->GetID());
+
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_TotalCoefsSingleConfig", m_SkyModel->GetRadianceMetaData().totalCoefsSingleConfig);
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_TotalCoefsAllConfigs", m_SkyModel->GetRadianceMetaData().totalCoefsAllConfigs);
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_Rank", m_SkyModel->GetRadianceMetaData().rank);
+
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformInt("u_Channels", m_SkyModel->GetChannels());
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_ChannelStart", (float)m_SkyModel->GetChannelStart());
+	Engine::ShaderLibrary::Get("PragueSky")->UploadUniformFloat("u_ChannelWidth", (float)m_SkyModel->GetChannelWidth());
+
+	std::cout << "GPU upload complete." << "\n";
+	m_IsLoaded = true;
+
+	UpdateSkyBox();
 }

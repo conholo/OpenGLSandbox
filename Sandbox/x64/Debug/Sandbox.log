@@ -5,14 +5,14 @@ C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Li
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(379,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(380,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(327,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(327,56): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(333,83): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(333,60): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(344,86): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(344,62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(350,89): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(350,64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(264,88): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(264,67): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(269,94): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(269,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(278,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(278,73): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(283,100): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(283,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,void*,unsigned __int64>(_Ty &,void *&&,unsigned __int64 &&) noexcept(false)' being compiled
           with
@@ -35,5 +35,5 @@ C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.
               T=Engine::ShaderStorageBuffer,
               _Ty=void *
           ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(261): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,void*,size_t>(void *&&,size_t &&)' being compiled
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(328): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,void*,size_t>(void *&&,size_t &&)' being compiled
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

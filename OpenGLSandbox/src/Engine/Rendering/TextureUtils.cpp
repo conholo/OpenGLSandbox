@@ -143,6 +143,7 @@ namespace Engine
 			case TextureShaderDataFormat::R32F:			return GL_R32F;
 			case TextureShaderDataFormat::R16F:			return GL_R16F;
 			case TextureShaderDataFormat::RGBA8:		return GL_RGBA8;
+			case TextureShaderDataFormat::RGBA:			return GL_RGBA;
 			}
 
 			return 0;

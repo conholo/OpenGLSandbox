@@ -25,7 +25,6 @@ namespace Engine
 
 	float Lerp(float start, float end, float t)
 	{
-		t = Clamp(t, 0, 1);
 		return start + t * (end - start);
 	}
 

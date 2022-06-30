@@ -1,9 +1,9 @@
 #type compute
-#version 450 core
+#version 450
 #extension GL_ARB_compute_shader : enable
 #extension GL_ARB_shader_storage_buffer_object : enable
 
-layout(rgba8, binding = 0) restrict writeonly uniform imageCube o_Result;
+layout(rgba32f, binding = 0) restrict writeonly uniform imageCube o_Result;
 
 float PI = 3.141592653589793;
 float RAD_TO_DEG = 180.0 / PI;
@@ -256,8 +256,8 @@ Parameters ComputeParameters(
 
 	vec3 directionToSunN;
 	directionToSunN.x = cos(groundLevelSolarAzimuthAtOrigin) * cos(groundLevelSolarElevationAtOrigin);
-	directionToSunN.y = sin(groundLevelSolarAzimuthAtOrigin) * cos(groundLevelSolarElevationAtOrigin);
-	directionToSunN.z = sin(groundLevelSolarElevationAtOrigin);
+	directionToSunN.y = sin(groundLevelSolarElevationAtOrigin);
+	directionToSunN.z = sin(groundLevelSolarAzimuthAtOrigin) * cos(groundLevelSolarElevationAtOrigin);
 
 	// Solar elevation at viewpoint (more precisely, solar elevation at the point
 	// on the ground directly below viewpoint)
@@ -296,9 +296,7 @@ Parameters ComputeParameters(
 	float effectiveAzimuth = groundLevelSolarAzimuthAtOrigin;
 	float shadowAngle = effectiveElevation + PI * 0.5;
 
-	vec3 shadowDirectionN = vec3(cos(shadowAngle) * cos(effectiveAzimuth),
-		cos(shadowAngle) * sin(effectiveAzimuth),
-		sin(shadowAngle));
+	vec3 shadowDirectionN = vec3(cos(shadowAngle) * cos(effectiveAzimuth), sin(shadowAngle), cos(shadowAngle) * sin(effectiveAzimuth));
 
 	float dotProductShadow = dot(correctViewN, shadowDirectionN);
 	params.shadow = acos(dotProductShadow);
@@ -420,7 +418,6 @@ InterpolationParameter InterpolateEmphBreaks(double queryVal)
 }
 InterpolationParameter InterpolateVisibilities(double queryVal)
 {
-
 	const double clamped = clamp(queryVal, visibilitiesRad[0], visibilitiesRad[visibilitiesRad.length() - 1]);
 	
 	int nextIndex;
@@ -631,10 +628,10 @@ double Interpolate(const AngleParameters angleParameters, const ControlParameter
 
 double EvaluateSkyRadiance(Parameters params, double wavelength)
 {
-	if (wavelength < u_ChannelStart || wavelength >= (u_ChannelStart + u_Channels * u_ChannelStart))
+	if (wavelength < u_ChannelStart || wavelength >= (u_ChannelStart + u_Channels * u_ChannelWidth))
 		return 0.0;
 
-	const int channelIndex = int(floor((wavelength - u_ChannelStart) / u_ChannelStart));
+	const int channelIndex = int(floor((wavelength - u_ChannelStart) / u_ChannelWidth));
 
 	AngleParameters angleParameters;
 	angleParameters.gamma = InterpolateSunBreaks(params.gamma);
@@ -677,19 +674,19 @@ double EvaluateSkyRadiance(Parameters params, double wavelength)
 	return max(0.0, result);
 }
 
-vec3 SpectrumToRGB(double[55] spectrum)
+vec3 SpectrumToRGB(double spectrum[55])
 {
 	vec3 xyz = vec3(0.0);
 	for (int wl = 0; wl < SPECTRUM_CHANNELS; wl++)
 	{
 		const int responseIdx = int((SPECTRUM_WAVELENGTHS[wl] - SPECTRAL_RESPONSE_START) / SPECTRAL_RESPONSE_STEP);
 		if (0 <= responseIdx && responseIdx < SPECTRAL_RESPONSE_COUNT)
-			xyz += SPECTRAL_RESPONSE[responseIdx] * float(spectrum[wl]);
+			xyz = xyz + SPECTRAL_RESPONSE[responseIdx] * float(spectrum[wl]);
 	}
 	barrier();
 	memoryBarrier();
 
-	xyz *= float(SPECTRUM_STEP);
+	xyz = xyz * float(SPECTRUM_STEP);
 	// XYZ to sRGB
 	vec3 rgb;
 	rgb.x = 3.2404542 * xyz.x - 1.5371385 * xyz.y - 0.4985314 * xyz.z;
@@ -707,7 +704,7 @@ vec3 Evaluate()
 	barrier();
 	memoryBarrier();
 
-	double[55] spectrum;
+	double spectrum[55];
 	for (int i = 0; i < 55; i++)
 		spectrum[i] = EvaluateSkyRadiance(params, SPECTRUM_WAVELENGTHS[i]);
 	barrier();
@@ -717,17 +714,11 @@ vec3 Evaluate()
 	return rgb;
 }
 
-vec3 GammaCorrect(vec3 color, float mult, float gamma)
-{
-	return pow(color * mult, vec3(1.0f / gamma));
-}
-
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main()
 {
-	vec3 color = Evaluate().bgr;
-	float expMult = pow(2.0f, u_Exposure);
-	color = GammaCorrect(color, expMult,  2.2);
-	color = clamp(color * 255.f, 0.0f, 255.0f);
-	imageStore(o_Result, ivec3(gl_GlobalInvocationID), vec4(color, 1.0));
+	vec3 skyRadiance = Evaluate();
+	float expMult = pow(2.0, u_Exposure);
+	vec3 pixel = pow(skyRadiance * expMult, vec3(1.0 / 2.2));
+	imageStore(o_Result, ivec3(gl_GlobalInvocationID), vec4(pixel, 1.0));
 }

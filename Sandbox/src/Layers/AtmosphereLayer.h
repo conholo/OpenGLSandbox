@@ -24,6 +24,8 @@ private:
 
 	void UpdateSkyBox();
 
+	void LoadDataset(const std::string& filepath, double visibility);
+
 private:
 	uint32_t m_ViewportWidth;
 	uint32_t m_ViewportHeight;
@@ -43,9 +45,17 @@ private:
 	const uint32_t m_ThreadsPerGroup = 32;
 	Engine::Ref<Engine::CubeMap> m_SkyBox;
 	Engine::Ref<Engine::TextureCube> m_CubeTexture;
+	bool m_DisplayGrid = true;
 	Engine::Ref<Engine::EditorGrid> m_EditorGrid;
 
 private:
+
+	int m_Direction = 1;
+	float m_Timer = 0.0f;
+	bool m_IsLoaded = false;
+	bool m_IsDrawing = false;
+	bool m_Animate = false;
+	float m_AnimationSpeed = 0.00001f;
 
 	float m_Albedo = 0.5;
 	float m_Altitude = 2500.0f;
@@ -53,6 +63,7 @@ private:
 	float m_Elevation = 0.0;
 	float m_Visibility = 25.0f;
 	float m_Exposure = 0.0;
+
 
 	Engine::Ref<Engine::ShaderStorageBuffer> m_RadianceDataSSBO;
 	Engine::Ref<Engine::ShaderStorageBuffer> m_SunMetaDataSSBO;

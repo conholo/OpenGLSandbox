@@ -106,7 +106,6 @@ void SkyboxLayer::OnUpdate(float deltaTime)
 
 	Engine::RenderCommand::Clear(true, true);
 	Engine::RenderCommand::ClearColor(m_ClearColor);
-	
 
 	//DrawReflectionSpheres();
 	m_NonReflectedCube->GetEntityRenderer()->GetShader()->Bind();
