@@ -19,12 +19,16 @@
 //#include "Layers/457/Project1.h"
 
 //#include "Layers/410/CloudsLayer.h"
-#include "Layers/410/Planet/PlanetLayer.h"
+//#include "Layers/410/Planet/PlanetLayer.h"
+#include "Layers/AtmosphereLayer.h"
 
 //#include "Layers/410/CurlTestLayer.h"
 //#include "Layers/410/SkyVolumeGeneratorLayer.h"
 //#include "Layers/410/TerrainTestLayer.h"
 //#include "Layers/Testing/TestSSBOReadWriteLayer.h"
+
+//#include "Layers/VolumetricLayer.h"
+//#include "Layers/Testing/AssimpTestLayer.h"
 
 class SandboxApplication : public Engine::Application
 {
@@ -32,7 +36,6 @@ public:
 	SandboxApplication()
 		:Engine::Application("Sandbox")
 	{
-
 		//PushLayer(new ComputeTextureLayer);
 		//PushLayer(new ComputeParticleLayer);
 		//PushLayer(new CubeMapLayer);
@@ -54,7 +57,11 @@ public:
 
 		//PushLayer(new CloudsLayer);
 		//PushLayer(new TestSSBOReadWriteLayer);
-		PushLayer(new PlanetLayer);
+		//PushLayer(new PlanetLayer);
+		//PushLayer(new VolumetricLayer);
+
+		//PushLayer(new AssimpTestLayer);
+		PushLayer(new AtmosphereLayer);
 	}
 	
 	~SandboxApplication()

@@ -105,6 +105,21 @@
     <ClCompile Include="src\Layers\410\Planet\Planet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\VolumetricLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\BlankLayer\AssimpTestLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\Demos\BloomDemoLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\AtmosphereLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layers\Prague\PragueSkyModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -200,6 +215,21 @@
     <ClInclude Include="src\Layers\410\Planet\Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\VolumetricLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\Testing\AssimpTestLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\Demos\BloomDemoLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\AtmosphereLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\Prague\PragueSkyModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\Particle.shader" />
@@ -242,7 +272,6 @@
     <None Include="assets\410 shaders\Perlin2D.shader" />
     <None Include="assets\410 shaders\Clouds.shader" />
     <None Include="assets\410 shaders\CloudsComposite.shader" />
-    <None Include="assets\410 shaders\Normalize.compute" />
     <None Include="assets\410 shaders\TextureDisplay.shader" />
     <None Include="assets\410 shaders\Curl.shader" />
     <None Include="assets\410 shaders\TerrainGenerator.shader" />
@@ -251,5 +280,14 @@
     <None Include="assets\410 shaders\Clouds2.shader" />
     <None Include="assets\410 shaders\Planet.shader" />
     <None Include="assets\410 shaders\PlanetAtmosphereComposite.shader" />
+    <None Include="assets\410 shaders\WorleyGenerator2.shader" />
+    <None Include="assets\410 shaders\NormalizeWorley.shader" />
+    <None Include="assets\volumetric-shaders\LavaLamp.shader" />
+    <None Include="assets\410 shaders\InfiniteWaterPlane.shader" />
+    <None Include="assets\410 shaders\WaterPlane.shader" />
+    <None Include="assets\shaders\atmosphere\AtmospherePostProcess.shader" />
+    <None Include="assets\shaders\atmosphere\RenderAtmosphereWithLUTS.shader" />
+    <None Include="assets\shaders\prague_sky\PragueSky.shader" />
+    <None Include="assets\shaders\prague_sky\PragueSky.common" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ namespace Engine
 	{
 		glCreateBuffers(1, &m_ID);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ID);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_DRAW);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 
 	ShaderStorageBuffer::ShaderStorageBuffer(uint32_t size)

@@ -396,6 +396,32 @@ namespace Engine
 		glTextureStorage3D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(spec.InternalFormat), spec.Width, spec.Height, spec.Width);
 	}
 
+	Texture3D::Texture3D(const Texture3DSpecification& spec)
+	{
+		glCreateTextures(GL_TEXTURE_3D, 1, &m_ID);
+		glBindTexture(GL_TEXTURE_3D, m_ID);
+
+		GLenum wrapS = ImageUtils::ConvertWrapMode(spec.WrapModeS);
+		GLenum wrapT = ImageUtils::ConvertWrapMode(spec.WrapModeT);
+		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(spec.MinFilterMode);
+		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(spec.MagFilterMode);
+
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrapS);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrapT);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrapT);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, minFilter);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, magFilter);
+
+		// Immutable-format Texture
+		// Contents of the image can be modified, but it's storage requirements may not change.
+		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
+
+		uint32_t mips = GetMipLevelCount();
+
+		// TODO:: Provide Texture3DSpecification
+		glTextureStorage3D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(spec.InternalFormat), spec.Width, spec.Height, spec.Depth);
+	}
+
 	Texture3D::~Texture3D()
 	{
 		glDeleteTextures(1, &m_ID);

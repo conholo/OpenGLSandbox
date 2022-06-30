@@ -1,6 +1,8 @@
 #type compute
 #version 450 core
 
+#define MIN_MAX_ACCURACY 10000000
+
 layout(binding = 0, rgba32f) uniform image3D o_Image;
 
 
@@ -16,6 +18,11 @@ layout(std140, binding = 2) buffer PointsBufferC
 {
 	vec4 PointsC[];
 };
+layout(std430, binding = 3) buffer MinMaxBuffer
+{
+	int MinMax[2];
+};
+
 
 uniform bool u_IsBaseShape;
 uniform bool u_Invert;
@@ -76,81 +83,31 @@ int MaxComponent(ivec3 v)
 	return max(v.x, max(v.y, v.z));
 }
 
-float CalculateNoiseA(vec3 samplePosition)
+int GetCellCount(int pointsIndex)
 {
-	int cells = u_CellsA;
-	vec3 cellID = floor(samplePosition * cells);
-	float shortestDistance = 1.0;
-
-	for (int i = 0; i < 27; i++)
+	switch (pointsIndex)
 	{
-		ivec3 adjacentCellID = ivec3(cellID + CellOffsets[i]);
-
-		if (MinComponent(adjacentCellID) == -1 || MaxComponent(adjacentCellID) == cells)
-		{
-			ivec3 wrappedID = ivec3(mod(adjacentCellID + ivec3(cells), ivec3(cells)));
-			int adjacentIndex = wrappedID.x + cells * (wrappedID.y + wrappedID.z * cells);
-
-			vec3 p = PointsA[adjacentIndex].xyz;
-
-			for (int j = 0; j < 27; j++)
-			{
-				vec3 offset = samplePosition - (p + CellOffsets[j]);
-				shortestDistance = min(shortestDistance, dot(offset, offset));
-			}
-		}
-		else
-		{
-			int adjacentIndex = adjacentCellID.x + cells * (adjacentCellID.y + adjacentCellID.z * cells);
-			vec3 p = PointsA[adjacentIndex].xyz;
-			vec3 offset = samplePosition - p;
-
-			shortestDistance = min(shortestDistance, dot(offset, offset));
-		}
+	case 0: return u_CellsA;
+	case 1: return u_CellsB;
+	case 2: return u_CellsC;
+	default: return -1;
 	}
-
-	return sqrt(shortestDistance);
 }
 
-float CalculateNoiseB(vec3 samplePosition)
+vec4 GetPoint(int pointsIndex, int pointIndex)
 {
-	int cells = u_CellsB;
-	vec3 cellID = floor(samplePosition * cells);
-	float shortestDistance = 1.0;
-
-	for (int i = 0; i < 27; i++)
+	switch (pointsIndex)
 	{
-		ivec3 adjacentCellID = ivec3(cellID + CellOffsets[i]);
-
-		if (MinComponent(adjacentCellID) == -1 || MaxComponent(adjacentCellID) == cells)
-		{
-			ivec3 wrappedID = ivec3(mod(adjacentCellID + ivec3(cells), ivec3(cells)));
-			int adjacentIndex = wrappedID.x + cells * (wrappedID.y + wrappedID.z * cells);
-
-			vec3 p = PointsB[adjacentIndex].xyz;
-
-			for (int j = 0; j < 27; j++)
-			{
-				vec3 offset = samplePosition - (p + CellOffsets[j]);
-				shortestDistance = min(shortestDistance, dot(offset, offset));
-			}
-		}
-		else
-		{
-			int adjacentIndex = adjacentCellID.x + cells * (adjacentCellID.y + adjacentCellID.z * cells);
-			vec3 p = PointsB[adjacentIndex].xyz;
-			vec3 offset = samplePosition - p;
-
-			shortestDistance = min(shortestDistance, dot(offset, offset));
-		}
+	case 0: return PointsA[pointIndex];
+	case 1: return PointsB[pointIndex];
+	case 2: return PointsC[pointIndex];
+	default: return vec4(-1.0);
 	}
-
-	return sqrt(shortestDistance);
 }
 
-float CalculateNoiseC(vec3 samplePosition)
+float CalculateNoise(int pointsIndex, vec3 samplePosition)
 {
-	int cells = u_CellsC;
+	int cells = GetCellCount(pointsIndex);
 	vec3 cellID = floor(samplePosition * cells);
 	float shortestDistance = 1.0;
 
@@ -162,8 +119,7 @@ float CalculateNoiseC(vec3 samplePosition)
 		{
 			ivec3 wrappedID = ivec3(mod(adjacentCellID + ivec3(cells), ivec3(cells)));
 			int adjacentIndex = wrappedID.x + cells * (wrappedID.y + wrappedID.z * cells);
-
-			vec3 p = PointsC[adjacentIndex].xyz;
+			vec3 p = GetPoint(pointsIndex, adjacentIndex).xyz;
 
 			for (int j = 0; j < 27; j++)
 			{
@@ -174,7 +130,7 @@ float CalculateNoiseC(vec3 samplePosition)
 		else
 		{
 			int adjacentIndex = adjacentCellID.x + cells * (adjacentCellID.y + adjacentCellID.z * cells);
-			vec3 p = PointsC[adjacentIndex].xyz;
+			vec3 p = GetPoint(pointsIndex, adjacentIndex).xyz;
 			vec3 offset = samplePosition - p;
 
 			shortestDistance = min(shortestDistance, dot(offset, offset));
@@ -193,9 +149,9 @@ void main()
 	vec3 texCoord = vec3(invocID) / imgSize;
 	vec3 samplePosition = mod(texCoord * u_Tiling, vec3(1.0));
 
-	float layerA = CalculateNoiseA(samplePosition);
-	float layerB = CalculateNoiseB(samplePosition);
-	float layerC = CalculateNoiseC(samplePosition);
+	float layerA = CalculateNoise(0, samplePosition);
+	float layerB = CalculateNoise(1, samplePosition);
+	float layerC = CalculateNoise(2, samplePosition);
 	
 	float noise = layerA + (layerB * u_Persistence) + (layerC * u_Persistence * u_Persistence);
 	float maxNoise = 1.0 + (u_Persistence) + (u_Persistence * u_Persistence);
@@ -203,6 +159,11 @@ void main()
 	noise /= maxNoise;
 	if(u_Invert)
 		noise = (1.0 - noise) * u_InversionWeight;
+
+	int minMaxValue = int(noise * MIN_MAX_ACCURACY);
+	MinMax[0] = min(MinMax[0], minMaxValue);
+	MinMax[1] = max(MinMax[1], minMaxValue);
+	barrier();
 
 	if (u_ChannelMask.r == 1.0 && u_IsBaseShape)
 		noise = mix(noise, texture(u_PerlinTexture, texCoord.xy).r, u_PerlinWorleyMix);

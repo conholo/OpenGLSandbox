@@ -134,5 +134,6 @@ void main()
 	}
 
 	value /= u_Settings.Octaves;
+
 	imageStore(o_Image, ivec2(gl_GlobalInvocationID.xy), vec4(vec3(value), 1.0));
 }

@@ -36,7 +36,7 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 	};
 
 	m_Sun = Engine::CreateRef<Engine::Light>(sunSpec);
-	m_Sun->GetLightTransform()->SetPosition({ 30.0f, 300.0f, 0.0f });
+	m_Sun->GetLightTransform()->SetPosition({ 30.0f, 600.0f, 0.0f });
 
 	m_GroundPlane = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Plane, "FlatColor");
 	m_GroundPlane->GetEntityTransform()->SetScale({ 10.0f, 1.0f, 10.0f });
@@ -52,7 +52,7 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 	m_Terrain = Engine::CreateRef<Engine::Terrain>();
 
 	m_Terrain->GetProperties()->Scale = glm::vec3(18.0, 22.0f, 18.0f);
-	m_Terrain->GetProperties()->Position = glm::vec3(0.0f, -70.0f, 0.0f);
+	m_Terrain->GetProperties()->Position = glm::vec3(0.0f, -5.0f, 0.0f);
 	m_Terrain->GetProperties()->Color = glm::vec3(0.9f, 0.78f, 0.75f);
 	m_Terrain->GetProperties()->HeightScaleFactor = 50.0f;
 	m_Terrain->GetProperties()->HeightThreshold = 0.11f;
@@ -86,6 +86,7 @@ void CloudsSceneRenderPass::DrawSceneEntities(const Engine::Camera& camera)
 	//m_GroundPlane->GetEntityRenderer()->GetShader()->Bind();
 	//m_GroundPlane->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", { 1.0f, 0.8f, 0.8f });
 	//m_GroundPlane->DrawEntity(camera.GetViewProjection());
+
 
 	if (!m_DrawTerrain) return;
 

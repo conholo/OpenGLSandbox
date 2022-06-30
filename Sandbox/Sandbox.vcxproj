@@ -32,12 +32,16 @@
     <ClCompile Include="src\Layers\410\SkyVolumeGeneratorLayer.cpp" />
     <ClCompile Include="src\Layers\410\TerrainTestLayer.cpp" />
     <ClCompile Include="src\Layers\457\Project1.cpp" />
+    <ClCompile Include="src\Layers\AtmosphereLayer.cpp" />
+    <ClCompile Include="src\Layers\BlankLayer\AssimpTestLayer.cpp" />
     <ClCompile Include="src\Layers\ComputeParticleLayer.cpp" />
     <ClCompile Include="src\Layers\ComputeTextureLayer.cpp" />
     <ClCompile Include="src\Layers\CubeMapLayer.cpp" />
+    <ClCompile Include="src\Layers\Demos\BloomDemoLayer.cpp" />
     <ClCompile Include="src\Layers\FractalLayer.cpp" />
     <ClCompile Include="src\Layers\LightingLayer.cpp" />
     <ClCompile Include="src\Layers\LineLayer.cpp" />
+    <ClCompile Include="src\Layers\Prague\PragueSkyModel.cpp" />
     <ClCompile Include="src\Layers\ShaderProjectLayer.cpp" />
     <ClCompile Include="src\Layers\ShadowsLayer.cpp" />
     <ClCompile Include="src\Layers\TestBezierSurfaceLayer.cpp" />
@@ -46,6 +50,7 @@
     <ClCompile Include="src\Layers\Testing\TestSSBOReadWriteLayer.cpp" />
     <ClCompile Include="src\Layers\ToonShadingLayer.cpp" />
     <ClCompile Include="src\Layers\SkyBoxLayer.cpp" />
+    <ClCompile Include="src\Layers\VolumetricLayer.cpp" />
     <ClCompile Include="src\SandboxApplication.cpp" />
     <ClCompile Include="src\Utility\CurveSerializer.cpp" />
     <ClCompile Include="src\Utility\ImGuiUtility.cpp" />
@@ -65,21 +70,26 @@
     <ClInclude Include="src\Layers\410\SkyVolumeGeneratorLayer.h" />
     <ClInclude Include="src\Layers\410\TerrainTestLayer.h" />
     <ClInclude Include="src\Layers\457\Project1.h" />
+    <ClInclude Include="src\Layers\AtmosphereLayer.h" />
     <ClInclude Include="src\Layers\BlankLayer\BlankLayer.h" />
     <ClInclude Include="src\Layers\ComputeParticleLayer.h" />
     <ClInclude Include="src\Layers\ComputeTextureLayer.h" />
     <ClInclude Include="src\Layers\CubeMapLayer.h" />
+    <ClInclude Include="src\Layers\Demos\BloomDemoLayer.h" />
     <ClInclude Include="src\Layers\FractalLayer.h" />
     <ClInclude Include="src\Layers\LightingLayer.h" />
     <ClInclude Include="src\Layers\LineLayer.h" />
+    <ClInclude Include="src\Layers\Prague\PragueSkyModel.h" />
     <ClInclude Include="src\Layers\ShaderProjectLayer.h" />
     <ClInclude Include="src\Layers\ShadowsLayer.h" />
     <ClInclude Include="src\Layers\TestBezierSurfaceLayer.h" />
+    <ClInclude Include="src\Layers\Testing\AssimpTestLayer.h" />
     <ClInclude Include="src\Layers\Testing\ComputeTest.h" />
     <ClInclude Include="src\Layers\Testing\StarMapLayer.h" />
     <ClInclude Include="src\Layers\Testing\TestSSBOReadWriteLayer.h" />
     <ClInclude Include="src\Layers\ToonShadingLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxLayer.h" />
+    <ClInclude Include="src\Layers\VolumetricLayer.h" />
     <ClInclude Include="src\Utility\CurveSerializer.h" />
     <ClInclude Include="src\Utility\ImGuiUtility.h" />
   </ItemGroup>
@@ -94,16 +104,21 @@
     <None Include="assets\410 shaders\Clouds2.shader" />
     <None Include="assets\410 shaders\CloudsComposite.shader" />
     <None Include="assets\410 shaders\Curl.shader" />
-    <None Include="assets\410 shaders\Normalize.compute" />
+    <None Include="assets\410 shaders\InfiniteWaterPlane.shader" />
+    <None Include="assets\410 shaders\NormalizeWorley.shader" />
     <None Include="assets\410 shaders\Perlin2D.shader" />
     <None Include="assets\410 shaders\Planet.shader" />
     <None Include="assets\410 shaders\PlanetAtmosphereComposite.shader" />
     <None Include="assets\410 shaders\TerrainLighting.shader" />
     <None Include="assets\410 shaders\TerrainGenerator.shader" />
     <None Include="assets\410 shaders\TextureDisplay.shader" />
+    <None Include="assets\410 shaders\WaterPlane.shader" />
     <None Include="assets\410 shaders\WorleyGenerator.shader" />
+    <None Include="assets\410 shaders\WorleyGenerator2.shader" />
     <None Include="assets\457 shaders\Project1.shader" />
     <None Include="assets\410 shaders\SkyVolume.shader" />
+    <None Include="assets\shaders\atmosphere\AtmospherePostProcess.shader" />
+    <None Include="assets\shaders\atmosphere\RenderAtmosphereWithLUTS.shader" />
     <None Include="assets\shaders\BlinnPhong.shader" />
     <None Include="assets\shaders\BlinnPhongWS.shader" />
     <None Include="assets\shaders\Bloom.shader" />
@@ -123,6 +138,8 @@
     <None Include="assets\shaders\Particle.shader" />
     <None Include="assets\shaders\Portal.shader" />
     <None Include="assets\shaders\PostProcessing.shader" />
+    <None Include="assets\shaders\prague_sky\PragueSky.common" />
+    <None Include="assets\shaders\prague_sky\PragueSky.shader" />
     <None Include="assets\shaders\Preetham.shader" />
     <None Include="assets\shaders\SDFBlinnPhong.shader" />
     <None Include="assets\shaders\SurfaceCurve.shader" />
@@ -138,6 +155,7 @@
     <None Include="assets\shaders\Surfaces.shader" />
     <None Include="assets\shaders\Test.shader" />
     <None Include="assets\shaders\TestWriteToCube.shader" />
+    <None Include="assets\volumetric-shaders\LavaLamp.shader" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -241,7 +259,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor/GLFW/include;$(SolutionDir)OpenGLSandbox/src;$(ProjectDir)src;$(SolutionDir)OpenGLSandbox/vendor/glad/include;$(SolutionDir)vendor/glm;$(SolutionDir)OpenGLSandbox/vendor/entt/include;$(SolutionDir)OpenGLSandbox/vendor/imgui/;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>

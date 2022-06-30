@@ -15,6 +15,9 @@ static Engine::Ref<WorleyChannelData> CreateChannelData(WorleyChannelMask mask, 
 	data->LayerSeeds.y = Engine::Random::RandomRange(0.0f, 10e6f);
 	data->LayerSeeds.z = Engine::Random::RandomRange(0.0f, 10e6f);
 	data->LayerCells = defaultCells;
+	data->MinMax.resize(2);
+	data->MinMax[0] = INT_MAX;
+	data->MinMax[1] = INT_MIN;
 
 	data->PointsA = CreateWorleyPoints(data->LayerCells.x, data->LayerSeeds.x);
 	data->ShapePointsBufferA = Engine::CreateRef<Engine::ShaderStorageBuffer>(data->PointsA.data(), sizeof(glm::vec4) * data->PointsA.size());
@@ -22,6 +25,7 @@ static Engine::Ref<WorleyChannelData> CreateChannelData(WorleyChannelMask mask, 
 	data->ShapePointsBufferB = Engine::CreateRef<Engine::ShaderStorageBuffer>(data->PointsB.data(), sizeof(glm::vec4) * data->PointsB.size());
 	data->PointsC = CreateWorleyPoints(data->LayerCells.z, data->LayerSeeds.z);
 	data->ShapePointsBufferC = Engine::CreateRef<Engine::ShaderStorageBuffer>(data->PointsC.data(), sizeof(glm::vec4) * data->PointsC.size());
+	data->MinMaxBuffer = Engine::CreateRef<Engine::ShaderStorageBuffer>(data->MinMax.data(), sizeof(int) * 2);
 
 	return data;
 }
@@ -91,12 +95,17 @@ void WorleyChannelData::UpdatePoints()
 
 void WorleyChannelData::UpdateChannel(const Engine::Ref<Engine::Texture2D>& perlinTexture, float perlinWorleyMix, uint32_t threadGroups)
 {
+	MinMax[0] = INT_MAX;
+	MinMax[1] = INT_MIN;
+	MinMaxBuffer = Engine::CreateRef<Engine::ShaderStorageBuffer>(MinMax.data(), sizeof(int) * 2);
+
 	Engine::ShaderLibrary::Get("WorleyGenerator")->Bind();
 	perlinTexture->BindToSamplerSlot(0);
 
 	ShapePointsBufferA->BindToComputeShader(0, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	ShapePointsBufferB->BindToComputeShader(1, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	ShapePointsBufferC->BindToComputeShader(2, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
+	MinMaxBuffer->BindToComputeShader(3, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformBool("u_IsBaseShape", true);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformBool("u_Invert", InvertWorley);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformInt("u_CellsA", LayerCells.x);
@@ -110,15 +119,26 @@ void WorleyChannelData::UpdateChannel(const Engine::Ref<Engine::Texture2D>& perl
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformInt("u_PerlinTexture", 0);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->DispatchCompute(threadGroups, threadGroups, threadGroups);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->EnableShaderImageAccessBarrierBit();
+
+	Engine::ShaderLibrary::Get("NormalizeWorley")->Bind();
+	MinMaxBuffer->BindToComputeShader(0, Engine::ShaderLibrary::Get("NormalizeWorley")->GetID());
+	Engine::ShaderLibrary::Get("NormalizeWorley")->UploadUniformFloat4("u_ChannelMask", ColorFromMask(Mask));
+	Engine::ShaderLibrary::Get("NormalizeWorley")->DispatchCompute(threadGroups, threadGroups, threadGroups);
+	Engine::ShaderLibrary::Get("NormalizeWorley")->EnableShaderImageAccessBarrierBit();
 }
 
 void WorleyChannelData::UpdateChannel(uint32_t threadGroups)
 {
+	MinMax[0] = INT_MAX;
+	MinMax[1] = INT_MIN;
+	MinMaxBuffer = Engine::CreateRef<Engine::ShaderStorageBuffer>(MinMax.data(), sizeof(int) * 2);
+
 	Engine::ShaderLibrary::Get("WorleyGenerator")->Bind();
 
 	ShapePointsBufferA->BindToComputeShader(0, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	ShapePointsBufferB->BindToComputeShader(1, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	ShapePointsBufferC->BindToComputeShader(2, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
+	MinMaxBuffer->BindToComputeShader(3, Engine::ShaderLibrary::Get("WorleyGenerator")->GetID());
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformBool("u_IsBaseShape", false);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformBool("u_Invert", InvertWorley);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformInt("u_CellsA", LayerCells.x);
@@ -131,6 +151,12 @@ void WorleyChannelData::UpdateChannel(uint32_t threadGroups)
 	Engine::ShaderLibrary::Get("WorleyGenerator")->UploadUniformInt("u_PerlinTexture", 0);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->DispatchCompute(threadGroups, threadGroups, threadGroups);
 	Engine::ShaderLibrary::Get("WorleyGenerator")->EnableShaderImageAccessBarrierBit();
+
+	Engine::ShaderLibrary::Get("NormalizeWorley")->Bind();
+	MinMaxBuffer->BindToComputeShader(0, Engine::ShaderLibrary::Get("NormalizeWorley")->GetID());
+	Engine::ShaderLibrary::Get("NormalizeWorley")->UploadUniformFloat4("u_ChannelMask", ColorFromMask(Mask));
+	Engine::ShaderLibrary::Get("NormalizeWorley")->DispatchCompute(threadGroups, threadGroups, threadGroups);
+	Engine::ShaderLibrary::Get("NormalizeWorley")->EnableShaderImageAccessBarrierBit();
 }
 
 WorleyPerlinSettings::WorleyPerlinSettings()
@@ -180,6 +206,10 @@ DetailShapeWorleySettings::DetailShapeWorleySettings()
 	ChannelR = CreateChannelData(WorleyChannelMask::R, DefaultLayerCellsR, DefaultPersistence.r);
 	ChannelG = CreateChannelData(WorleyChannelMask::G, DefaultLayerCellsG, DefaultPersistence.g);
 	ChannelB = CreateChannelData(WorleyChannelMask::B, DefaultLayerCellsB, DefaultPersistence.b);
+
+	ChannelR->InvertWorley = false;
+	ChannelR->InvertWorley = false;
+	ChannelR->InvertWorley = false;
 
 	Engine::TextureSpecification detailShapeTextureSpec =
 	{

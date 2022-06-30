@@ -46,4 +46,5 @@ private:
 	Engine::Ref<DetailShapeWorleySettings> m_DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> m_PerlinSettings;
 	Engine::Ref<CurlSettings> m_CurlSettings;
+	Engine::Ref<WaterData> m_WaterSettings;
 };

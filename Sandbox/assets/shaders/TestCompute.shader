@@ -88,8 +88,8 @@ void main()
 
         noiseHeight += perlinValue * amplitude;
 
-        amplitude *= u_Params.y;
         frequency *= u_Params.x;
+        amplitude *= u_Params.y;
     }
 
 	vec4 pixel = vec4(1 - noiseHeight) * u_NoiseColor;

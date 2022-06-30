@@ -33,11 +33,8 @@ struct Light
 
 layout(std140, binding = 0) uniform PlanetMaterialProperties
 {
-	vec3 AmbientColor;
-	float AmbientStrength;
-
-	vec3 DiffuseColor;
-	float DiffuseStrength;
+	vec4 Ambient;
+	vec4 Diffuse;
 
 	float SpecularStrength;
 	float Shininess;
@@ -58,13 +55,13 @@ void main()
 
 	float ndotl = max(0.0, dot(normal, lightDirection));
 
-	vec3 diffuse = DiffuseColor * ndotl * DiffuseStrength;
+	vec3 diffuse = Diffuse.rgb * ndotl * Diffuse.w;
 
 	vec3 halfway = normalize(viewDirection + lightDirection);
 	float specularValue = pow(max(0.0, dot(normal, halfway)), Shininess * Shininess);
 	vec3 specular = u_Light.Color * specularValue * SpecularStrength;
 
-	vec3 ambient = AmbientColor * AmbientStrength;
+	vec3 ambient = Ambient.rgb * Ambient.w;
 
 	vec3 lighting = (diffuse + specular + ambient) * u_Light.Color * u_Light.Intensity;
 

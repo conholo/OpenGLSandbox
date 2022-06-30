@@ -6,6 +6,7 @@ CloudsLayer::CloudsLayer()
 {
 	Engine::Application::GetApplication().GetWindow().ToggleMaximize(true);
 	Engine::ShaderLibrary::Load("assets/410 shaders/WorleyGenerator.shader");
+	Engine::ShaderLibrary::Load("assets/410 shaders/NormalizeWorley.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/3DTextureViewer.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/Perlin2D.shader");
 	Engine::ShaderLibrary::Load("assets/410 shaders/Clouds.shader");
@@ -33,6 +34,7 @@ void CloudsLayer::OnAttach()
 
 	m_PerlinSettings = Engine::CreateRef<WorleyPerlinSettings>();
 	m_CurlSettings = Engine::CreateRef<CurlSettings>();
+	m_WaterSettings = Engine::CreateRef<WaterData>();
 	m_BaseShapeSettings = Engine::CreateRef<BaseShapeWorleySettings>();
 	m_BaseShapeSettings->UpdateAllChannels(m_PerlinSettings);
 	m_DetailShapeSettings = Engine::CreateRef<DetailShapeWorleySettings>();
@@ -50,6 +52,7 @@ void CloudsLayer::OnAttach()
 	m_CloudUIData->PerlinSettings = m_PerlinSettings;
 	m_CloudUIData->CurlSettings = m_CurlSettings;
 	m_CloudUIData->SceneRenderPass = m_SceneRenderPass;
+	m_CloudUIData->WaterSettings = m_WaterSettings;
 
 	m_MainCloudPassData = Engine::CreateRef<MainCloudPassData>();
 	m_MainCloudPassData->AnimationSettings = m_CloudAnimationSettings;
@@ -60,6 +63,7 @@ void CloudsLayer::OnAttach()
 	m_MainCloudPassData->PerlinSettings = m_PerlinSettings;
 	m_MainCloudPassData->SceneRenderPass = m_SceneRenderPass;
 	m_MainCloudPassData->UI = m_CloudsUI;
+	m_MainCloudPassData->WaterData = m_WaterSettings;
 
 	Resize(Engine::Application::GetApplication().GetWindow().GetWidth(), Engine::Application::GetApplication().GetWindow().GetHeight());
 }

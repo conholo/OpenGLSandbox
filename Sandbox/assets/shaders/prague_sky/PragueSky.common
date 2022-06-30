@@ -1,0 +1,52 @@
+
+struct Parameters
+{
+    /// Angle between view direction and direction to zenith in radians, supported values in range [0,
+    /// PI].
+    double theta;
+
+    /// Angle between view direction and direction to sun in radians, supported values in range [0, PI].
+    double gamma;
+
+    /// Altitude-corrected angle between view direction and direction perpendicular to a shadow plane (=
+    /// direction to sun rotated PI / 2 towards direction to zenith) in radians, used for negative solar
+    /// elevations only, supported values in range [0, PI]
+    double shadow;
+
+    /// Altitude-corrected version of the theta angle in radians, supported values in range [0, PI].
+    double zero;
+
+    /// Sun elevation at view point in radians, supported values in range [-0.073, PI/2] (for full
+    /// dataset). For view points above ground differs from the ground level sun elevation expected by the
+    /// computeParameters method.
+    double elevation;
+
+    /// Altitude of view point in meters, supported values in range [0, 15000] (for full dataset).
+    double altitude;
+
+    /// Horizontal visibility (meteorological range) at ground level in kilometers, supported values in
+    /// range [20, 131.8] (for full dataset).
+    double visibility;
+
+    /// Ground albedo, supported values in range [0, 1] (for full dataset).
+    double albedo;
+};
+
+struct SkyModelData
+{
+    std::vector<double> visibilitiesRad;
+    std::vector<double> albedosRad;
+    std::vector<double> altitudesRad;
+    std::vector<double> elevationsRad;
+
+    Metadata metadataRad;
+    std::vector<float> dataRad;
+
+    int totalConfigs;
+    int skippedConfigsBegin;
+    int skippedConfigsEnd;
+
+    int    channels;
+    double channelStart;
+    double channelWidth;
+};

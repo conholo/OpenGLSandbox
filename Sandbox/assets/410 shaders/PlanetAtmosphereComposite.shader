@@ -40,8 +40,13 @@ struct Light
 	float Intensity;
 };
 
+const float Epsilon = 0.0001;
+
 uniform sampler2D u_SceneTexture;
 uniform sampler2D u_DepthTexture;
+
+uniform vec3 u_CloudTintColor;
+uniform vec3 u_AtmosphereColor;
 
 uniform float u_NearClip;
 uniform float u_FarClip;
@@ -55,18 +60,39 @@ uniform Light u_Light;
 
 uniform int u_DensitySteps;
 uniform int u_LightSteps;
+uniform int u_AtmosphericOpticalDepthPoints;
 
+
+uniform sampler2D u_WeatherMap;
+uniform sampler2D u_CurlNoise;
 uniform sampler3D u_ShapeTexture;
+uniform sampler3D u_DetailTexture;
+
 uniform float u_LowerCloudOffsetPct;
 uniform float u_UpperCloudOffsetPct;
 uniform float u_ViewerAttenuationFactor;
 uniform float u_CloudScale;
 uniform float u_DensityMultiplier;
 uniform float u_DensityThreshold;
-uniform float u_LuminanceMultiplier;
-uniform vec4 u_ShapeNoiseWeights;
 
+
+uniform float u_LuminanceMultiplier;
+uniform float u_ForwardScatteringConstant;
+uniform float u_ExtinctionFactor;
+uniform float u_DetailHeightModifier;
+uniform float u_TypeWeightMultiplier;
+uniform float u_SilverLiningConstant;
+uniform float u_PowderConstant;
+
+uniform vec4 u_ShapeNoiseWeights;
+uniform vec3 u_DetailNoiseWeights;
+uniform vec3 u_CloudTypeWeights;
+uniform vec4 u_PhaseParams;
+
+uniform float u_SunSizeAttenuation;
 uniform float u_AtmosphereStrength;
+uniform float u_AtmosphereDensityFalloff;
+uniform vec3 u_AtmosphereScatteringCoefficient;
 
 uniform float u_AtmosphereRadius;
 uniform float u_PlanetRadius;
@@ -108,7 +134,6 @@ struct IntersectionData
 	bool Forward;
 	bool HitPlanet;
 };
-
 IntersectionData TestIntersectionBehind(vec3 p, vec3 d, vec3 c, float r)
 {
 	IntersectionData data;
@@ -152,7 +177,6 @@ IntersectionData TestIntersectionBehind(vec3 p, vec3 d, vec3 c, float r)
 		return data;
 	}
 }
-
 IntersectionData TestIntersectionForward(vec3 p, vec3 d, vec3 c, float r)
 {
 	IntersectionData data;
@@ -197,7 +221,6 @@ IntersectionData TestIntersectionForward(vec3 p, vec3 d, vec3 c, float r)
 
 	return data;
 }
-
 IntersectionData GetSphereIntersections(vec3 p, vec3 d, vec3 c, float r)
 {
 	IntersectionData data;
@@ -235,16 +258,21 @@ IntersectionData GetSphereIntersections(vec3 p, vec3 d, vec3 c, float r)
 		if (planetHit && !planetForwardIntersection.Outside)
 			return data;
 
+		// HIT PLANET LOGIC
 		// If we didn't hit the planet, take the normal intersections.  Otherwise
 		// check if we hit the planet from inside the atmosphere.  If we did, 
 		// distanceA is 0.0 (the camera) and distanceB is the intersection point on the planet.
 		// If we hit the planet from outside the atmosphere, distanceA is the atmosphere hit,
 		// distanceB is the planet hit.
-		vec2 forwardDistances = !planetHit
-					? vec2(forwardIntersection.DistanceA, forwardIntersection.DistanceB)
-					: insidePlanetHit
-						? vec2(0.0, planetForwardIntersection.DistanceA)
-						: vec2(forwardIntersection.DistanceA, planetForwardIntersection.DistanceA);
+
+		//vec2 forwardDistances = !planetHit
+		//			? vec2(forwardIntersection.DistanceA, forwardIntersection.DistanceB)
+		//			: insidePlanetHit
+		//				? vec2(0.0, planetForwardIntersection.DistanceA)
+		//				: vec2(forwardIntersection.DistanceA, planetForwardIntersection.DistanceA);
+		// HIT PLANET LOGIC
+
+		vec2 forwardDistances = vec2(forwardIntersection.DistanceA, forwardIntersection.DistanceB);
 
 		data.HitPlanet = planetHit;
 		data.DistanceA = forwardDistances.x;
@@ -265,7 +293,7 @@ float InverseLerp(float v, float min, float max)
 
 float Remap(float v, float minOld, float maxOld, float minNew, float maxNew)
 {
-	return minNew + (v - minOld) * (maxNew - minNew) / (maxOld - minOld);
+	return minNew + (((v - minOld) / (maxOld - minOld)) * (maxNew - minNew));
 }
 
 float CalculateLinearDepth(float depth)
@@ -279,7 +307,7 @@ float CalculateLinearDepth(float depth)
 	return linearDepth;
 }
 
-float ViewerDistanceAttenationFactor(float power)
+float ViewerDistanceAttenuationFactor(float power)
 {
 	float attenuationDistanceBegin = u_AtmosphereRadius + u_AtmosphereRadius * u_ViewerAttenuationFactor;
 	vec3 planetViewerOffset = u_PlanetPosition - u_CameraPosition;
@@ -291,38 +319,86 @@ float ViewerDistanceAttenationFactor(float power)
 	return attenuationPercent;
 }
 
-float SampleCloudDensity(vec3 rayPosition)
+mat3 RotateX(float theta)
 {
-	float attenuationPercent = ViewerDistanceAttenationFactor(1.0);
+	float c = cos(theta);
+	float s = sin(theta);
+	return mat3(
+		vec3(1, 0, 0),
+		vec3(0, c, -s),
+		vec3(0, s, c)
+	);
+}
 
-	float centerDistance = length(rayPosition - u_PlanetPosition);
-	float cloudPercent = clamp(Remap(centerDistance, u_PlanetRadius + u_PlanetRadius * u_LowerCloudOffsetPct, u_AtmosphereRadius - u_AtmosphereRadius * u_UpperCloudOffsetPct, 0.0, 1.0), 0.0, 1.0);
-	float distanceDensityMapping = cos(cloudPercent * PI - PI / 2.0);
+mat3 RotateY(float theta)
+{
+	float c = cos(theta);
+	float s = sin(theta);
+	return mat3(
+		vec3(c, 0, s),
+		vec3(0, 1, 0),
+		vec3(-s, 0, c)
+	);
+}
 
-	vec3 containerSize = vec3(u_AtmosphereRadius * 2.0 * PI);
-	vec3 uvw = (containerSize * 0.5 + rayPosition) * (1.0 / 1000.0) * u_CloudScale;
+mat3 RotateZ(float theta)
+{
+	float c = cos(theta);
+	float s = sin(theta);
+	return mat3(
+		vec3(c, -s, 0),
+		vec3(s, c, 0),
+		vec3(0, 0, 1)
+	);
+}
 
-	float time = u_TimeScale * u_ElapsedTime;
-	float animationSpeed = u_Animate ? u_AnimationSpeed : 0.0;
-	vec3 animationOffset = vec3(time, time * 0.1, time * 0.2) * animationSpeed;
-	vec3 shapeSamplePosition = uvw + animationOffset;
+float CubicPulse(float t, float c, float w)
+{
+	t = abs(t - c);
+	if (t > w) return 0.0;
+	t /= w;
+	return 1.0 - t * t * (3.0 - 2.0 * t);
+}
 
-	vec4 shape = texture(u_ShapeTexture, shapeSamplePosition) * distanceDensityMapping * attenuationPercent;
-	vec4 normalizedShapeWeights = u_ShapeNoiseWeights / dot(u_ShapeNoiseWeights, vec4(1.0));
-	float shapeFBM = dot(shape, normalizedShapeWeights);
-	float baseShapeDensity = max(0.0, shapeFBM - u_DensityThreshold);
+float Stratus(float t)
+{
+	float c = 0.125;
+	float w = 0.040;
+	return CubicPulse(t, c, w);
+}
 
-	return min(1.0, baseShapeDensity * u_DensityMultiplier);
+float Cumulus(float t)
+{
+	float c = 0.265;
+	float w = 0.200;
+	return CubicPulse(t, c, w);
+}
+
+float Cumulonimbus(float t)
+{
+	float c = .55;
+	float w = .52;
+	return CubicPulse(t, c, w);
+}
+
+float GetHeightFractionForPoint(float distanceToCenter, vec2 cloudMinMax)
+{
+	return clamp(((distanceToCenter - cloudMinMax.x) / (cloudMinMax.y - cloudMinMax.x)), 0.0, 1.0);
+}
+
+float GetHeightGradientFromPoint(float distanceToCenter, vec2 cloudMinMax)
+{
+	float heightFraction = GetHeightFractionForPoint(distanceToCenter, cloudMinMax);
+	vec3 heightMapping = vec3(Stratus(heightFraction), Cumulus(heightFraction), Cumulonimbus(heightFraction));
+	vec3 normalizedCloudTypeWeights = u_CloudTypeWeights / dot(u_CloudTypeWeights, vec3(1.0));
+	float heightValue = dot(heightMapping, normalizedCloudTypeWeights);
+
+	return heightValue * u_TypeWeightMultiplier;
 }
 
 float Beers(float d)
 {
 	return exp(-d);
-}
-
-float Powder(float d)
-{
-	return 1.0 - exp(-d * 2.0);
 }
 
 float HG(float a, float g)
@@ -331,69 +407,106 @@ float HG(float a, float g)
 	return (1 - g2) / (4.0 * 3.1415 * pow(1.0 + g2 - 2.0 * g * a, 1.5));
 }
 
-void main()
+float RayleighPhaseFunction(float a)
 {
-	vec3 sceneColor = texture(u_SceneTexture, v_TexCoord).rgb;
+	float k = 3.0 / (16.0 * PI);
+	return k * (1.0 + a * a);
+}
 
-	vec3 rayOrigin = u_CameraPosition;
-	vec3 rayDirection = normalize(v_ViewDirection);
+float MiePhaseFunction(float g, float a)
+{
+	float k = 3.0 / (8.0 * PI * 1.0) * (1.0 - g * g) / (2.0 + g * g);
+	return k * (1.0 + a * a) / pow(1.0 + g * g - 2.0 * g * a, 1.5);
+}
 
-	vec3 atmosphereColor = vec3(0.0, 0.0, 1.0);
-	float totalAtmosphericDensity = 0.0;
+float PhaseFn(float angle)
+{
+	float blend = 0.5;
+	float hgBlend = HG(angle, u_PhaseParams.x) * (1.0 - blend) + HG(angle, u_PhaseParams.y) * blend;
+	return u_PhaseParams.z + hgBlend * u_PhaseParams.w;
+}
 
+float CalculateAtmosphericDensity(vec3 p, vec3 c, float rNear, float rFar)
+{
+	float distanceToCenter = length(p - c) - rNear;
+	float height = distanceToCenter / (rFar - rNear);
+	float atmosphericDensity = exp(-height * u_AtmosphereDensityFalloff) * (1.0 - height);
+
+	return atmosphericDensity;
+}
+
+float CalculateOpticalDepth(vec3 rayOrigin, vec3 rayDirection, float rayLength)
+{
+	vec3 scatterPoint = rayOrigin;
+	float stepSize = rayLength / float(u_AtmosphericOpticalDepthPoints);
+	vec3 inScatteredLight = vec3(0.0);
+
+	float opticalDepth = 0.0;
+
+	for (int i = 0; i < u_AtmosphericOpticalDepthPoints; i++)
+	{
+		float density = CalculateAtmosphericDensity(scatterPoint, u_PlanetPosition, u_PlanetRadius, u_AtmosphereRadius);
+		opticalDepth += density * stepSize;
+		scatterPoint += rayDirection * stepSize;
+	}
+
+	return opticalDepth;
+}
+
+vec3 March(vec3 rayOrigin, vec3 rayDirection, vec3 directionToLight)
+{
 	float nonLinearDepth = texture(u_DepthTexture, v_TexCoord).r;
 	float linearDepth = CalculateLinearDepth(nonLinearDepth);
 
-	IntersectionData cloudMarchData = GetSphereIntersections(rayOrigin, rayDirection, u_PlanetPosition, u_AtmosphereRadius);
-	float distanceLimit = max(0.0, min(linearDepth - cloudMarchData.DistanceA, cloudMarchData.DistanceB - cloudMarchData.DistanceA));
+	IntersectionData intersectionData = GetSphereIntersections(rayOrigin, rayDirection, u_PlanetPosition, u_AtmosphereRadius);
+	float marchDistance = intersectionData.DistanceB - intersectionData.DistanceA;
+	float distanceToAtmosphere = intersectionData.Hit && intersectionData.HitPlanet ? length(rayOrigin + rayDirection * intersectionData.DistanceA - rayOrigin) : 0.0;
+	float distanceLimit = min(linearDepth - distanceToAtmosphere, marchDistance);
 
-	float distanceTravelled = 0.0;
+	float distanceTraveled = 0.0;
 	float stepSize = distanceLimit / float(u_DensitySteps);
-	vec3 intersectionPoint = rayOrigin + rayDirection * cloudMarchData.DistanceA;
+	vec3 intersectionPoint = rayOrigin + rayDirection * intersectionData.DistanceA;
 
-	vec3 directionToLight = normalize(u_Light.Position - u_CameraPosition);
-	float cosLightViewer = dot(rayDirection, directionToLight);
-	float hgPhaseFn = HG(cosLightViewer, 0.8f);
+	vec3 inScatteredLight = vec3(0.0);
 
-	float transmittance = 1.0;
-	float lightEnergy = 0.0;
-
-	while (distanceTravelled < distanceLimit)
+	while (distanceTraveled < distanceLimit)
 	{
-		rayOrigin = intersectionPoint + rayDirection * distanceTravelled;
-		float distanceToPlanetCenter = length(rayOrigin - u_PlanetPosition);
+		rayOrigin = intersectionPoint + rayDirection * distanceTraveled;
+		float atmosphereDensity = CalculateAtmosphericDensity(rayOrigin, u_PlanetPosition, u_PlanetRadius, u_AtmosphereRadius);
 
-		float height = InverseLerp(distanceToPlanetCenter, u_PlanetRadius, u_AtmosphereRadius);
-		float atmosphericDensity = mix(0.00, 0.1, height) * stepSize;
-		totalAtmosphericDensity += atmosphericDensity;
+		vec3 directionToSun = normalize(u_Light.Position - rayOrigin);
+		IntersectionData sunSphereIntersectData = GetSphereIntersections(rayOrigin, directionToSun, u_PlanetPosition, u_AtmosphereRadius);
 
-		float cloudDensity = SampleCloudDensity(rayOrigin) * stepSize;
+		float rayleigh = RayleighPhaseFunction(max(0.0, dot(rayDirection, directionToSun)));
 
-		if (cloudDensity > 0.0)
-		{
-			// Energy reaching viewer = Scattering * Silver Lining (HG Phase) * Powder (from Guerilla games) * multiplier
-			float lightTransmittance = Beers(cloudDensity) * hgPhaseFn * Powder(cloudDensity) * u_LuminanceMultiplier;
+		float distanceToSun = max(0.0, sunSphereIntersectData.DistanceB - sunSphereIntersectData.DistanceA);
+		float sunRayOpticalDepth = CalculateOpticalDepth(rayOrigin, directionToSun, distanceToSun);
+		float viewRayOpticalDepth = CalculateOpticalDepth(rayOrigin, -rayDirection, distanceTraveled) * rayleigh;
 
-			// Accumulate energy for each sample.
-			lightEnergy += lightTransmittance;
+		vec3 atmosphereTransmittance = exp(-(sunRayOpticalDepth + viewRayOpticalDepth) * u_AtmosphereScatteringCoefficient);
 
-			// This energy is getting abosrbed on it's way out of the cloud.
-			transmittance *= Beers(cloudDensity);
-
-			if (transmittance < 0.01)
-				break;
-		}
-
-		distanceTravelled += stepSize;
+		inScatteredLight += atmosphereTransmittance * atmosphereDensity * u_AtmosphereScatteringCoefficient;
+		distanceTraveled += stepSize;
 	}
 
-	atmosphereColor *= totalAtmosphericDensity * u_AtmosphereStrength;
-	vec3 cloudColor = lightEnergy * u_Light.Color;
+	vec3 atmosphereColor = inScatteredLight * u_AtmosphereStrength * stepSize / u_PlanetRadius;
+	return atmosphereColor;
+}
 
-	float focusedEye = pow(clamp(dot(rayDirection, directionToLight), 0.0, 1.0), .8);
-	float sunValue = clamp(HG(focusedEye, 0.9995), 0.0, 1.0) * transmittance;
+void main()
+{
+	vec3 sceneColor = texture(u_SceneTexture, v_TexCoord).rgb;
+	vec3 rayOrigin = u_CameraPosition;
+	vec3 rayDirection = normalize(v_ViewDirection);
 
-	vec3 result = sceneColor + cloudColor + atmosphereColor;
+	vec3 directionToLight = normalize(u_Light.Position - u_CameraPosition);
+
+	vec3 atmosphereColor = March(rayOrigin, rayDirection, directionToLight);
+
+	float focusedEye = pow(max(0.0, dot(rayDirection, directionToLight)), u_SunSizeAttenuation);
+	float sunValue = clamp(HG(focusedEye, 0.9999), 0.0, 1.0);
+
+	vec3 result = sceneColor + atmosphereColor;
 	result = vec3(result * (1.0 - sunValue) + u_Light.Color * sunValue);
 
 	result = ACESTonemap(result);

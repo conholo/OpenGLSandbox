@@ -3,6 +3,7 @@
 #include <string>
 
 #include <functional>
+#include <glm/glm.hpp>
 
 #include "Engine/Event/Event.h"
 
@@ -26,6 +27,8 @@ namespace Engine
 		uint32_t GetWidth() const { return m_WindowData.Width; }
 		uint32_t GetHeight() const { return m_WindowData.Height; }
 		float GetAspectRatio() const { return (float)m_WindowData.Width / (float)m_WindowData.Height; }
+
+		glm::vec2 GetDimensions() const { return { m_WindowData.Width, m_WindowData.Height }; }
 
 		void SetVSync(bool enable);
 		bool IsVSync() const { return m_WindowData.VSync; }

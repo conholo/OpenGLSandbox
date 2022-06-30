@@ -216,6 +216,8 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 				}
 				else if (m_ActiveTabType == UITabTypes::TerrainSettings)
 					DrawTerrainSettingsUI(uiData->SceneRenderPass, uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());
+				else if (m_ActiveTabType == UITabTypes::WaterSettings)
+					DrawWaterUI(uiData->WaterSettings);
 
 				ImGui::EndTabItem();
 			}
@@ -233,6 +235,7 @@ void CloudsUI::DrawMainSettings(const Engine::Ref<CloudsUIData>& uiData)
 {
 	ImGui::Checkbox("Draw Clouds", &uiData->MainCloudSettings->DrawClouds);
 	ImGui::Checkbox("Draw Terrain", uiData->SceneRenderPass->GetDrawTerrain());
+	ImGui::Checkbox("Draw Water", &uiData->WaterSettings->DrawWater);
 }
 
 void CloudsUI::DrawNoiseEditorSettings()
@@ -271,6 +274,7 @@ void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettin
 {
 	if (ImGui::TreeNodeEx("Sun/Sky Settings"))
 	{
+		ImGui::DragFloat("Sun Size", &cloudSettings->SunSize, 0.01, 0.0);
 		ImGui::DragFloat3("Sun Position", &sceneRenderPass->GetSunLight()->GetLightTransform()->GetPosition().x, 0.1);
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 		ImGui::ColorEdit3("Sun Color", &sceneRenderPass->GetSunLight()->GetLightColor().r, ImGuiColorEditFlags_NoInputs);
@@ -312,11 +316,16 @@ void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettin
 	{
 		if (ImGui::DragInt("Density Steps", &cloudSettings->DensitySteps, 0.1, 1))
 			if (cloudSettings->DensitySteps < 1) cloudSettings->DensitySteps = 1;
+		ImGui::DragFloat("Random Ray Offset", &cloudSettings->RandomOffsetStrength, 0.01, 0.0);
+		ImGui::DragFloat("Curl Intensity", &cloudSettings->CurlIntensity, 0.01);
 		ImGui::DragFloat("Density Multiplier", &cloudSettings->DensityMultiplier, 0.001, 0.0);
 		ImGui::DragFloat("Density Threshold", &cloudSettings->DensityThreshold, 0.001, 0.0);
 		ImGui::DragFloat4("Shape Noise Weights", &cloudSettings->ShapeNoiseWeights.x, 0.01, 0.0f, 1.0f);
 		ImGui::DragFloat3("Detail Noise Weights", &cloudSettings->DetailNoiseWeights.x, 0.01, 0.0f, 1.0f);
 		ImGui::DragFloat("Detail Noise Weight", &cloudSettings->DetailNoiseWeight, 0.01, 0.0);
+		ImGui::DragFloat3("Cloud Type Weights", &cloudSettings->CloudTypeWeights.x, 0.01, 0.0f, 1.0f);
+		ImGui::DragFloat("Cloud Type Weight Strength", &cloudSettings->CloudTypeWeightStrength, 0.01, 0.0);
+
 		ImGui::TreePop();
 	}
 
@@ -326,10 +335,11 @@ void CloudsUI::DrawCloudSettingsUI(const Engine::Ref<CloudSettings>& cloudSettin
 			if (cloudSettings->LightSteps < 1) cloudSettings->LightSteps = 1;
 		ImGui::DragFloat("Powder Constant", &cloudSettings->PowderConstant, 0.001, 0.0);
 		ImGui::DragFloat("Silver Lining Constant", &cloudSettings->SilverLiningConstant, 0.001, 0.0);
+		ImGui::DragFloat("Extinction Factor", &cloudSettings->ExtinctionFactor, 0.01);
 		ImGui::DragFloat("Phase Blend", &cloudSettings->PhaseBlend, 0.001, 0.0);
 		ImGui::DragFloat("Forward Scattering", &cloudSettings->ForwardScattering, 0.001, 0.0, 1.0);
 		ImGui::DragFloat("Back Scattering", &cloudSettings->BackScattering, 0.001, 0.0, 1.0);
-		ImGui::DragFloat("Base Brightness", &cloudSettings->BaseBrightness, 0.001, 0.0, 1.0);
+		ImGui::DragFloat("Base Brightness", &cloudSettings->BaseBrightness, 0.001, 0.0);
 		ImGui::DragFloat("Phase Factor", &cloudSettings->PhaseFactor, 0.001, 0.0, 1.0);
 		ImGui::TreePop();
 	}
@@ -451,6 +461,16 @@ void CloudsUI::DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings)
 		curlSettings->UpdateTexture();
 }
 
+void CloudsUI::DrawWaterUI(const Engine::Ref<WaterData>& waterSettings)
+{
+	ImGui::DragFloat("Amplitude", &waterSettings->SeaAmplitude, 0.01f);
+	ImGui::DragFloat("Frequency", &waterSettings->SeaFrequency, 0.01f);
+	ImGui::DragFloat("Choppy", &waterSettings->SeaChoppy, 0.01f);
+	ImGui::DragFloat("Height", &waterSettings->SeaHeight, 0.01f);
+	ImGui::DragInt("Octaves", (int*)(&waterSettings->OceanOctaves), 0.01f);
+	ImGui::DragInt("Steps", (int*)(&waterSettings->OceanSteps), 0.01f);
+}
+
 void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& scenePass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame)
 {
 	bool updated = false;
@@ -474,7 +494,6 @@ void CloudsUI::DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& s
 		}
 
 		ImGui::DragFloat3("Terrain Color", &terrain->GetProperties()->Color.x, 0.01);
-
 
 		if (ImGui::DragFloat3("Terrain Size", &terrain->GetProperties()->Scale.x, 0.1))
 		{

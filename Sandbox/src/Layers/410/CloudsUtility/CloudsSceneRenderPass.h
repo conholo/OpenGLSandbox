@@ -6,6 +6,7 @@
 #include "Engine/Scene/SimpleECS/Light.h"
 #include "Engine/Scene/SimpleECS/SimpleEntity.h"
 #include "Engine/Experimental/Terrain.h"
+#include "Engine/Rendering/EditorGrid.h"
 
 class CloudsSceneRenderPass
 {
@@ -22,6 +23,13 @@ public:
 
 	const std::vector<Engine::Ref<Engine::TerrainHeightLayer>>& GetTerrainHeightLayers() const { return m_HeightLayers; }
 
+	float* GetSeaFrequency() { return &m_SeaFrequency; }
+	float* GetSeaAmplitude() { return &m_SeaAmplitude; }
+	float* GetSeaChoppy() { return &m_SeaChoppy; }
+	float* GetSeaHeight() { return &m_SeaHeight; }
+	uint32_t* GetOceanOctaves() { return &m_OceanOctaves; }
+	uint32_t* GetOceanSteps() { return &m_OceanSteps; }
+
 	const Engine::Ref<Engine::Terrain>& GetTerrain() const { return m_Terrain; }
 	int* GetTerrainLOD() { return &m_TerrainLOD; }
 	bool* GetTerrainIsWireframe() { return &m_TerrainIsWireframe; }
@@ -37,8 +45,18 @@ private:
 	Engine::Ref<Engine::Framebuffer> m_FBO;
 	glm::vec4 m_ClearColor{ 0.1f, 0.1f, 0.1f, 0.1f };
 
+
+	float m_SeaFrequency = .1f;
+	float m_SeaAmplitude = .6f;
+	float m_SeaHeight = -4.0f;
+	float m_SeaChoppy = 5.5f;
+	uint32_t m_OceanOctaves = 8;
+	uint32_t m_OceanSteps = 5;
+
+	Engine::Ref<Engine::EditorGrid> m_EditorGrid;
 	Engine::Ref<Engine::Terrain> m_Terrain;
 	Engine::Ref<Engine::Texture2D> m_WhiteTexture;
+	Engine::Ref<Engine::Texture2D> m_WaterTexture;
 	Engine::Ref<Engine::Light> m_Sun;
 	Engine::Ref<Engine::SimpleEntity> m_GroundPlane;
 	int m_HeightLayerCount = 7;

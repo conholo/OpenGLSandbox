@@ -11,10 +11,8 @@
 
 struct PlanetMaterialProperties
 {
-	glm::vec3 DiffuseColor{ 1.0f, 1.0f, 1.0f };
-	glm::vec3 AmbientColor{ 0.3f, 0.3f, 0.3f };
-	float AmbientStrength = 0.5f;
-	float DiffuseStrength = 0.8f;
+	glm::vec4 Diffuse{ 0.0f, 0.0f, 0.0f, 0.1f };
+	glm::vec4 Ambient{ 0.3f, 0.3f, 0.3f, 0.5f };
 	float SpecularStrength = 1.0f;
 	float Shininess = 32.0f;
 };

@@ -141,7 +141,6 @@ bool SkyboxLayer::OnKeyPressed(Engine::KeyPressedEvent& keyPressedEvent)
 	else if (keyPressedEvent.GetKeyCode() == Engine::Key::G)
 		m_TAI.y -= m_TAIStep;
 
-
 	if (keyPressedEvent.GetKeyCode() == Engine::Key::I)
 		m_TAI.z += m_TAIStep / 100.0f;
 	else if (keyPressedEvent.GetKeyCode() == Engine::Key::O)

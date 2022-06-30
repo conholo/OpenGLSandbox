@@ -206,7 +206,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/;$(ProjectDir)vendor/yaml/yaml/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/;$(ProjectDir)vendor/yaml/yaml/include;C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\vendor\assimp\include/assimp</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -215,6 +215,13 @@
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)vendor/GLFW/lib;</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)vendor\assimp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc142-mt.lib;</AdditionalDependencies>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -238,7 +245,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/;$(ProjectDir)vendor/yaml/yaml/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)vendor/GLFW/include;$(SolutionDir)vendor/glm;$(ProjectDir)vendor/glad/include;$(ProjectDir)vendor/stbi/;$(ProjectDir)vendor/entt/include;$(ProjectDir)vendor/imgui/;$(ProjectDir)vendor/yaml/yaml/include;$(ProjectDir)vendor/assimp/include;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -247,6 +254,14 @@
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)vendor/GLFW/lib;</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

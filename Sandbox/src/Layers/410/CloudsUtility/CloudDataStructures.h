@@ -17,33 +17,61 @@ struct CloudAnimationSettings
 	glm::vec3 ShapeTextureOffset{ 0.0f, 0.0f, 0.0f };
 };
 
+struct WaterData
+{
+	bool DrawWater = true;
+	float SeaFrequency = .1f;
+	float SeaAmplitude = .6f;
+	float SeaHeight = -4.0f;
+	float SeaChoppy = 5.5f;
+	uint32_t OceanOctaves = 8;
+	uint32_t OceanSteps = 5;
+};
+
 struct CloudSettings
 {
 	bool DrawClouds = true;
-	glm::vec3 SkyColorA = { 0.18f, 0.184f, 0.188f };
-	glm::vec3 SkyColorB = { 0.67f, 0.78f, 0.79f };
+	// Sky / Sun Parameters
+	glm::vec3 SkyColorA = { 45.0f / 255.0f, 74.0 / 255.0f, 103.0 / 255.0f};
+	glm::vec3 SkyColorB = { 19.0f / 255.0f, 144.0f / 255.0f, 244.0f / 255.0f };
+	float SunSize = 1.0f;				// Relative size of the sun.
 
+	// March Parameters
 	int DensitySteps = 50;
 	int LightSteps = 10;
+	float RandomOffsetStrength = 1.0f;
 
+	// Phase Parameters
+	float PhaseBlend = 0.5f;			// The amount of blend between forward/back scattering. (0.5 is a good mix)
+	float ForwardScattering = 0.91f;	// Amount of light that is scattered towards the view direction when looking towards the sun through the clouds (0.2 is good).
+	float BackScattering = 0.33f;		// Amount of light that is scattered away from the view direction when looking towards the sun through the clouds (0.5 is good)
+	float BaseBrightness = 1.0f;		// Additive factor associated with the HG Phase Function (1.0 is a good value)
+	float PhaseFactor = 0.74f;			// Multiplicative factor associated with the HG Phase Function (1.0 is a good value)
+
+	// Lighting Parameters
+	float PowderConstant = 1.5f;		// In Scattering probability factor.  Creases where bulges occur are more likely to produce in-scattered light.
+	float SilverLiningConstant = .5f;	// In Scattering probability factor.  When looking towards the sun, light is more likely to scatter towards the viewer around the cloud edges.
+	float ExtinctionFactor = .14f;
+
+	// Density Parameters
+	float DensityThreshold = .20f;
+	float DensityMultiplier = .20f;
+	glm::vec4 ShapeNoiseWeights{ .72f, 1.0f, .28f, .36f };
 	glm::vec3 BaseShapeTextureOffset = glm::vec3(0.0);
-	float DetailNoiseWeight = 1.0f;
-	float CloudScale = 5.0f;
-	float DensityThreshold = 0.12f;
-	float DensityMultiplier = 0.43f;
-	float PhaseBlend = 0.5f;
-	float ForwardScattering = 0.91f;
-	float BackScattering = 0.33f;
-	float BaseBrightness = 1.0f;
-	float PhaseFactor = 0.74f;
-	float PowderConstant = 1.0f;
-	float SilverLiningConstant = 0.644f;
-	glm::vec4 ShapeNoiseWeights{ 0.95f, 0.48f, 0.32f, 0.42f };
-	glm::vec3 DetailNoiseWeights{ 0.23f, 0.33f, 0.45f };
 
-	glm::vec3 CloudContainerPosition{ 0.0f, 75.0f, 0.0f };
+	glm::vec3 DetailNoiseWeights{ .35f, 0.66f, 0.744f };
+	float DetailNoiseWeight = .2f;
+
+	glm::vec3 CloudTypeWeights{ 0.37f, 0.32f, 0.41f };
+	float CloudTypeWeightStrength = 7.0f;
+
+	float CurlIntensity = 1.0f;
+
+	// Container / Scale Parameters
+	glm::vec3 CloudContainerPosition{ 0.0f, 150.0f, 0.0f };
 	glm::vec3 CloudContainerScale{ 400.0f, 300.0f, 300.0f };
 	float CloudScaleFactor = 1000.0f;
+	float CloudScale = 4.0f;
 	float ContainerEdgeFadeDistance = 50.0f;
 };
 
@@ -68,7 +96,7 @@ struct WorleyPerlinSettings
 	WorleyPerlinSettings();
 
 	const uint32_t PerlinThreadGroupSize = 8;
-	uint32_t PerlinResolution = 128;
+	uint32_t PerlinResolution = 512;
 
 	int Octaves = 5;
 	float NoiseScale = 2.1f;
@@ -87,19 +115,21 @@ struct WorleyPerlinSettings
 struct WorleyChannelData
 {
 	WorleyChannelMask Mask;
-	bool InvertWorley = false;
+	bool InvertWorley = true;
 	float WorleyTiling = 1.0f;
 	float WorleyLayerPersistence = 0.1f;
-	float InversionWeight = 0.0f;
+	float InversionWeight = 1.0f;
 	glm::ivec3 LayerCells;
 	glm::ivec3 LayerSeeds;
 
 	std::vector<glm::vec4> PointsA;
 	std::vector<glm::vec4> PointsB;
 	std::vector<glm::vec4> PointsC;
+	std::vector<int> MinMax;
 	Engine::Ref<Engine::ShaderStorageBuffer> ShapePointsBufferA;
 	Engine::Ref<Engine::ShaderStorageBuffer> ShapePointsBufferB;
 	Engine::Ref<Engine::ShaderStorageBuffer> ShapePointsBufferC;
+	Engine::Ref<Engine::ShaderStorageBuffer> MinMaxBuffer;
 
 	void UpdatePoints();
 	void UpdateChannel(const Engine::Ref<Engine::Texture2D>& perlinTexture, float perlinWorleyMix, uint32_t threadGroups);

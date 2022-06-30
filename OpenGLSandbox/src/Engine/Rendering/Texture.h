@@ -34,6 +34,18 @@ namespace Engine
 		uint32_t Width, Height;
 	};
 
+	struct Texture3DSpecification
+	{
+		ImageUtils::WrapMode WrapModeS;
+		ImageUtils::WrapMode WrapModeT;
+		ImageUtils::FilterMode MinFilterMode;
+		ImageUtils::FilterMode MagFilterMode;
+		ImageUtils::ImageInternalFormat InternalFormat;
+		ImageUtils::ImageDataLayout PixelLayoutFormat;
+		ImageUtils::ImageDataType DataType;
+		uint32_t Width, Height, Depth;
+	};
+
 	class Texture2DArray
 	{
 	public:
@@ -114,6 +126,7 @@ namespace Engine
 	{
 	public:
 		Texture3D(const TextureSpecification& spec);
+		Texture3D(const Texture3DSpecification& spec);
 		~Texture3D();
 
 		void BindToSamplerSlot(uint32_t slot = 0);

@@ -13,6 +13,7 @@ struct CloudsUIData
 	Engine::Ref<CloudAnimationSettings> AnimationSettings;
 	Engine::Ref<CloudsSceneRenderPass> SceneRenderPass;
 	Engine::Ref<CurlSettings> CurlSettings;
+	Engine::Ref<WaterData> WaterSettings;
 };
 
 struct UITab
@@ -47,6 +48,7 @@ private:
 	void DrawDetailShapeUI(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
 	void DrawPerlinUI(const Engine::Ref<WorleyPerlinSettings>& perlinSettings);
 	void DrawCurlUI(const Engine::Ref<CurlSettings>& curlSettings);
+	void DrawWaterUI(const Engine::Ref<WaterData>& waterSettings);
 
 	void DrawTerrainSettingsUI(const Engine::Ref<CloudsSceneRenderPass>& cloudPass, const Engine::Ref<Engine::Terrain>& terrain, int* terrainLOD, bool* wireFrame);
 
@@ -58,7 +60,7 @@ private:
 	const Engine::Ref<WorleyChannelData>& DetailChannelFromMask(const Engine::Ref<DetailShapeWorleySettings>& detailShapeSettings);
 
 private:
-	std::vector<UITabTypes> m_AvailableTabTypes{ UITabTypes::MainSettings, UITabTypes::CloudSettings, UITabTypes::NoiseTextureSettings, UITabTypes::TerrainSettings };
+	std::vector<UITabTypes> m_AvailableTabTypes{ UITabTypes::MainSettings, UITabTypes::CloudSettings, UITabTypes::NoiseTextureSettings, UITabTypes::TerrainSettings, UITabTypes::WaterSettings };
 	UITabTypes m_ActiveTabType = UITabTypes::MainSettings;
 	ActiveDebugShapeType m_ActiveDebugShapeType = ActiveDebugShapeType::BaseShape;
 	WorleyChannelMask m_ActiveShapeMask = WorleyChannelMask::R;

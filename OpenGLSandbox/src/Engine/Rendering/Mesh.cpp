@@ -5,6 +5,8 @@
 
 namespace Engine
 {
+#define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices)
+
 #define PI 3.14159265359
 
 	Mesh::Mesh(float* vertices, uint32_t vertexCount, uint32_t* indices, uint32_t indexCount)
@@ -20,6 +22,21 @@ namespace Engine
 	{
 
 	}
+
+	//void Mesh::InitializeMeshFromFile(const aiScene* scene, const std::string& filePath)
+	//{
+	//}
+
+	//Mesh::Mesh(const std::string& modelFilePath)
+	//{
+	//	Assimp::Importer importer;
+	//	const aiScene* pScene = importer.ReadFile(modelFilePath.c_str(), ASSIMP_LOAD_FLAGS);
+	//
+	//	if (pScene)
+	//		InitializeMeshFromFile(pScene, modelFilePath);
+	//	else
+	//		std::cout << "Failed to parse model file: " << modelFilePath << "\n";
+	//}
 
 	void Mesh::ResetVertices(float* vertices, uint32_t vertexCount)
 	{

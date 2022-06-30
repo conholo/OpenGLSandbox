@@ -25,6 +25,7 @@ namespace Engine
 		Mesh(float* vertices, uint32_t vertexCount, uint32_t* indices, uint32_t indexCount);
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 			:m_Vertices(vertices), m_Indices(indices) { }
+		Mesh(const std::string& modelFilePath);
 
 		void ResetVertices(float* vertices, uint32_t vertexCount);
 		void ResetIndices(uint32_t* indices, uint32_t indexCount);

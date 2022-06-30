@@ -58,6 +58,7 @@ std::string NameFromUITabType(UITabTypes tabType)
 	case UITabTypes::CloudSettings:			return "Cloud Settings";
 	case UITabTypes::NoiseTextureSettings:	return "Noise Texture Settings";
 	case UITabTypes::TerrainSettings:		return "Terrain Settings";
+	case UITabTypes::WaterSettings:			return "Water Settings";
 	}
 
 	return "";

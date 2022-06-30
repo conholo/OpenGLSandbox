@@ -2,6 +2,7 @@
 
 #include "Layers/410/CloudsUtility/CloudsSceneRenderPass.h"
 #include "Layers/410/CloudsUtility/CloudsUI.h"
+#include "Engine/Rendering/EditorGrid.h"
 
 struct MainCloudPassData
 {
@@ -12,6 +13,7 @@ struct MainCloudPassData
 	Engine::Ref<DetailShapeWorleySettings> DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> PerlinSettings;
 	Engine::Ref<CurlSettings> CurlSettings;
+	Engine::Ref<WaterData> WaterData;
 	Engine::Ref<CloudsUI> UI;
 };
 
@@ -26,10 +28,14 @@ public:
 	void Resize(uint32_t width, uint32_t height);
 
 private:
+	Engine::Ref<Engine::EditorGrid> m_EditorGrid;
 
 	glm::vec4 m_ClearColor{ 0.1f, 0.1f, 0.1f, 0.1f };
 	//Engine::Ref<Engine::ShaderStorageBuffer> m_DensitySettingsSSBO;
 	//Engine::Ref<Engine::ShaderStorageBuffer> m_AnimationSettings;
+	Engine::Ref<Engine::Texture2D> m_BlueNoiseTexture;
+	Engine::Ref<Engine::Texture2D> m_BlackTexture;
 	Engine::Ref<Engine::Framebuffer> m_CloudFBO;
+	Engine::Ref<Engine::Framebuffer> m_WaterFBO;
 	Engine::Ref<Engine::SimpleEntity> m_CloudQuad;
 };

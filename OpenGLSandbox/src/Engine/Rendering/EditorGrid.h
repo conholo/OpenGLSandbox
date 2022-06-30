@@ -15,12 +15,16 @@ namespace Engine
 		void SetOuter(float outerGridScale) { m_OuterGridScale = outerGridScale; }
 		void SetInner(float innerGridScale) { m_InnerGridScale = innerGridScale; }
 		void SetScale(float scale) { m_Scale = scale; }
+
+		void SetShader(const std::string& shaderName);
+
 	private:
 		float m_InnerGridScale = 1.0f;
 		float m_OuterGridScale = 0.1f;
 		float m_Scale = 1.0f;
 
 	private:
+		std::string m_ShaderName = "InfiniteGrid";
 		std::vector<glm::vec3> m_PointVertices;
 		Ref<VertexArray> m_DebugPointVAO;
 		Ref<VertexBuffer> m_DebugPointVBO;
