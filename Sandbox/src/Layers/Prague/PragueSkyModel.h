@@ -9,6 +9,18 @@
 #include <array>
 
 
+struct PragueInput
+{
+	float Albedo = 0.5;
+	float Altitude = 2500.0f;
+	float Azimuth = 0.0;
+	float Elevation = 0.0;
+	float Visibility = 25.0f;
+	float Exposure = 0.0;
+
+    bool ApplyToneMap = true;
+};
+
 constexpr int    SPECTRUM_CHANNELS = 55;
 constexpr double SPECTRUM_STEP = 40;
 using Spectrum = std::array<double, SPECTRUM_CHANNELS>;

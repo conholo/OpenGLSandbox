@@ -120,6 +120,9 @@
     <ClCompile Include="src\Layers\Prague\PragueSkyModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Layers\Prague\PragueUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\ComputeTextureLayer.h">
@@ -228,6 +231,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\Prague\PragueSkyModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\Prague\PragueUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

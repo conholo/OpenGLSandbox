@@ -6,7 +6,9 @@
 #include <imgui/imgui.h>
 #include <imgui/imfilebrowser.h>
 
+#include "Prague/PragueUI.h"
 #include "Prague/PragueSkyModel.h"
+
 
 class AtmosphereLayer : public Engine::Layer
 {
@@ -50,20 +52,12 @@ private:
 
 private:
 
+	bool m_ApplyTonemap = true;
 	int m_Direction = 1;
 	float m_Timer = 0.0f;
 	bool m_IsLoaded = false;
-	bool m_IsDrawing = false;
-	bool m_Animate = false;
+	bool m_AnimateElevation = false;
 	float m_AnimationSpeed = 0.00001f;
-
-	float m_Albedo = 0.5;
-	float m_Altitude = 2500.0f;
-	float m_Azimuth = 0.0;
-	float m_Elevation = 0.0;
-	float m_Visibility = 25.0f;
-	float m_Exposure = 0.0;
-
 
 	Engine::Ref<Engine::ShaderStorageBuffer> m_RadianceDataSSBO;
 	Engine::Ref<Engine::ShaderStorageBuffer> m_SunMetaDataSSBO;
@@ -74,8 +68,9 @@ private:
 	Engine::Ref<Engine::ShaderStorageBuffer> m_AltitudesRadianceSSBO;
 	Engine::Ref<Engine::ShaderStorageBuffer> m_ElevationsRadianceSSBO;
 
+	bool m_Update = false;
+	PragueInput* m_Input;
+	PragueUI* m_UI;
 	PragueSkyModel* m_SkyModel;
 	PragueSkyModel::AvailableData m_AvailableData;
-
-	ImGui::FileBrowser fileDialogOpen;
 };

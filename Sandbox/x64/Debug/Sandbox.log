@@ -3,16 +3,9 @@ C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(379,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(380,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(264,88): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(264,67): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(269,94): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(269,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(278,97): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(278,73): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(283,100): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(283,75): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(391,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\Prague\PragueSkyModel.h(392,50): warning C4244: 'return': conversion from 'const double' to 'const float', possible loss of data
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(59,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\xmemory(202,109): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.26.28801\include\memory(1489): message : see reference to function template instantiation 'void std::_Construct_in_place<_Ty,void*,unsigned __int64>(_Ty &,void *&&,unsigned __int64 &&) noexcept(false)' being compiled
           with
@@ -35,5 +28,5 @@ C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Memory.
               T=Engine::ShaderStorageBuffer,
               _Ty=void *
           ]
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(328): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,void*,size_t>(void *&&,size_t &&)' being compiled
+C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\Sandbox\src\Layers\AtmosphereLayer.cpp(144): message : see reference to function template instantiation 'std::shared_ptr<Engine::ShaderStorageBuffer> Engine::CreateRef<Engine::ShaderStorageBuffer,void*,size_t>(void *&&,size_t &&)' being compiled
   Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

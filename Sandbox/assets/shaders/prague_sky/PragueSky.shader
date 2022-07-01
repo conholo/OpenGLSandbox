@@ -140,6 +140,8 @@ uniform int    u_Channels;
 uniform float u_ChannelStart;
 uniform float u_ChannelWidth;
 
+uniform int u_ApplyTonemap;
+
 
 layout(std430, binding = 1) buffer RadianceData
 {
@@ -714,11 +716,33 @@ vec3 Evaluate()
 	return rgb;
 }
 
+// Based on https://64.github.io/tonemapping/
+vec3 ACESTonemap(vec3 color)
+{
+	mat3 m1 = mat3(
+		0.59719, 0.07600, 0.02840,
+		0.35458, 0.90834, 0.13383,
+		0.04823, 0.01566, 0.83777
+	);
+	mat3 m2 = mat3(
+		1.60475, -0.10208, -0.00327,
+		-0.53108, 1.10813, -0.07276,
+		-0.07367, -0.00605, 1.07602
+	);
+	vec3 v = m1 * color;
+	vec3 a = v * (v + 0.0245786) - 0.000090537;
+	vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
+	return clamp(m2 * (a / b), 0.0, 1.0);
+}
+
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main()
 {
 	vec3 skyRadiance = Evaluate();
+	vec3 pixel = skyRadiance;
+	if(u_ApplyTonemap == 1)
+		pixel = ACESTonemap(pixel);
 	float expMult = pow(2.0, u_Exposure);
-	vec3 pixel = pow(skyRadiance * expMult, vec3(1.0 / 2.2));
+	pixel = pow(pixel * expMult, vec3(1.0 / 2.2));
 	imageStore(o_Result, ivec3(gl_GlobalInvocationID), vec4(pixel, 1.0));
 }

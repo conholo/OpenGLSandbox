@@ -42,6 +42,7 @@
     <ClCompile Include="src\Layers\LightingLayer.cpp" />
     <ClCompile Include="src\Layers\LineLayer.cpp" />
     <ClCompile Include="src\Layers\Prague\PragueSkyModel.cpp" />
+    <ClCompile Include="src\Layers\Prague\PragueUI.cpp" />
     <ClCompile Include="src\Layers\ShaderProjectLayer.cpp" />
     <ClCompile Include="src\Layers\ShadowsLayer.cpp" />
     <ClCompile Include="src\Layers\TestBezierSurfaceLayer.cpp" />
@@ -80,6 +81,7 @@
     <ClInclude Include="src\Layers\LightingLayer.h" />
     <ClInclude Include="src\Layers\LineLayer.h" />
     <ClInclude Include="src\Layers\Prague\PragueSkyModel.h" />
+    <ClInclude Include="src\Layers\Prague\PragueUI.h" />
     <ClInclude Include="src\Layers\ShaderProjectLayer.h" />
     <ClInclude Include="src\Layers\ShadowsLayer.h" />
     <ClInclude Include="src\Layers\TestBezierSurfaceLayer.h" />
