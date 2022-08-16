@@ -11,7 +11,7 @@ namespace Engine
 	{
 		m_Transform = CreateRef<EntityTransform>();
 		m_VAO = CreateRef<VertexArray>();
-		m_PointShader = ShaderLibrary::Get("SurfaceCurve");
+		m_PointShader = ShaderLibrary::Get("BlinnPhongSimple");
 		m_PointVBO = CreateRef<VertexBuffer>(0);
 		BufferLayout layout
 		{

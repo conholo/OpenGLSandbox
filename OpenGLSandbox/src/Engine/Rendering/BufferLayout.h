@@ -10,7 +10,20 @@ namespace Engine
 {
 	enum class ShaderAttributeType
 	{
-		None = 0, Float, Float2, Float3, Float4, Int, Mat3, Mat4, Sampler2D
+		None = 0, Float, Float2, Float3, Float4, Int, Mat3, Mat4, Sampler2D, SamplerCube
+	};
+
+	static std::unordered_map<ShaderAttributeType, const char*> ShaderAttributeTypeToString =
+	{
+		{ShaderAttributeType::Float,		"float"},
+		{ShaderAttributeType::Float2,		"vec2"},
+		{ShaderAttributeType::Float3,		"vec3"},
+		{ShaderAttributeType::Float4,		"vec4"},
+		{ShaderAttributeType::Int,			"int"},
+		{ShaderAttributeType::Mat3,			"mat3"},
+		{ShaderAttributeType::Mat4,			"mat4"},
+		{ShaderAttributeType::Sampler2D,	"sampler2D"},
+		{ShaderAttributeType::SamplerCube,	"samplerCube"},
 	};
 
 	static uint32_t ShaderDataTypeSize(ShaderAttributeType type)
@@ -24,7 +37,8 @@ namespace Engine
 		case ShaderAttributeType::Int:			return 1 * 4;
 		case ShaderAttributeType::Mat3:			return 3 * 3 * 4;
 		case ShaderAttributeType::Mat4:			return 4 * 4 * 4;
-		case ShaderAttributeType::Sampler2D:	return 4;
+		case ShaderAttributeType::Sampler2D:	return 2 * 4;
+		case ShaderAttributeType::SamplerCube:	return 2 * 4;
 		default:								return 0;
 		}
 	}

@@ -12,5 +12,6 @@
     <LocalDebuggerEnvironment>
     </LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)OpenGLSandbox;</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

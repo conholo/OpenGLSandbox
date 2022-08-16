@@ -33,6 +33,12 @@ namespace Engine
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
+	void ShaderStorageBuffer::UseAndSetBinding(uint32_t binding) const
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_ID);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, m_ID);
+	}
+
 	void ShaderStorageBuffer::SetData(void* data, uint32_t offset, uint32_t size)
 	{
 		if (offset + size > m_AllocatedSize)

@@ -34,6 +34,7 @@
 //--------------------- RENDERING ---------------------//
 #include "Engine/Rendering/VertexArray.h"
 #include "Engine/Rendering/Shader.h"
+#include "Engine/Rendering/Material.h"
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
 #include "Engine/Rendering/AtomicCounterBuffer.h"
@@ -42,6 +43,7 @@
 #include "Engine/Rendering/CubeMap.h"
 #include "Engine/Rendering/Camera.h"
 #include "Engine/Rendering/EditorGrid.h"
+#include "Engine/Rendering/EnvironmentMapPipeline.h"
 #include "Engine/Rendering/FrameBuffer.h"
 #include "Engine/Rendering/Renderer.h"
 #include "Engine/Rendering/SceneRenderer.h"

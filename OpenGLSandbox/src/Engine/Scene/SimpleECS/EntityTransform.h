@@ -17,12 +17,12 @@ namespace Engine
 		void SetScale(const glm::vec3& scale) { m_Scale = scale; }
 		void LookAt(const glm::vec3& target);
 
-		glm::quat Orientation();
-		glm::vec3 Up();
-		glm::vec3 Right();
-		glm::vec3 Forward();
+		glm::quat Orientation() const;
+		glm::vec3 Up() const;
+		glm::vec3 Right() const;
+		glm::vec3 Forward() const;
 
-		glm::mat4 Transform();
+		glm::mat4 Transform() const;
 	private:
 		glm::vec3 m_Position{ 0.0f };
 		glm::vec3 m_Rotation{ 0.0f };

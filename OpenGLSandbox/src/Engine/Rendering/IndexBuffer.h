@@ -16,6 +16,7 @@ namespace Engine
 
 		uint32_t GetID() const { return m_ID; }
 		uint32_t GetIndexCount() const { return m_Count; }
+		uint32_t* GetData();
 
 	private:
 		uint32_t m_Count;

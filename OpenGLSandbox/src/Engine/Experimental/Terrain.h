@@ -99,4 +99,3 @@ namespace Engine
 		const uint32_t m_WorkGroupLocalSize = 8;
 	};
 }
-

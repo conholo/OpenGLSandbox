@@ -4,10 +4,10 @@
 #include "Engine/Core/Memory.h"
 
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <string>
-#include <glm/glm.hpp>
+#include <unordered_map>
 
 namespace Engine
 {
@@ -20,6 +20,7 @@ namespace Engine
 		ImageUtils::ImageDataLayout DataLayout = ImageUtils::ImageDataLayout::RGBA;
 		ImageUtils::ImageDataType DataType = ImageUtils::ImageDataType::UByte;
 		uint32_t Width, Height;
+		std::string Name = "Texture";
 	};
 
 	struct Texture2DSpecification
@@ -32,6 +33,7 @@ namespace Engine
 		ImageUtils::ImageDataLayout PixelLayoutFormat;
 		ImageUtils::ImageDataType DataType;
 		uint32_t Width, Height;
+		std::string Name = "Texture";
 	};
 
 	struct Texture3DSpecification
@@ -44,6 +46,7 @@ namespace Engine
 		ImageUtils::ImageDataLayout PixelLayoutFormat;
 		ImageUtils::ImageDataType DataType;
 		uint32_t Width, Height, Depth;
+		std::string Name = "Texture";
 	};
 
 	class Texture2DArray
@@ -73,6 +76,7 @@ namespace Engine
 	{
 	public:
 		Texture2D(const Texture2DSpecification& specification);
+		Texture2D(const Texture2DSpecification& specification, void* data);
 		Texture2D(const std::string& filePath, const Texture2DSpecification& specification);
 		~Texture2D();
 
@@ -87,6 +91,8 @@ namespace Engine
 		uint32_t GetMipLevelCount() const;
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
+		std::string GetName() const { return m_Name; }
+		std::string GetFilePath() const { return m_FilePath; }
 
 		static void BindTextureIDToSamplerSlot(uint32_t slot, uint32_t id);
 
@@ -101,6 +107,8 @@ namespace Engine
 	private:
 		Texture2DSpecification m_Specification;
 		uint32_t m_ID;
+		std::string m_FilePath;
+		std::string m_Name;
 	};
 
 	class Texture2DImageView
@@ -108,7 +116,6 @@ namespace Engine
 	public:
 		Texture2DImageView(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer = 1, uint32_t layerCount = 0);
 		~Texture2DImageView();
-
 
 		void ChangeToMip(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer = 1, uint32_t layerCount = 0);
 		void Bind() const;
@@ -136,6 +143,8 @@ namespace Engine
 		uint32_t GetID() const { return m_ID; }
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
+		std::string GetName() const { return m_Name; }
+		std::string GetFilePath() const { return m_FilePath; }
 
 		int WriteToFile(const std::string& assetPath);
 
@@ -147,6 +156,8 @@ namespace Engine
 	private:
 		TextureSpecification m_Specification;
 		uint32_t m_ID;
+		std::string m_FilePath;
+		std::string m_Name;
 	};
 
 	
@@ -154,20 +165,50 @@ namespace Engine
 	{
 	public:
 		TextureCube(const TextureSpecification& spec, const std::vector<std::string>& cubeFaceFiles);
-		TextureCube(const TextureSpecification& spec, const void* data);
+		TextureCube(const TextureSpecification& spec);
 		~TextureCube();
 
 		void BindToSamplerSlot(uint32_t slot = 0);
 		void Unbind() const;
 		void BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat);
 
+		static uint32_t CalculateMipCount(uint32_t Width, uint32_t Height);
+		
 		uint32_t GetID() const { return m_ID; }
 		uint32_t GetWidth() const { return m_Specification.Width; }
 		uint32_t GetHeight() const { return m_Specification.Height; }
+		std::string GetName() const { return m_Name; }
+		std::string GetFilePath() const { return m_FilePath; }
 
 	private:
 		TextureSpecification m_Specification;
 		uint32_t m_ID;
+		std::string m_FilePath;
+		std::string m_Name;
+	};
+
+	class TextureLibrary
+	{
+	public:
+		static void AddTexture2D(const Ref<Texture2D>& texture);
+		static void AddTextureCube(const Ref<TextureCube>& texture);
+		static Ref<Texture2D> LoadTexture2D(const Texture2DSpecification& spec, const std::string& filePath = "");
+		static Ref<TextureCube> LoadTextureCube(const TextureSpecification& spec);
+		static Ref<Texture2D> Load(const std::string& filePath = "");
+		static Ref<Texture2D> LoadTexture2D(const Texture2DSpecification& Spec, void* Data);
+		static const Ref<Texture2D>& Get2D(const std::string& name);
+		static const Ref<TextureCube>& GetCube(const std::string& name);
+		static void BindTexture2DToSlot(const std::string& TwoDimensionTextureName, uint32_t Slot);
+		static void BindTextureCubeToSlot(const std::string& CubeTextureName, uint32_t Slot);
+		static void BindTextureToSlot(uint32_t TexID, uint32_t Slot);
+		static std::string GetNameFromID(uint32_t TextureID);
+		static bool HasCube(const std::string& Name);
+		static bool Has2D(const std::string& Name);
+
+	private:
+		static std::unordered_map<std::string, Ref<Texture2D>> s_NameToTexture2DLibrary;
+		static std::unordered_map<std::string, Ref<TextureCube>> s_NameToTextureCubeLibrary;
+		static std::unordered_map<uint32_t, std::string> s_IdToNameLibrary;
 	};
 }
 

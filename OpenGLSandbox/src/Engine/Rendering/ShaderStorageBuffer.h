@@ -13,6 +13,7 @@ namespace Engine
 		void Bind() const;
 		void Unbind() const;
 
+		void UseAndSetBinding(uint32_t binding) const;
 		void SetData(void* data, uint32_t offset, uint32_t size);
 		void* GetData();
 		void* GetData(uint32_t size, uint32_t offset = 0);

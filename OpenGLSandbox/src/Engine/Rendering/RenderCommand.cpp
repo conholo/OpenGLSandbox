@@ -97,8 +97,8 @@ namespace Engine
 	{
 		switch (topology)
 		{
-			case RenderTopology::Quads: return GL_QUADS;
-			case RenderTopology::Triangles: return GL_TRIANGLES;
+		case RenderTopology::Quads: return GL_QUADS;
+		case RenderTopology::Triangles: return GL_TRIANGLES;
 		}
 
 		return 0;
@@ -110,6 +110,11 @@ namespace Engine
 		glDrawElements(GLTopologyFromEngineTopology(topology), count, GL_UNSIGNED_INT, nullptr);
 	}
 
+	void RenderCommand::DrawIndexedRange(uint32_t count, uint32_t baseIndex, uint32_t baseVertex)
+	{
+		glDrawElementsBaseVertex(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(baseIndex * sizeof(uint32_t)), baseVertex);
+	}
+	
 	void RenderCommand::DrawArrays(uint32_t vertexCount, uint32_t first, RenderTopology topology)
 	{
 		glDrawArrays(GLTopologyFromEngineTopology(topology), first, vertexCount);

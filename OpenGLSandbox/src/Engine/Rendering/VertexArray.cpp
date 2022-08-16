@@ -47,7 +47,7 @@ namespace Engine
 		m_IndexBuffer = indexBuffer;
 	}
 
-	void VertexArray::EnableVertexAttributes(const Ref<VertexBuffer>& vertexBuffer)
+	void VertexArray::EnableVertexAttributes(const Ref<VertexBuffer>& vertexBuffer) const
 	{
 		glBindVertexArray(m_ID);
 		vertexBuffer->Bind();

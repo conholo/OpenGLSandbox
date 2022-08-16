@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+Sandbox/assets/models
+Sandbox/assets/textures
+Sandbox/src/Layers/PragueSkyDemoLayer.h
+Sandbox/src/Layers/PragueSkyDemoLayer.cpp
+/Sandbox/src/Layers/Utility/Prague/
+/Sandbox/assets/shaders/Atmosphere/*.glsl
+
 # User-specific files
 *.rsuser
 *.suo

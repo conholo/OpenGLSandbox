@@ -22,7 +22,7 @@ namespace Engine
 		void Update(float deltaTime);
 		void OnEvent(Event& event);
 
-		void LockLookAtAndPosition(const glm::vec3& position, const glm::vec3& lookAt);
+		void SetLookAtAndPosition(const glm::vec3& position, const glm::vec3& lookAt);
 		void ToggleIsLocked(bool isLocked);
 
 		void SetViewportSize(float width, float height);
@@ -51,6 +51,9 @@ namespace Engine
 		glm::vec3 Up() const;
 		glm::vec3 Right() const;
 		glm::vec3 GetPosition() const { return m_Position; }
+		glm::vec3& GetPosition() { return m_Position; }
+		float GetFOV() const { return m_FOV; }
+		void SetDefaultView();
 
 	private:
 		glm::quat CalculateOrientation() const;

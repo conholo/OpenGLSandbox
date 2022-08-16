@@ -8,6 +8,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Engine/Rendering/Texture.h"
+
 namespace Engine
 {
 	Application* Application::s_Instance = nullptr;
@@ -22,36 +24,39 @@ namespace Engine
 
 		PushLayer(m_ImGuiLayer);
 
-		Engine::ShaderLibrary::Load("assets/shaders/FlatColor.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/TestCompute.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/ParticleCompute.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Particle.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/SkyboxTest.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/EnvironmentReflection.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Preetham.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/TestWriteToCube.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Skybox.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Grid.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/InfiniteGrid.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Test.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/BlinnPhong.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/SDFBlinnPhong.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Portal.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/NormalMapExample.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/ToonShader.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/BlinnPhongWS.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Surfaces.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/DebugDepth.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Depth.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/EngineBP.shader");
-		//Engine::ShaderLibrary::Load("assets/shaders/Fractal.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/LineShader.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/LinePointShader.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/PostProcessing.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Bloom.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/Bloom2.shader");
-		Engine::ShaderLibrary::Load("assets/shaders/SurfaceCurve.shader");
+		ShaderLibrary::Load("assets/shaders/PBR/Preetham.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/Skybox.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/EnginePBR.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/EngineSceneComposite.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/EquirectangularToCubemap.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/EnvironmentMipFilter.glsl");
+		ShaderLibrary::Load("assets/shaders/PBR/EnvironmentIrradiance.glsl");
+		ShaderLibrary::Load("assets/shaders/Utility/LinearDepthVisualizer.glsl");
+		ShaderLibrary::Load("assets/shaders/Utility/WriteCubemapToAttachment.glsl");
+		
+		ShaderLibrary::Load("assets/shaders/Misc/FlatColor.glsl");
+		ShaderLibrary::Load("assets/shaders/Editor/InfiniteGrid.glsl");
+		ShaderLibrary::Load("assets/shaders/PostFX/BloomPostProcessing.glsl");
+		ShaderLibrary::Load("assets/shaders/PostFX/Bloom.glsl");
+		ShaderLibrary::Load("assets/shaders/Depth/DebugDepth.glsl");
+		ShaderLibrary::Load("assets/shaders/Depth/Depth.glsl");
 
+
+		TextureLibrary::AddTexture2D(Texture2D::CreateWhiteTexture());
+
+		Texture2DSpecification BRDFSpec =
+		{
+			Engine::ImageUtils::WrapMode::ClampToEdge,
+			Engine::ImageUtils::WrapMode::ClampToEdge,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::FilterMode::Linear,
+			Engine::ImageUtils::ImageInternalFormat::FromImage,
+			Engine::ImageUtils::ImageDataLayout::FromImage,
+			Engine::ImageUtils::ImageDataType::UByte,
+		};
+		BRDFSpec.Name = "BRDF LUT";
+		TextureLibrary::LoadTexture2D(BRDFSpec, "assets/textures/BRDF LUT.png");
+		
 		RenderCommand::Initialize();
 		RenderCommand::SetViewport(m_Window->GetWidth(), m_Window->GetHeight());
 		Renderer::Initialize();

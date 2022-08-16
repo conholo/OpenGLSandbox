@@ -168,6 +168,18 @@ namespace Engine
 		RecalculateOrthographicView();
 	}
 
+	void Camera::SetDefaultView()
+	{
+		m_Position = CalculatePosition();
+
+		const glm::quat orientation = CalculateOrientation();
+		m_WorldRotationEulers = glm::degrees(glm::eulerAngles(orientation));
+
+		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
+		m_ViewMatrix = glm::inverse(m_ViewMatrix);
+		m_IsLocked = false;
+	}
+
 	glm::quat Camera::CalculateOrientation() const
 	{
 		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
@@ -217,7 +229,7 @@ namespace Engine
 			UpdateOrthographic(deltaTime);
 	}
 
-	void Camera::LockLookAtAndPosition(const glm::vec3& position, const glm::vec3& lookAt)
+	void Camera::SetLookAtAndPosition(const glm::vec3& position, const glm::vec3& lookAt)
 	{
 		if (m_ProjectionType == ProjectionType::Orthographic) return;
 
