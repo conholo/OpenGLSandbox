@@ -1,14 +1,9 @@
 #pragma once
 
-#include "Engine/Core/Memory.h"
-#include <stdint.h>
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include <glm/glm.hpp>
-
 #include "Engine/Rendering/Material.h"
 #include "Engine/Rendering/Texture.h"
+
+#include <glm/glm.hpp>
 
 namespace Assimp
 {

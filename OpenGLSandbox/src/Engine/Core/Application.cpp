@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Utility.h"
 #include "Engine/Core/Time.h"
@@ -6,17 +7,16 @@
 #include "Engine/Core/Random.h"
 #include "Engine/Rendering/Renderer.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Engine/Rendering/Texture.h"
 
 namespace Engine
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(const std::string& name)
-		:m_Name(name)
+	Application::Application(std::string name)
+		:m_Name(std::move(name))
 	{
+		ASSERT(!s_Instance, "An instance of Application already exists!");
 		s_Instance = this;
 		m_Window = CreateScope<Window>(name);
 		m_Window->SetEventCallbackFunction(BIND_FN(Application::OnEvent));

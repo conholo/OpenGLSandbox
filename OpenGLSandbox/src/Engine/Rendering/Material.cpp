@@ -1,10 +1,10 @@
-﻿#include "Material.h"
+﻿#include "epch.h"
+#include "Material.h"
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/Texture.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include <utility>
 
 namespace Engine
 {

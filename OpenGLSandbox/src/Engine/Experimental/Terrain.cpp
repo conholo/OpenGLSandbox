@@ -1,9 +1,8 @@
+#include "epch.h"
 #include "Engine/Experimental/Terrain.h"
 #include "Engine/Core/Random.h"
 #include "Engine/Rendering/RenderCommand.h"
-#include "Engine/Rendering/Camera.h"
-
-#include <iostream>
+#include "Engine/Rendering/Shader.h"
 
 namespace Engine
 {
@@ -126,8 +125,6 @@ namespace Engine
 
 	void Terrain::SetLOD(uint32_t lodLevel)
 	{
-		if (lodLevel < 0)
-			lodLevel = 0;
 		if (lodLevel > 8)
 			lodLevel = 8;
 		m_LOD = lodLevel;

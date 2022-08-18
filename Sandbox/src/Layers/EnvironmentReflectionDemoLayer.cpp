@@ -28,10 +28,12 @@ void EnvironmentReflectionDemoLayer::OnAttach()
 		"assets/textures/skybox/back.jpg",
 	};
 
-	Engine::TextureSpecification spec =
+	Engine::TextureCubeSpecification spec =
 	{
-		Engine::ImageUtils::Usage::Texture,
 		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::FilterMode::LinearMipLinear,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::ImageInternalFormat::FromImage,
 		Engine::ImageUtils::ImageDataLayout::FromImage,

@@ -1,7 +1,6 @@
+#include "epch.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
-
 #include <glm/gtc/matrix_transform.hpp>
-
 
 namespace Engine
 {

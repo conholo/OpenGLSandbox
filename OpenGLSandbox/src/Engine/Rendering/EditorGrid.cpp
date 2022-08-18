@@ -1,14 +1,13 @@
+#include "epch.h"
 #include "Engine/Rendering/EditorGrid.h"
 #include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/RenderCommand.h"
 
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 namespace Engine
 {
-
 	EditorGrid::EditorGrid(float scale)
 	{
 		SetScale(scale);

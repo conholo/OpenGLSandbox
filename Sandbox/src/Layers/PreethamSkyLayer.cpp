@@ -15,15 +15,18 @@ PreethamSkyLayer::~PreethamSkyLayer()
 void PreethamSkyLayer::OnAttach()
 {
 	m_Camera.SetPosition({ 0.0f, 5.0f, 20.0 });
-	Engine::TextureSpecification skyBoxSpec =
+	Engine::TextureCubeSpecification skyBoxSpec =
 	{
-		Engine::ImageUtils::Usage::Storage,
 		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::WrapMode::ClampToEdge,
+		Engine::ImageUtils::FilterMode::LinearMipLinear,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
 		Engine::ImageUtils::ImageDataLayout::RGBA,
 		Engine::ImageUtils::ImageDataType::Float,
-		1024, 1024
+		1024,
+		"Preetham"
 	};
 
 	m_Cube = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "EnvironmentReflection");
@@ -58,7 +61,7 @@ void PreethamSkyLayer::DrawSkybox(float deltaTime)
 	// Write to Cube
 	Engine::ShaderLibrary::Get("Preetham")->Bind();
 	Engine::ShaderLibrary::Get("Preetham")->UploadUniformFloat3("u_TAI", m_TAI);
-	Engine::ShaderLibrary::Get("Preetham")->DispatchCompute(m_SkyBox->GetTexture3D()->GetWidth() / 32, m_SkyBox->GetTexture3D()->GetHeight() / 32, 6);
+	Engine::ShaderLibrary::Get("Preetham")->DispatchCompute(m_SkyBox->GetTexture3D()->GetDimension() / 32, m_SkyBox->GetTexture3D()->GetDimension() / 32, 6);
 	Engine::ShaderLibrary::Get("Preetham")->EnableShaderImageAccessBarrierBit();;
 
 	// Read from & Render Cubemap

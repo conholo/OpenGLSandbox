@@ -1,3 +1,4 @@
+#pragma once
 
 
 //--------------------- CORE ---------------------//
@@ -9,18 +10,20 @@
 #include "Engine/Core/Buffer.h"
 #include "Engine/Core/Utility.h"
 #include "Engine/Core/Random.h"
+//--------------------- CORE ---------------------//
+
+//--------------------- EVENT ---------------------//
+#include "Engine/Event/Event.h"
 #include "Engine/Event/KeyEvent.h"
 #include "Engine/Event/MouseEvent.h"
 #include "Engine/Event/WindowEvent.h"
-//--------------------- CORE ---------------------//
+//--------------------- EVENT ---------------------//
 
 //--------------------- Simple ECS ---------------------//
 #include "Engine/Scene/SimpleECS/SimpleEntity.h"
 #include "Engine/Scene/SimpleECS/Light.h"
 // This is in Simple ECS because it depends on Entity Transform.
-// Needs the updated ECS equivalent.
 #include "Engine/Rendering/Line.h"
-#include "Engine/Rendering/BezierSurface.h"
 //--------------------- Simple ECS ---------------------//
 
 
@@ -37,7 +40,6 @@
 #include "Engine/Rendering/Material.h"
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
-#include "Engine/Rendering/AtomicCounterBuffer.h"
 #include "Engine/Rendering/Mesh.h"
 #include "Engine/Rendering/Texture.h"
 #include "Engine/Rendering/CubeMap.h"
@@ -52,4 +54,5 @@
 
 //--------------------- EXPERIMENTAL ---------------------//
 #include "Engine/Experimental/Terrain.h"
+#include "Engine/Experimental//BezierSurface.h"
 //--------------------- EXPERIMENTAL ---------------------//

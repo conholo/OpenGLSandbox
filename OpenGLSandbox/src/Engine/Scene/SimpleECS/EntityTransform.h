@@ -1,7 +1,14 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+namespace glm
+{
+	struct vec2;
+	struct vec3;
+	struct vec4;
+	struct mat3;
+	struct mat4;
+	struct quat;
+}
 
 namespace Engine
 {

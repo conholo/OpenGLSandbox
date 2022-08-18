@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Rendering/Renderer.h"
 #include "Engine/Rendering/RenderCommand.h"
 #include "Engine/Rendering/FrameBuffer.h"
@@ -5,10 +6,6 @@
 #include "Engine/Core/Application.h"
 #include "Engine/Scene/Component.h"
 #include "Engine/Rendering/UniformBuffer.h"
-
-#include <iostream>
-#include <sstream>
-#include <unordered_map>
 
 namespace Engine
 {

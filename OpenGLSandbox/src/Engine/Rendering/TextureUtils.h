@@ -1,7 +1,4 @@
 #pragma once
-
-
-#include <stdint.h>
 typedef unsigned int GLenum;
 
 namespace Engine

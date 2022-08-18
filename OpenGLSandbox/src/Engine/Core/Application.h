@@ -12,7 +12,7 @@ namespace Engine
 	class Application
 	{
 	public:
-		Application(const std::string& name);
+		Application(std::string name);
 		virtual ~Application();
 
 		void Run();
@@ -22,8 +22,7 @@ namespace Engine
 		static Application& GetApplication() { return *s_Instance; }
 		Window& GetWindow() const { return *m_Window; }
 		const std::string& GetName() const { return m_Name; }
-
-		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+		ImGuiLayer* GetImGuiLayer() const { return m_ImGuiLayer; }
 
 		void PushLayer(Layer* layer);
 		void PopLayer(Layer* layer);

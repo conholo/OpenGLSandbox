@@ -1,6 +1,5 @@
+#include "epch.h"
 #include "Engine/Rendering/RenderCommand.h"
-
-#include <iostream>
 #include <glad/glad.h>
 
 
@@ -16,13 +15,12 @@ namespace Engine
 		const void* userParam
 	)
 	{
-		std::cout << message << std::endl;
+		LOG_ERROR("OpenGL Error: %s type = 0x%x, severity = 0x%x, message = %s", type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "", type, severity, message);
 	}
 
 	void RenderCommand::Initialize()
 	{
 		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(OpenGLMessageCallback, nullptr);
 
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);

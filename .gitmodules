@@ -1,0 +1,19 @@
+[submodule "OpenGLSandbox/third_party/spdlog"]
+	path = OpenGLSandbox/third_party/spdlog
+	url = ../../gabime/spdlog.git
+	branch = v1.x
+[submodule "OpenGLSandbox/third_party/GLFW"]
+	path = OpenGLSandbox/third_party/GLFW
+	url = ../../TheCherno/glfw.git
+	branch = master
+[submodule "OpenGLSandbox/third_party/imgui"]
+	path = OpenGLSandbox/third_party/imgui
+	url = ../../TheCherno/imgui.git
+	branch = docking
+[submodule "OpenGLSandbox/third_party/glm"]
+	path = OpenGLSandbox/third_party/glm
+	url = ../../g-truc/glm.git
+	branch = master
+[submodule "OpenGLSandbox/third_party/yaml-cpp"]
+	path = OpenGLSandbox/third_party/yaml-cpp
+	url = https://github.com/thecherno/yaml-cpp

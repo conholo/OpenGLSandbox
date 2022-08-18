@@ -1,12 +1,11 @@
+#include "epch.h"
 #include "Engine/Rendering/Texture.h"
-#include <iostream>
-#include <utility>
 
-#include <memory>
 #include <stb_image.h>
 #include <stb_image_write.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+
 
 namespace Engine
 {
@@ -61,7 +60,7 @@ namespace Engine
 	Texture2D::Texture2D(const std::string& filePath, const Texture2DSpecification& specification)
 		:m_Specification(specification), m_FilePath(filePath)
 	{
-		if(specification.Name == "Texture")
+		if(specification.Name == "Texture2D")
 		{
 			size_t pos = m_FilePath.find_last_of("/") + 1;
 			size_t size = m_FilePath.size() - pos;
@@ -123,7 +122,6 @@ namespace Engine
 			GLenum dataFormat = ConverDataLayoutMode(m_Specification.PixelLayoutFormat);
 			GLenum dataType = ConvertImageDataType(m_Specification.DataType);
 			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Specification.Width, m_Specification.Height, 0, dataFormat, dataType, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
 			stbi_image_free(data);
 		}
 		else
@@ -145,10 +143,10 @@ namespace Engine
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 
-		GLenum wrapS = ImageUtils::ConvertWrapMode(m_Specification.WrapModeS);
-		GLenum wrapT = ImageUtils::ConvertWrapMode(m_Specification.WrapModeT);
-		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MinFilterMode);
-		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(m_Specification.MagFilterMode);
+		GLenum wrapS = ConvertWrapMode(m_Specification.WrapModeS);
+		GLenum wrapT = ConvertWrapMode(m_Specification.WrapModeT);
+		GLenum minFilter = ConvertMinMagFilterMode(m_Specification.MinFilterMode);
+		GLenum magFilter = ConvertMinMagFilterMode(m_Specification.MagFilterMode);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
@@ -160,12 +158,12 @@ namespace Engine
 		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
 
 		uint32_t mips = GetMipLevelCount();
-		glTextureStorage2D(m_ID, mips, ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
+		glTextureStorage2D(m_ID, mips, ConvertInternalFormatMode(m_Specification.InternalFormat), m_Specification.Width, m_Specification.Height);
 	}
 
 	void Texture2D::Clear()
 	{
-		glClearTexImage(m_ID, 0, ImageUtils::ConverDataLayoutMode(m_Specification.PixelLayoutFormat), ImageUtils::ConvertImageDataType(m_Specification.DataType), nullptr);
+		glClearTexImage(m_ID, 0, ConverDataLayoutMode(m_Specification.PixelLayoutFormat), ImageUtils::ConvertImageDataType(m_Specification.DataType), nullptr);
 	}
 
 	void Texture2D::Resize(uint32_t width, uint32_t height)
@@ -200,13 +198,13 @@ namespace Engine
 		glBindTextureUnit(slot, id);
 	}
 
-	void Texture2D::BindToSamplerSlot(uint32_t slot)
+	void Texture2D::BindToSamplerSlot(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTextureUnit(slot, m_ID);
 	}
 
-	void Texture2D::Unbind() const
+	void Texture2D::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -218,7 +216,7 @@ namespace Engine
 
 		if (glShaderDataFormat != internalFormat)
 		{
-			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			LOG_ERROR("Failure Binding '{}' Texture2D to Image Slot: Shader Data Format and Internal format must match!", m_Specification.Name);
 			return;
 		}
 
@@ -283,63 +281,100 @@ namespace Engine
 		return blackTexture;
 	}
 
-	TextureCube::TextureCube(const TextureSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
+	TextureCube::TextureCube(const TextureCubeSpecification& specification, const std::vector<std::string>& cubeFaceFiles)
 		:m_Specification(specification), m_Name(specification.Name)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 
-		int width, height, channels;
+		int Width, Height, Channels;
 
 		for (uint32_t i = 0; i < cubeFaceFiles.size(); i++)
 		{
-			unsigned char* data = stbi_load(cubeFaceFiles[i].c_str(), &width, &height, &channels, 0);
-
-			if (data)
+			if (unsigned char* Data = stbi_load(cubeFaceFiles[i].c_str(), &Width, &Height, &Channels, 0))
 			{
-				m_Specification.InternalFormat = channels == 4 ? ImageUtils::ImageInternalFormat::RGBA8 : ImageUtils::ImageInternalFormat::RGB8;
-				m_Specification.DataLayout = channels == 4 ? ImageUtils::ImageDataLayout::RGBA : ImageUtils::ImageDataLayout::RGB;
+				m_Specification.InternalFormat = Channels == 4 ? ImageUtils::ImageInternalFormat::RGBA8 : ImageUtils::ImageInternalFormat::RGB8;
+				m_Specification.DataLayout = Channels == 4 ? ImageUtils::ImageDataLayout::RGBA : ImageUtils::ImageDataLayout::RGB;
 
-				GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
-				GLenum dataFormat = ImageUtils::ConverDataLayoutMode(m_Specification.DataLayout);
-				GLenum dataType = ImageUtils::ConvertImageDataType(m_Specification.DataType);
-				m_Specification.Width = width;
-				m_Specification.Height = height;
+				const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
+				const GLenum DataFormat = ConverDataLayoutMode(m_Specification.DataLayout);
+				const GLenum DataType = ConvertImageDataType(m_Specification.DataType);
+				m_Specification.Dimension = Height;
 
-				const auto MipCount = CalculateMipCount(specification.Width, specification.Height);
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, MipCount, internalFormat, width, height, 0, dataFormat, dataType, data);
-				stbi_image_free(data);
+				const auto MipCount = GetMipLevelCount();
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, MipCount, InternalFormat, Width, Height, 0, DataFormat, DataType, Data);
+				stbi_image_free(Data);
 			}
 			else
 			{
-				std::cout << "Failed to load face: " << i << " for Cube Map Texture.  Aborting process." << std::endl;
-				stbi_image_free(data);
+				LOG_ERROR("Failed to load face: {} for Cube Map Texture from file '{}'.", i, cubeFaceFiles[i]);
+				stbi_image_free(Data);
 			}
 		}
+		const GLenum WrapModeS = ConvertWrapMode(m_Specification.SamplerWrapS);
+		const GLenum WrapModeT = ConvertWrapMode(m_Specification.SamplerWrapT);
+		const GLenum WrapModeR = ConvertWrapMode(m_Specification.SamplerWrapR);
+		const GLenum MinFilter = ConvertMinMagFilterMode(m_Specification.MinFilter);
+		const GLenum MagFilter = ConvertMinMagFilterMode(m_Specification.MagFilter);
+
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, WrapModeS);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, WrapModeT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, WrapModeR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, MinFilter);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, MagFilter);
 	}
 
-	TextureCube::TextureCube(const TextureSpecification& specification)
-		:m_Specification(specification), m_Name(specification.Name)
+	/**
+	 * \brief A Cubemap.
+	 * \param Specification The Cubemap Specification.
+	 */
+	TextureCube::TextureCube(const TextureCubeSpecification& Specification)
+		:m_Specification(Specification), m_ID(0), m_Name(Specification.Name)
 	{
 		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		const auto MipCount = CalculateMipCount(specification.Width, specification.Height);
-		glTexStorage2D(GL_TEXTURE_CUBE_MAP, MipCount, ConvertInternalFormatMode(specification.InternalFormat), specification.Width, specification.Height);
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		const GLenum WrapModeS = ConvertWrapMode(m_Specification.SamplerWrapS);
+		const GLenum WrapModeT = ConvertWrapMode(m_Specification.SamplerWrapT);
+		const GLenum WrapModeR = ConvertWrapMode(m_Specification.SamplerWrapR);
+		const GLenum MinFilter = ConvertMinMagFilterMode(m_Specification.MinFilter);
+		const GLenum MagFilter = ConvertMinMagFilterMode(m_Specification.MagFilter);
+		const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, WrapModeS);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, WrapModeT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, WrapModeR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, MinFilter);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, MagFilter);
+		const auto MipCount = GetMipLevelCount();
+		glTexStorage2D(GL_TEXTURE_CUBE_MAP, MipCount, InternalFormat, Specification.Dimension, Specification.Dimension);
+	}
+
+	void TextureCube::Invalidate(const TextureCubeSpecification& Specification)
+	{
+		LOG_TRACE("Invalidating Cubemap: ", m_Specification.Name);
+		if(Specification.Name != m_Specification.Name)
+			LOG_TRACE("\t New name for Invalidated Cubemap: {}", m_Specification.Name);
+		m_Specification = Specification;
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_ID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID);
+
+		const GLenum WrapModeS = ConvertWrapMode(m_Specification.SamplerWrapS);
+		const GLenum WrapModeT = ConvertWrapMode(m_Specification.SamplerWrapT);
+		const GLenum WrapModeR = ConvertWrapMode(m_Specification.SamplerWrapR);
+		const GLenum MinFilter = ConvertMinMagFilterMode(m_Specification.MinFilter);
+		const GLenum MagFilter = ConvertMinMagFilterMode(m_Specification.MagFilter);
+		const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, WrapModeS);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, WrapModeT);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, WrapModeR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, MinFilter);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, MagFilter);
+		const auto MipCount = GetMipLevelCount();
+		glTexStorage2D(GL_TEXTURE_CUBE_MAP, MipCount, InternalFormat, Specification.Dimension, Specification.Dimension);
 	}
 
 	TextureCube::~TextureCube()
@@ -347,42 +382,58 @@ namespace Engine
 		glDeleteTextures(1, &m_ID);
 	}
 
-	void TextureCube::BindToSamplerSlot(uint32_t slot)
+	void TextureCube::BindToSamplerSlot(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTextureUnit(slot, m_ID);
 	}
 
-	void TextureCube::Unbind() const
+	void TextureCube::Unbind()
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
-	void TextureCube::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	void TextureCube::BindToImageSlot(uint32_t Binding, uint32_t MipLevel, ImageUtils::TextureAccessLevel AccessLevel, ImageUtils::TextureShaderDataFormat ShaderDataFormat) const
 	{
-		GLenum glShaderDataFormat = ConvertShaderFormatType(shaderDataFormat);
-		GLenum internalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
+		const GLenum GLShaderDataFormat = ConvertShaderFormatType(ShaderDataFormat);
+		const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
 
-		if (glShaderDataFormat != internalFormat)
+		if (GLShaderDataFormat != InternalFormat)
 		{
-			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			LOG_ERROR("Failure Binding '{}' TextureCube to Image Slot: Shader Data Format and Internal format must match!", m_Specification.Name);
 			return;
 		}
 
-		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+		glBindImageTexture(Binding, m_ID, MipLevel, GL_TRUE, 0, ConvertTextureAccessLevel(AccessLevel), ConvertShaderFormatType(ShaderDataFormat));
 	}
 
-	uint32_t TextureCube::CalculateMipCount(uint32_t Width, uint32_t Height)
+	std::pair<glm::uint32_t, glm::uint32_t> TextureCube::GetMipSize(uint32_t Mip) const
 	{
-		return (uint32_t)std::floor(std::log2(glm::min(Width, Height))) + 1;
+		uint32_t Width = m_Specification.Dimension;
+		uint32_t Height = m_Specification.Dimension;
+		while (Mip != 0)
+		{
+			Width /= 2;
+			Height /= 2;
+			Mip--;
+		}
+
+		return { Width, Height };
+	}
+	
+	uint32_t TextureCube::GetMipLevelCount() const
+	{
+			return ImageUtils::CalculateMipLevelCount(m_Specification.Dimension, m_Specification.Dimension);
 	}
 
+
+	
 	Texture2DImageView::Texture2DImageView(const Ref<Texture2D>& original, uint32_t baseMip, uint32_t mipCount, uint32_t baseLayer, uint32_t layerCount)
 		:m_BaseMip(baseMip)
 	{
 		glGenTextures(1, &m_ID);
-		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
-		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), internalFormat, baseMip, mipCount, baseLayer, layerCount);
+		const GLenum InternalFormat = ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
+		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), InternalFormat, baseMip, mipCount, baseLayer, layerCount);
 	}
 
 	Texture2DImageView::~Texture2DImageView()
@@ -396,11 +447,10 @@ namespace Engine
 			glDeleteTextures(1, &m_ID);
 
 		original->BindToSamplerSlot(0);
-		GLint hasMips = 0;
 		m_BaseMip = baseMip;
 		glGenTextures(1, &m_ID);
-		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
-		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), internalFormat, baseMip, mipCount, baseLayer, layerCount);
+		const GLenum InternalFormat = ConvertInternalFormatMode(original->GetSpecification().InternalFormat);
+		glTextureView(m_ID, GL_TEXTURE_2D, original->GetID(), InternalFormat, baseMip, mipCount, baseLayer, layerCount);
 	}
 
 	void Texture2DImageView::Bind() const
@@ -408,63 +458,42 @@ namespace Engine
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 	}
 
-	void Texture2DImageView::Unbind() const
+	void Texture2DImageView::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	Texture3D::Texture3D(const TextureSpecification& spec)
-		:m_Specification(spec), m_Name(spec.Name)
+
+
+
+
+
+
+	
+	Texture3D::Texture3D(const Texture3DSpecification& Specification)
+		:m_Name(Specification.Name)
 	{
 		glCreateTextures(GL_TEXTURE_3D, 1, &m_ID);
 		glBindTexture(GL_TEXTURE_3D, m_ID);
 
-		GLenum wrapS = ImageUtils::ConvertWrapMode(spec.SamplerWrap);
-		GLenum wrapT = ImageUtils::ConvertWrapMode(spec.SamplerWrap);
-		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(spec.Filter);
-		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(spec.Filter);
+		const GLenum WrapS = ImageUtils::ConvertWrapMode(Specification.WrapModeS);
+		const GLenum WrapT = ImageUtils::ConvertWrapMode(Specification.WrapModeT);
+		const GLenum WrapR = ImageUtils::ConvertWrapMode(Specification.WrapModeR);
+		const GLenum MinFilter = ImageUtils::ConvertMinMagFilterMode(Specification.MinFilterMode);
+		const GLenum MagFilter = ImageUtils::ConvertMinMagFilterMode(Specification.MagFilterMode);
 
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrapS);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrapT);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrapT);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, minFilter);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, magFilter);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, WrapS);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, WrapT);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, WrapR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, MinFilter);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, MagFilter);
 
 		// Immutable-format Texture
 		// Contents of the image can be modified, but it's storage requirements may not change.
 		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
 
-		uint32_t mips = GetMipLevelCount();
-
-		// TODO:: Provide Texture3DSpecification
-		glTextureStorage3D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(spec.InternalFormat), spec.Width, spec.Height, spec.Width);
-	}
-
-	Texture3D::Texture3D(const Texture3DSpecification& spec)
-		:m_Name(spec.Name)
-	{
-		glCreateTextures(GL_TEXTURE_3D, 1, &m_ID);
-		glBindTexture(GL_TEXTURE_3D, m_ID);
-
-		GLenum wrapS = ImageUtils::ConvertWrapMode(spec.WrapModeS);
-		GLenum wrapT = ImageUtils::ConvertWrapMode(spec.WrapModeT);
-		GLenum minFilter = ImageUtils::ConvertMinMagFilterMode(spec.MinFilterMode);
-		GLenum magFilter = ImageUtils::ConvertMinMagFilterMode(spec.MagFilterMode);
-
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrapS);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrapT);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrapT);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, minFilter);
-		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, magFilter);
-
-		// Immutable-format Texture
-		// Contents of the image can be modified, but it's storage requirements may not change.
-		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
-
-		uint32_t mips = GetMipLevelCount();
-
-		// TODO:: Provide Texture3DSpecification
-		glTextureStorage3D(m_ID, 1, ImageUtils::ConvertInternalFormatMode(spec.InternalFormat), spec.Width, spec.Height, spec.Depth);
+		const uint32_t Mips = GetMipLevelCount();
+		glTextureStorage3D(m_ID, Mips, ConvertInternalFormatMode(Specification.InternalFormat), Specification.Width, Specification.Height, Specification.Depth);
 	}
 
 	Texture3D::~Texture3D()
@@ -472,43 +501,40 @@ namespace Engine
 		glDeleteTextures(1, &m_ID);
 	}
 
-	void Texture3D::BindToSamplerSlot(uint32_t slot)
+	void Texture3D::BindToSamplerSlot(uint32_t slot) const
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTextureUnit(slot, m_ID);
 	}
 
-	void Texture3D::Unbind() const
+	void Texture3D::Unbind()
 	{
 		glBindTexture(GL_TEXTURE_3D, 0);
 	}
 
-	void Texture3D::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
+	void Texture3D::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat) const
 	{
-		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
-		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
+		const GLenum GLShaderDataFormat = ConvertShaderFormatType(shaderDataFormat);
+		const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
 
-		if (glShaderDataFormat != internalFormat)
+		if (GLShaderDataFormat != InternalFormat)
 		{
-			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			LOG_ERROR("Failure Binding '{}' Texture3D to Image Slot: Shader Data Format and Internal format must match!", m_Specification.Name);
 			return;
 		}
 
-		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ConvertTextureAccessLevel(access), ConvertShaderFormatType(shaderDataFormat));
 	}
 
-	int Texture3D::WriteToFile(const std::string& assetPath)
+	int Texture3D::WriteToFile(const std::string& assetPath) const
 	{
-		GLenum dataFormat = ImageUtils::ConverDataLayoutMode(m_Specification.DataLayout);
-		GLenum dataType = ImageUtils::ConvertImageDataType(m_Specification.DataType);
-		GLsizei textureSize = m_Specification.Width * m_Specification.Height * m_Specification.Width * 16;
-		void* pixels = malloc(textureSize);
-		glGetTextureSubImage(m_ID, 0, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.Width, dataFormat, dataType, textureSize, pixels);
-
-		int result = stbi_write_png(assetPath.c_str(), m_Specification.Width, m_Specification.Height, 4, pixels, 4);
-
+		const GLenum DataFormat = ConverDataLayoutMode(m_Specification.PixelLayoutFormat);
+		const GLenum DataType = ConvertImageDataType(m_Specification.DataType);
+		const GLsizei TextureDataSize = m_Specification.Width * m_Specification.Height * m_Specification.Depth * 16;
+		void* pixels = malloc(TextureDataSize);
+		glGetTextureSubImage(m_ID, 0, 0, 0, 0, m_Specification.Width, m_Specification.Height, m_Specification.Width, DataFormat, DataType, TextureDataSize, pixels);
+		const int result = stbi_write_png(assetPath.c_str(), m_Specification.Width, m_Specification.Height, 4, pixels, 4);
 		free(pixels);
-
 		return result;
 	}
 
@@ -531,86 +557,7 @@ namespace Engine
 		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
 	}
 
-	Texture2DArray::Texture2DArray(const std::vector<std::string>& filePaths, const Texture2DSpecification& specification)
-		:m_Specification(specification)
-	{
-		glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &m_ID);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
-		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, filePaths.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-
-		int width, height, channels;
-
-		for (uint32_t i = 0; i < filePaths.size(); i++)
-		{
-			unsigned char* data = stbi_load(filePaths[i].c_str(), &width, &height, &channels, 0);
-			m_Specification.InternalFormat = channels == 4 ? ImageUtils::ImageInternalFormat::RGBA8 : ImageUtils::ImageInternalFormat::RGB8;
-			m_Specification.PixelLayoutFormat = channels == 4 ? ImageUtils::ImageDataLayout::RGBA : ImageUtils::ImageDataLayout::RGB;
-
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, m_Specification.Width, m_Specification.Height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-
-		const GLenum minFilter = ConvertMinMagFilterMode(m_Specification.MinFilterMode);
-		const GLenum magFilter = ConvertMinMagFilterMode(m_Specification.MagFilterMode);
-		const GLenum wrapModeS = ConvertWrapMode(m_Specification.WrapModeS);
-		const GLenum wrapModeT = ConvertWrapMode(m_Specification.WrapModeT);
-
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, wrapModeS);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, wrapModeT);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, minFilter);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, magFilter);
-		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-	}
-
-	Texture2DArray::~Texture2DArray()
-	{
-		glDeleteTextures(1, &m_ID);
-	}
-
-	std::pair<glm::uint32_t, glm::uint32_t> Texture2DArray::GetMipSize(uint32_t mip) const
-	{
-		uint32_t width = m_Specification.Width;
-		uint32_t height = m_Specification.Height;
-		while (mip != 0)
-		{
-			width /= 2;
-			height /= 2;
-			mip--;
-		}
-
-		return { width, height };
-	}
-
-	uint32_t Texture2DArray::GetMipLevelCount() const
-	{
-		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
-	}
-
-	void Texture2DArray::BindToSamplerSlot(uint32_t slot)
-	{
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTextureUnit(slot, m_ID);
-	}
-
-	void Texture2DArray::Unbind() const
-	{
-		glBindTexture(GL_TEXTURE_3D, 0);
-	}
-
-	void Texture2DArray::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat)
-	{
-		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
-		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(m_Specification.InternalFormat);
-
-		if (glShaderDataFormat != internalFormat)
-		{
-			std::cout << "Shader Data Format and Internal format must match!" << "\n";
-			return;
-		}
-
-		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
-	}
-
+	
 	bool TextureLibrary::Has2D(const std::string& Name)
 	{
 		return s_NameToTexture2DLibrary.find(Name) != s_NameToTexture2DLibrary.end();
@@ -618,16 +565,16 @@ namespace Engine
 
 	void TextureLibrary::AddTexture2D(const Ref<Texture2D>& texture)
 	{
-		if (s_NameToTexture2DLibrary.find(texture->GetName()) == s_NameToTexture2DLibrary.end())
+		if (Has2D(texture->GetName()))
 		{
-			s_NameToTexture2DLibrary[texture->GetName()] = texture;
-			s_IdToNameLibrary[texture->GetID()] = texture->GetName();
-			std::cout << "Added Texture2D with name: '" << texture->GetName() << "' to the Texture Library.\n";
+			LOG_TRACE("Texture2D with name '{}' already contained in Texture Library.", texture->GetName());
+			return;
 		}
-		else
-		{
-			std::cout << "Texture2D already contained in Texture Library." << "\n";
-		}
+		
+		s_NameToTexture2DLibrary[texture->GetName()] = texture;
+		s_IdToNameLibrary[texture->GetID()] = texture->GetName();
+		LOG_TRACE("Added Texture2D with name: '{}' to the Texture Library.", texture->GetName());
+
 	}
 
 	Ref<Texture2D> TextureLibrary::LoadTexture2D(const Texture2DSpecification& spec, const std::string& filePath)
@@ -651,28 +598,55 @@ namespace Engine
 
 	void TextureLibrary::AddTextureCube(const Ref<TextureCube>& texture)
 	{
-		if (s_NameToTextureCubeLibrary.find(texture->GetName()) == s_NameToTextureCubeLibrary.end())
+		if (HasCube(texture->GetName()))
 		{
-			s_NameToTextureCubeLibrary[texture->GetName()] = texture;
-			s_IdToNameLibrary[texture->GetID()] = texture->GetName();
-			std::cout << "Added TextureCube with name: '" << texture->GetName() << "' to the Texture Library." << "\n";
+			LOG_TRACE("TextureCube with name '{}' already contained in Texture Library.", texture->GetName());
+			return;
 		}
-		else
-		{
-			std::cout << "TextureCube already contained in Texture Library - " << texture->GetName() << "\n";
-		}
+		
+		s_NameToTextureCubeLibrary[texture->GetName()] = texture;
+		s_IdToNameLibrary[texture->GetID()] = texture->GetName();
+		LOG_TRACE("Added TextureCube with name: '{}' to the Texture Library.", texture->GetName());
 	}
 
-	Ref<TextureCube> TextureLibrary::LoadTextureCube(const TextureSpecification& spec)
+	Ref<TextureCube> TextureLibrary::LoadTextureCube(const TextureCubeSpecification& Spec, bool InvalidateIfExists)
 	{
-		if(HasCube(spec.Name))
-			return s_NameToTextureCubeLibrary[spec.Name];
-		Ref<TextureCube> texture = CreateRef<TextureCube>(spec);
+		if(HasCube(Spec.Name))
+		{
+			if(InvalidateIfExists)
+				s_NameToTextureCubeLibrary[Spec.Name]->Invalidate(Spec);
+
+			return s_NameToTextureCubeLibrary[Spec.Name];
+		}
+		Ref<TextureCube> texture = CreateRef<TextureCube>(Spec);
 		AddTextureCube(texture);
 		return texture;
 	}
 
-	Ref<Texture2D> TextureLibrary::Load(const std::string& filePath)
+	void TextureLibrary::InvalidateCube(const TextureCubeSpecification& spec)
+	{
+		ASSERT(HasCube(spec.Name), "Unable to Invalidate TextureCube with name '{}' - does not exist", spec.Name);
+		const Ref<TextureCube> TextureCube = s_NameToTextureCubeLibrary[spec.Name];
+		TextureCube->Invalidate(spec);
+	}
+
+	Ref<Texture2D> TextureLibrary::Get2DFromID(uint32_t ID)
+	{
+		ASSERT(s_IdToNameLibrary.find(ID) != s_IdToNameLibrary.end(), "Unable to find Texture2D with ID: {}", ID);
+		const auto TextureName = s_IdToNameLibrary[ID];
+		ASSERT(s_NameToTexture2DLibrary.find(TextureName) != s_NameToTexture2DLibrary.end(), "Unable to find Texture2D with Name: {}", TextureName);
+		return s_NameToTexture2DLibrary[TextureName];
+	}
+
+	Ref<TextureCube> TextureLibrary::GetCubeFromID(uint32_t ID)
+	{
+		ASSERT(s_IdToNameLibrary.find(ID) != s_IdToNameLibrary.end(), "Unable to find TextureCube with ID: {}", ID);
+		const auto TextureName = s_IdToNameLibrary[ID];
+		ASSERT(s_NameToTexture2DLibrary.find(TextureName) != s_NameToTexture2DLibrary.end(), "Unable to find TextureCube with Name: {}", TextureName);
+		return s_NameToTextureCubeLibrary[TextureName];
+	}
+
+	Ref<Texture2D> TextureLibrary::LoadTexture2D(const std::string& filePath)
 	{
 		Texture2DSpecification defaultFromFileSpec =
 		{
@@ -713,51 +687,30 @@ namespace Engine
 		return texture;
 	}
 
-
 	const Ref<Texture2D>& TextureLibrary::Get2D(const std::string& name)
 	{
-		if (s_NameToTexture2DLibrary.find(name) == s_NameToTexture2DLibrary.end())
-		{
-			std::cout << "No Texture2D with name \"{}\" found in Texture Library." <<  name << "\n";
-			return nullptr;
-		}
-
+		ASSERT(Has2D(name), "No Texture2D with name '{}' found in Texture Library.", name)
 		return s_NameToTexture2DLibrary.at(name);
 	}
 
 	const Ref<TextureCube>& TextureLibrary::GetCube(const std::string& name)
 	{
-		if (s_NameToTextureCubeLibrary.find(name) == s_NameToTextureCubeLibrary.end())
-		{
-			std::cout << "No TextureCube with name \"{}\" found in Texture Library." <<  name << "\n";
-			return nullptr;
-		}
-
+		ASSERT(HasCube(name), "No TextureCube with name '{}' found in Texture Library.", name)
 		return s_NameToTextureCubeLibrary.at(name);
 	}
 
 	void TextureLibrary::BindTexture2DToSlot(const std::string& TwoDimensionTextureName, uint32_t Slot)
 	{
-		if(s_NameToTexture2DLibrary.find(TwoDimensionTextureName) == s_NameToTexture2DLibrary.end())
-		{
-			std::cout << "TextureLibrary: Unable to bind Texture2D with name '" << TwoDimensionTextureName << "'.  This texture has not been registered." << "\n";
-			return;
-		}
-		
-		const auto& Texture = s_NameToTexture2DLibrary[TwoDimensionTextureName];
-		glBindTextureUnit(Slot, Texture->GetID());
+		ASSERT(Has2D(TwoDimensionTextureName), "TextureLibrary: Unable to bind Texture2D with name '{}' to slot '{}'.  This texture has not been registered.", TwoDimensionTextureName, Slot);
+		const auto& Texture2D = s_NameToTexture2DLibrary[TwoDimensionTextureName];
+		glBindTextureUnit(Slot, Texture2D->GetID());
 	}
 
 	void TextureLibrary::BindTextureCubeToSlot(const std::string& CubeTextureName, uint32_t Slot)
 	{
-		if(s_NameToTextureCubeLibrary.find(CubeTextureName) == s_NameToTextureCubeLibrary.end())
-		{
-			std::cout << "TextureLibrary: Unable to bind TextureCube with name '" << CubeTextureName << "'.  This texture has not been registered." << "\n";
-			return;
-		}
-		
-		const auto& Texture = s_NameToTextureCubeLibrary[CubeTextureName];
-		glBindTextureUnit(Slot, Texture->GetID());
+		ASSERT(HasCube(CubeTextureName), "TextureLibrary: Unable to bind TextureCube with name '{}' to slot '{}'.  This texture has not been registered.", CubeTextureName, Slot);
+		const auto& TextureCube = s_NameToTextureCubeLibrary[CubeTextureName];
+		glBindTextureUnit(Slot, TextureCube->GetID());
 	}
 
 	void TextureLibrary::BindTextureToSlot(uint32_t TexID, uint32_t Slot)
@@ -767,11 +720,7 @@ namespace Engine
 
 	std::string TextureLibrary::GetNameFromID(uint32_t TextureID)
 	{
-		if(s_IdToNameLibrary.find(TextureID) == s_IdToNameLibrary.end())
-		{
-			std::cout << "TextureLibrary: Unable to find texture with ID '" << TextureID << "'.";
-			return {};
-		}
+		ASSERT(s_IdToNameLibrary.find(TextureID) != s_IdToNameLibrary.end(), "TextureLibrary: Unable to find texture with ID '{}'.", TextureID);
 		return s_IdToNameLibrary[TextureID];
 	}
 

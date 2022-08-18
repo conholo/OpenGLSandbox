@@ -1,5 +1,5 @@
+#include "epch.h"
 #include "Engine/Rendering/TextureUtils.h"
-
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 

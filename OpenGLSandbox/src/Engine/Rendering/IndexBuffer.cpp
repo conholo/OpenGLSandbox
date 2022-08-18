@@ -1,5 +1,5 @@
+#include "epch.h"
 #include "Engine/Rendering/IndexBuffer.h"
-
 #include <glad/glad.h>
 
 

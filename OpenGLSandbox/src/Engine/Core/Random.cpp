@@ -1,8 +1,5 @@
+#include "epch.h"
 #include "Engine/Core/Random.h"
-
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 namespace Engine
 {
@@ -18,6 +15,6 @@ namespace Engine
 
 	float Random::RandomRange(float min, float max)
 	{
-		return min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+		return min + static_cast <float> (rand()) / (RAND_MAX / (max - min));
 	}
 }

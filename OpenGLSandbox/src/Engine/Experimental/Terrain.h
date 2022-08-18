@@ -4,10 +4,7 @@
 #include "Engine/Core/Memory.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
-#include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/Texture.h"
-
-
 
 namespace Engine
 {

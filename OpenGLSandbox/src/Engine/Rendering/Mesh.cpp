@@ -1,17 +1,15 @@
+#include "epch.h"
 #include "Engine/Rendering/Mesh.h"
-
-#include <filesystem>
-
 #include "Engine/Core/Math.h"
-#include <iostream>
-#include <unordered_map>
+#include "Engine/Rendering/Texture.h"
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 #include <assimp/DefaultLogger.hpp>
 #include <assimp/LogStream.hpp>
-#include "Texture.h"
+
+#define LOG_MESH 1
 
 namespace Engine
 {
@@ -41,10 +39,9 @@ namespace Engine
 
 		void write(const char* message) override
 		{
-			std::cout << "Assimp error: " <<  message << "\n";
+			LOG_ERROR("Assimp Error: {}", message);
 		}
 	};
-
 
 	Mesh::Mesh()
 	{
@@ -63,26 +60,33 @@ namespace Engine
 	Mesh::Mesh(const std::string& modelFilePath)
 	{
 		LogStream::Initialize();
-		std::cout << "Loading Mesh: " << modelFilePath << "\n";
+		LOG_INFO("Loading Mesh: {}", modelFilePath);
 		m_Importer = CreateRef<Assimp::Importer>();
 		m_Importer->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 
 		if (const aiScene* pScene = m_Importer->ReadFile(modelFilePath.c_str(), s_MeshImportFlags))
 			InitializeMeshFromFile(pScene, modelFilePath);
 		else
-			std::cout << "Failed to parse model file: " << modelFilePath << "\n";
+			LOG_ERROR("Failed to parse model file: {}", modelFilePath);
 	}
 
 	static std::tuple<std::string, std::string> TexPathName(const std::string& modelFilePath, const std::string& aiTexPath)
 	{
 		std::filesystem::path path = modelFilePath;
-		std::string lastForwardSlash = modelFilePath.substr(0, modelFilePath.find_last_of("/") + 1);
+		const std::string lastForwardSlash = modelFilePath.substr(0, modelFilePath.find_last_of("/") + 1);
 		size_t pos = aiTexPath.find_last_of("\\") + 1;
 		std::string texName = aiTexPath.substr(pos, aiTexPath.length() - pos);
 		std::string texPath = lastForwardSlash + texName;
 		return std::make_tuple(texPath, texName);
 	}
-	
+
+	static void LogTextureSamplerSet(TextureUniform& Uniform, const Ref<Texture2D>& WhiteTexture)
+	{
+		LOG_TRACE("\tSetting Sampler Uniform: ");
+		LOG_TRACE("\t\tSamplerName: sampler_AlbedoTexture");
+		LOG_TRACE("\t\tTextureName: '{}'", WhiteTexture->GetName());
+		LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+	}
 
 	void Mesh::InitializeMeshFromFile(const aiScene* scene, const std::string& modelFilePath)
 	{
@@ -160,13 +164,15 @@ namespace Engine
 				std::cout << aiMaterialName.data << " (Index = " << i << ")" << "\n";
 				aiString aiTexPath;
 				uint32_t textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
-				std::cout << "\tTextureCount = " << textureCount << "\n";
-
+#if LOG_MESH
+				LOG_TRACE("\tTextureCount = {}", textureCount);
+#endif
 				std::string MaterialName = std::string(aiMaterial->GetName().data) + " Material";
-				std::cout << "\nGenerating Material: " << MaterialName << ": " << i << "\n";
+#if LOG_MESH
+				LOG_TRACE("\tGenerating Material: '{}'.  Material #: {}", MaterialName, i); 
+#endif
 				auto mi = CreateRef<Material>(MaterialName, m_MeshShader);
 				m_Materials[i] = mi;
-
 
 				glm::vec3 albedoColor(0.8f);
 				float emission = 0.0f;
@@ -203,35 +209,44 @@ namespace Engine
 						m_Textures[i] = texture;
 						TextureUniform Uniform {texture->GetID(), TexUnitCounter++};
 						mi->Set<TextureUniform>("sampler_AlbedoTexture", Uniform);
-						std::cout << "\tSetting Embedded -> Sampler Uniform: " << "\n";
-						std::cout << "\t\tSamplerName: sampler_AlbedoTexture" << "\n";
-						std::cout << "\t\tTextureName: " << texture->GetName() << "\n";
-						std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+#if LOG_MESH
+						LOG_TRACE("\tSetting Embedded -> Sampler Uniform: ");
+						LOG_TRACE("\t\tSamplerName: sampler_AlbedoTexture");
+						LOG_TRACE("\t\tTextureName: '{}'", texture->GetName());
+						LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 						mi->Set<glm::vec3>("AlbedoColor", glm::vec3(1.0f));
 					}
 					else
 					{
-						std::cout << "	Creating Albedo Map Texture..." << "\n";
+#if LOG_MESH
+
+						LOG_TRACE("\tCreating Albedo Map Texture...");
+#endif
 						auto [texPath, texName] = TexPathName(modelFilePath, std::string(aiTexPath.data));
 						Specification.Name = texName;
-						if (auto texture = TextureLibrary::Load(texPath))
+						if (auto texture = TextureLibrary::LoadTexture2D(texPath))
 						{
 							m_Textures[i] = texture;
 							TextureUniform Uniform {texture->GetID(), TexUnitCounter++};
 							mi->Set<TextureUniform>("sampler_AlbedoTexture", Uniform);
-							std::cout << "\tSetting Sampler Uniform: " << "\n";
-							std::cout << "\t\tSamplerName: sampler_AlbedoTexture" << "\n";
-							std::cout << "\t\tTextureName: " << texture->GetName() << "\n";
-							std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+#if LOG_MESH
+							LOG_TRACE("\tSetting Sampler Uniform: ");
+							LOG_TRACE("\t\tSamplerName: sampler_AlbedoTexture");
+							LOG_TRACE("\t\tTextureName: '{}'", texture->GetName());
+							LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
+
 							mi->Set<glm::vec3>("AlbedoColor", glm::vec3(1.0f));
 						}
 						else
 						{
 							m_Textures[i] = whiteTexture;
 							fallback = true;
-							std::cout << "\tCould not load texture: " <<  texPath << "\n";
+#if LOG_MESH
+							LOG_WARN("\tCould not load texture: '{}'", texPath);
+#endif
 						}
-
 					}
 				}
 
@@ -239,10 +254,11 @@ namespace Engine
 				{
 					TextureUniform Uniform {whiteTexture->GetID(), WhiteTextureUnit};
 					mi->Set<TextureUniform>("sampler_AlbedoTexture", Uniform);
-					std::cout << "\tSetting Sampler Uniform: " << "\n";
-					std::cout << "\t\tSamplerName: sampler_AlbedoTexture" << "\n";
-					std::cout << "\t\tTextureName: " << whiteTexture->GetName() << "\n";
-					std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+
+					LOG_TRACE("\tSetting Sampler Uniform: ");
+					LOG_TRACE("\t\tSamplerName: sampler_AlbedoTexture");
+					LOG_TRACE("\t\tTextureName: '{}'", whiteTexture->GetName());
+					LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
 				}
 
 				// Normal maps
@@ -253,23 +269,24 @@ namespace Engine
 					std::cout << "	Creating Normal Map..." << "\n";
 					auto [texturePath, texName] = TexPathName(modelFilePath, std::string(aiTexPath.data));
 					Specification.Name = texName;
-					if (auto texture = TextureLibrary::Load(texturePath))
+					if (auto texture = TextureLibrary::LoadTexture2D(texturePath))
 					{
 						m_Textures.push_back(texture);
 						TextureUniform Uniform {texture->GetID(), TexUnitCounter++};
 						mi->Set<TextureUniform>("sampler_NormalTexture", Uniform);
-						
-						std::cout << "\tSetting Sampler Uniform: " << "\n";
-						std::cout << "\t\tSamplerName: sampler_NormalTexture" << "\n";
-						std::cout << "\t\tTextureName: " << texture->GetName() << "\n";
-						std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
-						
+
+#if LOG_MESH
+						LOG_TRACE("\tSetting Sampler Uniform: ");
+						LOG_TRACE("\t\tSamplerName: sampler_NormalTexture");
+						LOG_TRACE("\t\tTextureName: '{}'", texture->GetName());
+						LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 						mi->Set<int>("UseNormalMap", 1);
 					}
 					else
 					{
 						fallback = true;
-						std::cout << "\tCould not load texture: " <<  texturePath << "\n";
+						LOG_WARN("\tCould not load texture: '{}'", texturePath);
 					}
 				}
 
@@ -277,10 +294,12 @@ namespace Engine
 				{
 					TextureUniform Uniform {whiteTexture->GetID(), WhiteTextureUnit};
 					mi->Set<TextureUniform>("sampler_NormalTexture", Uniform);
-					std::cout << "\tSetting Sampler Uniform: " << "\n";
-					std::cout << "\t\tSamplerName: sampler_NormalTexture" << "\n";
-					std::cout << "\t\tTextureName: " << whiteTexture->GetName() << "\n";
-					std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+#if LOG_MESH
+					LOG_TRACE("\tSetting Sampler Uniform: ");
+					LOG_TRACE("\t\tSamplerName: sampler_NormalTexture");
+					LOG_TRACE("\t\tTextureName: '{}'", whiteTexture->GetName());
+					LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 					mi->Set<int>("UseNormalMap", 0);
 				}
 
@@ -292,23 +311,26 @@ namespace Engine
 					std::cout << "	Creating Roughness Map..." << "\n";
 					auto [texturePath, texName] = TexPathName(modelFilePath, std::string(aiTexPath.data));
 					Specification.Name = texName;
-					if (auto texture = TextureLibrary::Load(texturePath))
+					if (auto texture = TextureLibrary::LoadTexture2D(texturePath))
 					{
 						m_Textures.push_back(texture);
 						TextureUniform Uniform {texture->GetID(), TexUnitCounter++};
 						mi->Set<TextureUniform>("sampler_RoughnessTexture", Uniform);
 
-						std::cout << "\tSetting Sampler Uniform: " << "\n";
-						std::cout << "\t\tSamplerName: sampler_RoughnessTexture" << "\n";
-						std::cout << "\t\tTextureName: " << texture->GetName() << "\n";
-						std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
-
+#if LOG_MESH
+						LOG_TRACE("\tSetting Sampler Uniform: ");
+						LOG_TRACE("\t\tSamplerName: sampler_RoughnessTexture");
+						LOG_TRACE("\t\tTextureName: '{}'", texture->GetName());
+						LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 						mi->Set<float>("Roughness", 1.0f);
 					}
 					else
 					{
 						fallback = true;
-						std::cout << "\tCould not load texture: " <<  texturePath << "\n";
+#if LOG_MESH
+						LOG_WARN("\tCould not load texture: '{}'", texturePath);
+#endif
 					}
 				}
 
@@ -316,10 +338,12 @@ namespace Engine
 				{
 					TextureUniform Uniform {whiteTexture->GetID(), WhiteTextureUnit};
 					mi->Set<TextureUniform>("sampler_RoughnessTexture", Uniform);
-					std::cout << "\tSetting Sampler Uniform: " << "\n";
-					std::cout << "\t\tSamplerName: sampler_RoughnessTexture" << "\n";
-					std::cout << "\t\tTextureName: " << whiteTexture->GetName() << "\n";
-					std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+#if LOG_MESH
+					LOG_TRACE("\tSetting Sampler Uniform: ");
+					LOG_TRACE("\t\tSamplerName: sampler_RoughnessTexture");
+					LOG_TRACE("\t\tTextureName: '{}'", whiteTexture->GetName());
+					LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 					mi->Set<float>("Roughness", roughness);
 				}
 
@@ -339,23 +363,27 @@ namespace Engine
 							std::cout << "	Creating Metalness Map..." << "\n";
 							auto [texturePath, texName] = TexPathName(modelFilePath, std::string(aiTexPath.data));
 							Specification.Name = texName;
-							if (auto texture = TextureLibrary::Load(texturePath))
+							if (auto texture = TextureLibrary::LoadTexture2D(texturePath))
 							{
 								metalnessTextureFound = true;
 								m_Textures.push_back(texture);
 								TextureUniform Uniform {texture->GetID(), TexUnitCounter++};
 								mi->Set<TextureUniform>("sampler_MetalnessTexture", Uniform);
 
-								std::cout << "\tSetting Sampler Uniform: " << "\n";
-								std::cout << "\t\tSamplerName: sampler_MetalnessTexture" << "\n";
-								std::cout << "\t\tTextureName: " << texture->GetName() << "\n";
-								std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
-								
+#if LOG_MESH
+								LOG_TRACE("\tSetting Sampler Uniform: ");
+								LOG_TRACE("\t\tSamplerName: sampler_MetalnessTexture");
+								LOG_TRACE("\t\tTextureName: '{}'", texture->GetName());
+								LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
+
 								mi->Set<float>("Metalness", 1.0f);
 							}
 							else
 							{
-								std::cout << "\tCould not load texture: " <<  texturePath << "\n";
+#if LOG_MESH
+								LOG_WARN("\tCould not load texture: '{}'", texturePath);
+#endif
 							}
 							break;
 						}
@@ -367,10 +395,12 @@ namespace Engine
 				{
 					TextureUniform Uniform {whiteTexture->GetID(), WhiteTextureUnit};
 					mi->Set<TextureUniform>("sampler_MetalnessTexture", Uniform);
-					std::cout << "\tSetting Sampler Uniform: " << "\n";
-					std::cout << "\t\tSamplerName: sampler_MetalnessTexture" << "\n";
-					std::cout << "\t\tTextureName: " << whiteTexture->GetName() << "\n";
-					std::cout << "\t\tSlot: " << Uniform.TextureUnit << "\n";
+#if LOG_MESH
+					LOG_TRACE("\tSetting Sampler Uniform: ");
+					LOG_TRACE("\t\tSamplerName: sampler_MetalnessTexture");
+					LOG_TRACE("\t\tTextureName: '{}'", whiteTexture->GetName());
+					LOG_TRACE("\t\tSlot: {}", Uniform.TextureUnit);
+#endif
 					mi->Set<float>("Metalness", 1.0f);
 				}
 			}

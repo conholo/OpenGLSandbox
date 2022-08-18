@@ -1,13 +1,9 @@
+#include "epch.h"
 #include "Engine/Rendering/Shader.h"
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <array>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Material.h"
+#include "Engine/Rendering/Material.h"
 
 namespace Engine
 {
@@ -37,9 +33,7 @@ namespace Engine
 		case GL_SAMPLER_2D:		return ShaderAttributeType::Sampler2D;
 		case GL_SAMPLER_CUBE:	return ShaderAttributeType::SamplerCube;
 		default: 
-			{
-				return ShaderAttributeType::None;
-			}
+			ASSERT(false, "Unknown or Unsupported GLenum ShaderDataType: {}", value);
 		}
 	}
 	
@@ -76,20 +70,17 @@ namespace Engine
 	{
 		std::string result;
 		std::ifstream input(filePath, std::ios::binary | std::ios::in);
+		ASSERT(input, "Unable to read shader source file: '{}'", filePath);
+		
+		input.seekg(0, std::ios::end);
+		const size_t size = input.tellg();
 
-		if (input)
+		if (size != -1)
 		{
-			input.seekg(0, std::ios::end);
-			const size_t size = input.tellg();
-
-			if (size != -1)
-			{
-				result.resize(size);
-				input.seekg(0, std::ios::beg);
-				input.read(result.data(), size);
-			}
+			result.resize(size);
+			input.seekg(0, std::ios::beg);
+			input.read(result.data(), size);
 		}
-
 		return result;
 	}
 
@@ -105,21 +96,77 @@ namespace Engine
 		return GL_FALSE;
 	}
 
+	void Shader::DumpShaderData()
+	{
+		if (m_ActiveTotalUniformCount <= 0)
+		{
+			LOG_INFO("{} Shader has no active uniforms.", m_Name);
+			return;
+		}
+
+		LOG_INFO("-------------------------------------------------");
+		LOG_INFO("Shader data for: {}", m_Name);
+		LOG_INFO("-------------------------------------------------\n");
+		LOG_INFO("Active uniform count: {}", m_ActiveTotalUniformCount);
+		LOG_INFO("Base block uniforms: {}", m_DefaultBlockUniformCount);
+		LOG_INFO("Named blocks: {}", m_Blocks.size());
+		LOG_INFO("Named block uniforms: {}", m_NamedBlockUniformCount);
+		LOG_INFO("\n");
+		LOG_INFO("-------------------------------------------------");
+		LOG_INFO("Base Block uniforms:");
+		LOG_INFO("-------------------------------------------------");
+		for (auto [name, uniform] : m_BaseBlockUniforms)
+		{
+			LOG_INFO("-------------------------------------------------");
+			LOG_INFO("Uniform Name: {}", name);
+			LOG_INFO("		Size: {}", uniform.GetSize());
+			LOG_INFO("		Type: {}", ShaderAttributeTypeToString[uniform.GetType()]);
+			LOG_INFO("		BufferOffset: {}", uniform.GetBufferOffset());
+			LOG_INFO("		Location: {}", uniform.GetLocation());
+			LOG_INFO("-------------------------------------------------");
+		}
+
+		LOG_INFO("\n");
+		LOG_INFO("-------------------------------------------------");
+		LOG_INFO("Named Blocks:");
+		LOG_INFO("-------------------------------------------------");
+		for (auto [blockName, block] : m_Blocks)
+		{
+			LOG_INFO("Block Name: {}", blockName);
+			LOG_INFO("Block Binding: {}", block.GetBinding());
+			LOG_INFO("Block Size: {}", block.GetBlockSize());
+			LOG_INFO("Member Count: {}", block.GetMemberCount());
+
+			for (auto uniform : block.GetUniforms())
+			{
+				LOG_INFO("-------------------------------------------------");
+				LOG_INFO("		Uniform Name: {}", uniform.GetName());
+				LOG_INFO("			Size: {}", uniform.GetSize());
+				LOG_INFO("			Type: {}", ShaderAttributeTypeToString[uniform.GetType()]);
+				LOG_INFO("			BlockOffset: {}", uniform.GetBlockOffset());
+				LOG_INFO("-------------------------------------------------");
+			}
+
+			LOG_INFO("-------------------------------------------------\n");
+		}
+	}
+
+
 	std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source)
 	{
 		const char* typeToken = "#type";
-		size_t typeTokenLength = strlen(typeToken);
+		const size_t typeTokenLength = strlen(typeToken);
 		size_t position = source.find(typeToken, 0);
 
 		std::unordered_map<GLenum, std::string> result;
 
 		while (position != std::string::npos)
 		{
-			size_t endOfLine = source.find_first_of("\r\n", position);
-			size_t beginShaderType = position + typeTokenLength + 1;
+			const size_t endOfLine = source.find_first_of("\r\n", position);
+			const size_t beginShaderType = position + typeTokenLength + 1;
 			std::string type = source.substr(beginShaderType, endOfLine - beginShaderType);
 
-			size_t nextLinePosition = source.find_first_not_of("\r\n", endOfLine);
+			const size_t nextLinePosition = source.find_first_not_of("\r\n", endOfLine);
 			position = source.find(typeToken, nextLinePosition);
 			result[ShaderTypeFromString(type)] =
 				(position == std::string::npos)
@@ -133,14 +180,13 @@ namespace Engine
 	void Shader::AddIncludeFiles(std::string& outSource)
 	{
 		const char* typeToken = "//include";
-		size_t typeTokenLength = strlen(typeToken);
+		const size_t typeTokenLength = strlen(typeToken);
 		size_t position = outSource.find(typeToken, 0);
-
-		std::string pathTo = "assets/shaders/"; 
+		const std::string pathTo = "assets/shaders/"; 
 
 		while (position != std::string::npos)
 		{
-			size_t endOfLine = outSource.find_first_of("\r\n", position);
+			const size_t endOfLine = outSource.find_first_of("\r\n", position);
 			size_t beginIncludeName = position + typeTokenLength + 1;
 			std::string includeFileName = outSource.substr(beginIncludeName, endOfLine - beginIncludeName);
 
@@ -170,7 +216,7 @@ namespace Engine
 				GLfloat* data = (GLfloat*)malloc(ShaderDataTypeSize(type));
 				glGetUniformfv(m_ID, location, data);
 
-				return (void*)data;
+				return data;
 			}
 		case ShaderAttributeType::SamplerCube:
 		case ShaderAttributeType::Sampler2D:
@@ -179,23 +225,23 @@ namespace Engine
 				glGetUniformiv(m_ID, location, data);
 				(TextureUniform*)data;
 
-				return (void*)data;
+				return data;
 			}
 		case ShaderAttributeType::Int:
 			{
 				GLint* data = (GLint*)malloc(ShaderDataTypeSize(type));
 				glGetUniformiv(m_ID, location, data);
 
-				return (void*)data;
+				return data;
 			}
 		case ShaderAttributeType::Mat3:
 		case ShaderAttributeType::Mat4:
 			{
-				//OHM_CORE_INFO("We're currently unable to retrieve data from uniforms of type Mat3/Mat4.");
+				LOG_INFO("Currently unable to retrieve uniform data for uniforms of type Mat3/Mat4");
 				return nullptr;
 			}
 		}
-
+		
 		return nullptr;
 	}
 
@@ -203,7 +249,6 @@ namespace Engine
 	{
 		GLuint program = glCreateProgram();
 		std::vector<GLuint> shaderIDs;
-		int glShaderIDIndex = 0;
 
 		for (auto& kv : shaderSources)
 		{
@@ -227,22 +272,17 @@ namespace Engine
 
 				std::vector<GLchar> infoLog(maxLength);
 				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-				std::stringstream ss;
-
-				std::string type;
+				std::string shaderLog (infoLog.begin(), infoLog.end());
+				std::string shaderTypeName;
 
 				if (shader == GL_FRAGMENT_SHADER)
-					type = "FRAGMENT COMPILATION ERROR";
+					shaderTypeName = "FRAGMENT COMPILATION ERROR: ";
 				else if (shader == GL_VERTEX_SHADER)
-					type = "VERTEX COMPILATION ERROR: ";
+					shaderTypeName = "VERTEX COMPILATION ERROR: ";
 				else if (shader == GL_COMPUTE_SHADER)
-					type = "COMPUTE COMPILATION ERROR: ";
+					shaderTypeName = "COMPUTE COMPILATION ERROR: ";
 
-				ss << m_Name << ":\n" << type << infoLog.data();
-
-				std::cout << ss.str() << "\n";
-
+				LOG_ERROR("{}:\nType: {}\nError: {}", m_Name, shaderTypeName, shaderLog);;
 				glDeleteShader(shader);
 
 				break;
@@ -268,11 +308,9 @@ namespace Engine
 
 			std::stringstream ss;
 
-			std::string messageHeader = m_Name + ": LINKING ERROR: ";
-
+			const std::string messageHeader = m_Name + ": LINKING ERROR: ";
 			ss << messageHeader << infoLog.data();
-
-			std::cout << ss.str() << "\n";
+			LOG_ERROR(ss.str());
 
 			glDeleteProgram(program);
 

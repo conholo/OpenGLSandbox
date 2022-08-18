@@ -5,7 +5,6 @@
 #include "Engine/Rendering/RenderPass.h"
 #include "Engine/Rendering/Camera.h"
 #include "Engine/Rendering/UniformBuffer.h"
-#include "Engine/Core/Time.h"
 #include "Engine/Event/Event.h"
 #include "Engine/Rendering/Texture.h"
 

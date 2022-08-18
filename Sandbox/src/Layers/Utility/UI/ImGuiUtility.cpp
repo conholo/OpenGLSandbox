@@ -59,3 +59,9 @@ void ImGuiUtility::DrawVec3Controls(const std::string& label, glm::vec3& values,
 
 	ImGui::PopID();
 }
+
+
+void ImGuiUtility::DrawMaterialInspector(const Engine::Ref<Engine::Material>& Material)
+{
+	const auto& Uniforms = Material->GetMaterialUniformData();
+}

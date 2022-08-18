@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Rendering/SceneRenderer.h"
 #include "Engine/Rendering/Renderer.h"
 #include "Engine/Rendering/FrameBuffer.h"
@@ -7,7 +8,6 @@
 #include "Engine/Scene/Component.h"
 
 #include <glm/glm.hpp>
-#include <glad/glad.h>
 
 namespace Engine
 {

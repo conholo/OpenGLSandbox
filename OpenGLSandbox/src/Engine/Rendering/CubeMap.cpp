@@ -1,10 +1,6 @@
+#include "epch.h"
 #include "Engine/Rendering/CubeMap.h"
-#include "Engine/Rendering/Mesh.h"
 #include "Engine/Rendering/RenderCommand.h"
-
-#include <iostream>
-
-#include <stb_image.h>
 #include <glad/glad.h>
 
 namespace Engine
@@ -76,13 +72,13 @@ namespace Engine
 		m_VAO->SetIndexBuffer(ebo);
 	}
 
-	void CubeMap::Submit(const glm::mat4& viewProjection)
+	void CubeMap::Submit(const glm::mat4& viewProjection) const
 	{
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		m_Shader->Bind();
 		m_Texture3D->BindToSamplerSlot(0);
 		m_Shader->UploadUniformMat4("u_ViewProjection", viewProjection);
-		m_Shader->UploadUniformInt("u_Texture", 0);
+		m_Shader->UploadUniformInt("u_FilteredRadianceMap", 0);
 		m_VAO->Bind();
 		RenderCommand::DrawIndexed(m_VAO);
 		m_Texture3D->Unbind();
