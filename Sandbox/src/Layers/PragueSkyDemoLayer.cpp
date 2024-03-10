@@ -1,5 +1,5 @@
 ﻿#include "Layers/PragueSkyDemoLayer.h"
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 // Maximum distance to the edge of the atmosphere in the transmittance model
 constexpr double DIST_TO_EDGE = 1571524.413613; 

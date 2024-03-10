@@ -1,6 +1,6 @@
 #include "TerrainDemoLayer.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
 

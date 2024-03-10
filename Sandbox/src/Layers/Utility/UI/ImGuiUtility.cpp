@@ -1,7 +1,7 @@
 #include "ImGuiUtility.h"
 
-#include <imgui/imgui_internal.h>
-#include <imgui/imgui.h>
+#include <imgui_internal.h>
+#include <imgui.h>
 
 void ImGuiUtility::DrawVec3Controls(const std::string& label, glm::vec3& values, float resetValue /*= 0.0f*/, float columnWidth /*= 100.0f*/)
 {

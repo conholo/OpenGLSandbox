@@ -40,7 +40,7 @@ MainCloudRenderPass::MainCloudRenderPass()
 	m_BlackTexture = Engine::Texture2D::CreateBlackTexture();
 
 	m_EditorGrid = Engine::CreateRef<Engine::EditorGrid>();
-	Engine::ShaderLibrary::Load("assets/Clouds/WaterPlane.shader");
+	Engine::ShaderLibrary::Load("assets/shaders/Clouds/WaterPlane.shader");
 	m_EditorGrid->SetShader("WaterPlane");
 }
 

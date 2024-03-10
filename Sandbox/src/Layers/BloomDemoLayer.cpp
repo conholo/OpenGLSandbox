@@ -1,6 +1,6 @@
 #include "Layers/BloomDemoLayer.h"
 #include <vector>
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include <unordered_map>
 
 #define PI 3.14159265358979
@@ -56,6 +56,7 @@ void BloomDemoLayer::OnAttach()
 	m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/space.jpg", fileTexSpec);
 	m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/floor3.jpg", fileTexSpec);
 	//m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/ground-blue.jpg", fileTexSpec);
+	Engine::ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongSimple.glsl");
 
 	Engine::Texture2DSpecification bloomSpec =
 	{

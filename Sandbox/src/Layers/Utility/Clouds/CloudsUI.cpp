@@ -1,7 +1,7 @@
 #include "CloudsUI.h"
 #include "HelperFunctions.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 CloudsUI::CloudsUI()
 {

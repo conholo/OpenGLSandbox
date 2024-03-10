@@ -55,7 +55,7 @@ namespace Engine
 			Engine::ImageUtils::ImageDataType::UByte,
 		};
 		BRDFSpec.Name = "BRDF LUT";
-		TextureLibrary::LoadTexture2D(BRDFSpec, "assets/textures/BRDF LUT.png");
+		//TextureLibrary::LoadTexture2D(BRDFSpec, "assets/textures/BRDF LUT.png");
 		
 		RenderCommand::Initialize();
 		RenderCommand::SetViewport(m_Window->GetWidth(), m_Window->GetHeight());

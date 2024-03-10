@@ -23,17 +23,19 @@ namespace Engine
 	{
 		switch (value)
 		{
-		case GL_FLOAT:			return ShaderAttributeType::Float;
-		case GL_FLOAT_VEC2: 	return ShaderAttributeType::Float2;
-		case GL_FLOAT_VEC3: 	return ShaderAttributeType::Float3;
-		case GL_FLOAT_VEC4: 	return ShaderAttributeType::Float4;
-		case GL_INT:			return ShaderAttributeType::Int;
-		case GL_FLOAT_MAT3: 	return ShaderAttributeType::Mat3;
-		case GL_FLOAT_MAT4: 	return ShaderAttributeType::Mat4;
-		case GL_SAMPLER_2D:		return ShaderAttributeType::Sampler2D;
-		case GL_SAMPLER_CUBE:	return ShaderAttributeType::SamplerCube;
-		default: 
-			ASSERT(false, "Unknown or Unsupported GLenum ShaderDataType: {}", value);
+			case GL_FLOAT:			return ShaderAttributeType::Float;
+			case GL_FLOAT_VEC2: 	return ShaderAttributeType::Float2;
+			case GL_FLOAT_VEC3: 	return ShaderAttributeType::Float3;
+			case GL_FLOAT_VEC4: 	return ShaderAttributeType::Float4;
+			case GL_INT:			return ShaderAttributeType::Int;
+			case GL_FLOAT_MAT3: 	return ShaderAttributeType::Mat3;
+			case GL_FLOAT_MAT4: 	return ShaderAttributeType::Mat4;
+			case GL_IMAGE_2D:
+			case GL_IMAGE_3D:
+			case GL_SAMPLER_2D:		return ShaderAttributeType::Sampler2D;
+			case GL_IMAGE_CUBE:
+			case GL_SAMPLER_CUBE:	return ShaderAttributeType::SamplerCube;
+			default:			return ShaderAttributeType::Float;
 		}
 	}
 	

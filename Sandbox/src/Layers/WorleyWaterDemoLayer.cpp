@@ -1,7 +1,7 @@
 #include "WorleyWaterDemoLayer.h"
 #include <iostream>
 #include <glm/gtc/quaternion.hpp>
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 
 #define PI 3.14159265359

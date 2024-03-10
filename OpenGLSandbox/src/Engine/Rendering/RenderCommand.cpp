@@ -15,7 +15,8 @@ namespace Engine
 		const void* userParam
 	)
 	{
-		LOG_ERROR("OpenGL Error: %s type = 0x%x, severity = 0x%x, message = %s", type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "", type, severity, message);
+		std::string typeString = type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "";
+		LOG_ERROR("OpenGL Error: {} type = {}, severity = {}, message = {}", typeString, type, severity, message);
 	}
 
 	void RenderCommand::Initialize()

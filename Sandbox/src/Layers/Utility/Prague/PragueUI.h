@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PragueSkyModel.h"
-#include <imgui/imfilebrowser.h>
+#include <imfilebrowser.h>
 #include <functional>
 
 class PragueUI

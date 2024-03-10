@@ -13,10 +13,10 @@ std::string TypeName()
     std::string TypeName = typeid(T).name();
 #if defined(__clang__) || defined(__GNUG__)
     int status;
-    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
+    char *demangled_name = abi::__cxa_demangle(TypeName.c_str(), NULL, NULL, &status);
     if(status == 0)
     {
-        tname = demangled_name;
+        TypeName = demangled_name;
         std::free(demangled_name);
     }
 #endif

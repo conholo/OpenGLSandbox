@@ -1,8 +1,8 @@
 #include "epch.h"
 #include "Engine/Rendering/Texture.h"
 
-#include <stb_image.h>
-#include <stb_image_write.h>
+#include <stbi/stb_image.h>
+#include <stbi/stb_image_write.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
@@ -520,7 +520,6 @@ namespace Engine
 		if (GLShaderDataFormat != InternalFormat)
 		{
 			LOG_ERROR("Failure Binding '{}' Texture3D to Image Slot: Shader Data Format and Internal format must match!", m_Specification.Name);
-			return;
 		}
 
 		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ConvertTextureAccessLevel(access), ConvertShaderFormatType(shaderDataFormat));

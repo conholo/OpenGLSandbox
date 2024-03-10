@@ -5,8 +5,8 @@
 #include "Engine/Rendering//Texture.h"
 #include "Engine/UI/UIDrawerHelpers.h"
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
+#include <imgui.h>
+#include <imgui_internal.h>
 
 namespace Engine
 {
