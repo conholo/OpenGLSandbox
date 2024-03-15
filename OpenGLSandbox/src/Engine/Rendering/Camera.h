@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Event/Event.h"
-#include "Engine/Core/Time.h"
 #include "Engine/Event/MouseEvent.h"
 #include "Engine/Event/WindowEvent.h"
 
@@ -42,7 +41,7 @@ namespace Engine
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
 
-		glm::vec3 ScreenToWorldPoint(const glm::vec3 screenPosition);
+		glm::vec3 ScreenToWorldPoint(glm::vec3 screenPosition);
 		glm::mat4 GetViewProjection() const { return m_ProjectionMatrix * m_ViewMatrix; }
 		glm::mat4 GetView() const { return m_ViewMatrix; }
 		glm::mat4 GetProjection() const { return m_ProjectionMatrix; }
@@ -82,7 +81,7 @@ namespace Engine
 		float m_AspectRatio;
 
 		float m_NearClip = 0.1f;
-		float m_FarClip = 1000.0f;
+		float m_FarClip = 100000.0f;
 
 		float m_Pitch = 0.0f, m_Yaw = 0.0f;
 		float m_PitchDelta = 0.0f, m_YawDelta = 0.0f;

@@ -1,14 +1,10 @@
 #pragma once
 
 #include "Engine/Core/Memory.h"
-#include "Engine/Rendering/TextureUtils.h"
 #include "Engine/Rendering/VertexArray.h"
 #include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/Texture.h"
 
-#include <vector>
-#include <string>
-#include <stdint.h>
 #include <glm/glm.hpp>
 
 namespace Engine
@@ -19,8 +15,8 @@ namespace Engine
 		CubeMap(const Ref<TextureCube>& textureCube, const Ref<Shader>& shader);
 		~CubeMap();
 
-		void Submit(const glm::mat4& viewProjection);
-		const Ref<TextureCube> GetTexture3D() const { return m_Texture3D; }
+		void Submit(const glm::mat4& viewProjection) const;
+		Ref<TextureCube> GetTexture3D() const { return m_Texture3D; }
 
 	private:
 		void ConstructPipelinePrimitives();

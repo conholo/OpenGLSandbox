@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "Engine/Event/Event.h"
-#include "Engine/Core/Time.h"
 
 namespace Engine
 {
@@ -10,8 +8,8 @@ namespace Engine
 	{
 	public:
 
-		Layer(const std::string& name = "Layer")
-			:m_Name(name)
+		Layer(std::string name = "Layer")
+			:m_Name(std::move(name))
 		{
 		}
 		virtual ~Layer() = default;

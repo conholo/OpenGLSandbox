@@ -1,11 +1,15 @@
 #pragma once
 
-#include <stdint.h>
 #include <vector>
-#include "Engine/Rendering/TextureUtils.h"
-
+ 
 namespace Engine
 {
+	namespace ImageUtils
+	{
+		enum class TextureShaderDataFormat;
+		enum class TextureAccessLevel;
+	}
+
 	enum class FramebufferTextureFormat
 	{
 		None = 0,
@@ -59,7 +63,7 @@ namespace Engine
 		void BindColorAttachmentToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat, uint32_t index = 0) const;
 
 		void UnbindColorAttachment(uint32_t index, uint32_t slot) const;
-		void ClearAttachment(uint32_t attachmentIndex, int value);
+		void ClearAttachment(uint32_t attachmentIndex, int value) const;
 		uint32_t GetColorAttachmentID(uint32_t index = 0) const { return m_ColorAttachmentIDs[index]; }
 		uint32_t GetDepthAttachmentID() const { return m_DepthAttachmentID; }
 		const FramebufferSpecification& GetFramebufferSpecification() const { return m_Specification; }

@@ -1,9 +1,6 @@
+#include "epch.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
-
-#include <iostream>
-#include <memory.h>
 #include <glad/glad.h>
-
 
 namespace Engine
 {

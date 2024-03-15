@@ -6,7 +6,6 @@ layout(location = 1) in vec2 a_TexCoord;
 layout(location = 2) in vec3 a_Normal;
 
 uniform mat4 u_ModelMatrix;
-uniform mat4 u_NormalMatrix;
 uniform mat4 u_MVP;
 
 out vec2 v_UV;

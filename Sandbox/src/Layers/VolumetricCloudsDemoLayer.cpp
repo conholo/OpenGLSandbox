@@ -46,22 +46,22 @@ void VolumetricCloudsDemoLayer::OnAttach()
 	m_CloudUIData->BaseShapeSettings = m_BaseShapeSettings;
 	m_CloudUIData->DetailShapeSettings = m_DetailShapeSettings;
 	m_CloudUIData->PerlinSettings = m_PerlinSettings;
-	m_CloudUIData->CurlSettings = m_CurlSettings;
+	m_CloudUIData->CloudCurlSettings = m_CurlSettings;
 	m_CloudUIData->SceneRenderPass = m_SceneRenderPass;
 	m_CloudUIData->WaterSettings = m_WaterSettings;
 
 	m_MainCloudPassData = Engine::CreateRef<MainCloudPassData>();
 	m_MainCloudPassData->AnimationSettings = m_CloudAnimationSettings;
 	m_MainCloudPassData->MainSettings = m_CloudSettings;
-	m_MainCloudPassData->CurlSettings = m_CurlSettings;
+	m_MainCloudPassData->MainCloudCurlSettings = m_CurlSettings;
 	m_MainCloudPassData->BaseShapeSettings = m_BaseShapeSettings;
 	m_MainCloudPassData->DetailShapeSettings = m_DetailShapeSettings;
 	m_MainCloudPassData->PerlinSettings = m_PerlinSettings;
 	m_MainCloudPassData->SceneRenderPass = m_SceneRenderPass;
 	m_MainCloudPassData->UI = m_CloudsUI;
-	m_MainCloudPassData->WaterData = m_WaterSettings;
+	m_MainCloudPassData->MainWaterData = m_WaterSettings;
 
-	Resize(Engine::Application::GetApplication().GetWindow().GetWidth(), Engine::Application::GetApplication().GetWindow().GetHeight());
+	//Resize(Engine::Application::GetApplication().GetWindow().GetWidth(), Engine::Application::GetApplication().GetWindow().GetHeight());
 }
 
 void VolumetricCloudsDemoLayer::OnDetach()

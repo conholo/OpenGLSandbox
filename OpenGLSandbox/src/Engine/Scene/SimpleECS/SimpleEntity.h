@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "Engine/Scene/SimpleECS/EntityRenderer.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 #include "Engine/Core/Memory.h"

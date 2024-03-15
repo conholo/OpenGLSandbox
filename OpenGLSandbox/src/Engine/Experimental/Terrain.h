@@ -4,10 +4,7 @@
 #include "Engine/Core/Memory.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 #include "Engine/Rendering/ShaderStorageBuffer.h"
-#include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/Texture.h"
-
-
 
 namespace Engine
 {
@@ -28,21 +25,21 @@ namespace Engine
 
 	struct TerrainNoiseSettings
 	{
-		int Octaves = 4;
-		float Lacunarity = 2.0f;
-		float Persistence = 0.5f;;
-		float NoiseScale = 1.0f;;
+		int Octaves = 8;
+		float Lacunarity = 2.820f;
+		float Persistence = 0.340f;;
+		float NoiseScale = 8.350f;;
 		glm::vec2 TextureOffset{ 0.0f, 0.0f };
 	};
 
 	struct TerrainProperties
 	{
 		glm::vec3 Color{ 1.0f, 1.0f, 1.0f };
-		glm::vec3 Scale{ 5.0f, 5.0f, 5.0f };
+		glm::vec3 Scale{ 25.0f, 31.0f, 18.0f };
 		glm::vec3 Position{ 0.0f, 0.0f, 0.0f };
 
-		float HeightThreshold = 0.1f;
-		float HeightScaleFactor = 1.0f;
+		float HeightThreshold = 0.080f;
+		float HeightScaleFactor = 46.7f;
 
 		Ref<TerrainNoiseSettings> NoiseSettings;
 	};

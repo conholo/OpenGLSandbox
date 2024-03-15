@@ -4,7 +4,7 @@
 #include <sstream>
 #include <filesystem>
 #include <glm/glm.hpp>
-
+#include <cstring>
 std::string CurveSerializer::s_DirectoryPath = "assets/curve-saves/";
 
 void CurveSerializer::SerializeCurve(const std::string& saveName, const Engine::Ref<Engine::BezierCurve>& curve, const std::string& subDirectoryName)

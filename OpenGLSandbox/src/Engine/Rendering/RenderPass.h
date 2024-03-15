@@ -2,8 +2,9 @@
 
 #include "Engine/Core/Memory.h"
 #include "Engine/Rendering/Shader.h"
-#include "Engine/Rendering/Framebuffer.h"
+#include "Engine/Rendering/FrameBuffer.h"
 #include <glm/glm.hpp>
+
 
 namespace Engine
 {
@@ -13,7 +14,7 @@ namespace Engine
 	{
 		PassType Type = PassType::CustomFBO;
 		Ref<Framebuffer> TargetFramebuffer = nullptr;
-		Ref<Shader> Shader = nullptr;
+		Ref<Shader> RenderPassShader = nullptr;
 		uint32_t Flags;
 
 		bool DepthWrite = true;

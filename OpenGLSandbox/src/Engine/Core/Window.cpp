@@ -1,9 +1,8 @@
+#include "epch.h"
 #include "Engine/Core/Window.h"
 #include "Engine/Event/MouseEvent.h"
 #include "Engine/Event/KeyEvent.h"
 #include "Engine/Event/WindowEvent.h"
-
-#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -12,8 +11,8 @@ namespace Engine
 {
 	static void GLFWErrorCallback(int error, const char* description)
 	{
+		LOG_CRITICAL("GLFW Error: {}", description);
 	}
-
 
 	Window::Window(const std::string& name, uint32_t width, uint32_t height, bool fullScreen, bool maximized)
 		:m_WindowData({ name, width, height, fullScreen, maximized })
@@ -42,7 +41,7 @@ namespace Engine
 
 		glfwMakeContextCurrent(m_WindowHandle);
 
-		int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		const int gladStatus = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
 		if (!gladStatus)
 		{

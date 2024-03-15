@@ -1,5 +1,5 @@
+#include "epch.h"
 #include "Engine/Rendering/VertexBuffer.h"
-
 #include <glad/glad.h>
 
 namespace Engine

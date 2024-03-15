@@ -8,9 +8,7 @@ const float Epsilon = 0.00001;
 const uint NumSamples = 1024;
 const float InvNumSamples = 1.0 / float(NumSamples);
 
-
-layout(binding = 0, rgba32f) restrict writeonly uniform imageCube o_OutputCube;
-
+layout(binding = 0, rgba32f) writeonly uniform imageCube o_OutputCube;
 uniform samplerCube sampler_InputCube;
 uniform int MipOutputWidth;
 uniform int MipOutputHeight;
@@ -81,7 +79,7 @@ vec3 GetCubeMapTexCoord(vec2 imageSize)
     return normalize(ret);
 }
 
-// Compute orthonormal basis for converting from tanget/shading space to world space.
+// Compute orthonormal basis for converting from tangent/shading space to world space.
 void ComputeBasisVectors(const vec3 N, out vec3 S, out vec3 T)
 {
 	// Branchless select non-degenerate T.
@@ -112,14 +110,14 @@ float NdfGGX(float cosLh, float roughness)
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 void main(void)
 {
-	ivec2 OutputSize = ivec2(MipOutputWidth, MipOutputHeight);
+	ivec2 OutputSize = imageSize(o_OutputCube);
 	if(gl_GlobalInvocationID.x >= OutputSize.x || gl_GlobalInvocationID.y >= OutputSize.y) 
         return;
 
     vec2 InputSize = vec2(textureSize(sampler_InputCube, 0));
     float Wt = 4.0 * PI / (6 * InputSize.x * InputSize.y); 
     
-    vec3 N = GetCubeMapTexCoord(OutputSize);
+    vec3 N = GetCubeMapTexCoord(vec2(imageSize(o_OutputCube)));
     vec3 Lo = N;
 
     vec3 S, T;
@@ -134,28 +132,28 @@ void main(void)
         vec3 Lh = TangentToWorld(SampleGGX(U.x, U.y, Roughness), N, S, T);
         // Compute incident direction (Li) by reflecting viewing direction (Lo) around half-vector (Lh).
 		vec3 Li = 2.0 * dot(Lo, Lh) * Lh - Lo;
-		
+
 		float CosLi = dot(N, Li);
-		if(CosLi <= 0.0) continue;
-        
-        // Use Mipmap Filtered Importance Sampling to improve convergence.
-        // See: https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch20.html, section 20.4
-        float CosLh = max(dot(N, Lh), 0.0);
-        
-        // GGX normal distribution function (D term) probability density function.
-        // Scaling by 1/4 is due to change of density in terms of Lh to Li (and since N=V, rest of the scaling factor cancels out).
-        float PDF = NdfGGX(CosLh, Roughness) * 0.25;
-        
-        // Solid angle associated with this sample.
-        float WS = 1.0 / (NumSamples * PDF);
-        
-        // Mip level to sample from.
-        float MipLevel = max(0.5 * log2(WS / Wt) + 1.0, 0.0);
-        Color  += textureLod(sampler_InputCube, Li, MipLevel).rgb * CosLi;
-        Weight += CosLi;
+		if(CosLi > 0.0)
+		{
+            // Use Mipmap Filtered Importance Sampling to improve convergence.
+            // See: https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch20.html, section 20.4
+            float CosLh = max(dot(N, Lh), 0.0);
+            
+            // GGX normal distribution function (D term) probability density function.
+            // Scaling by 1/4 is due to change of density in terms of Lh to Li (and since N=V, rest of the scaling factor cancels out).
+            float PDF = NdfGGX(CosLh, Roughness) * 0.25;
+            
+            // Solid angle associated with this sample.
+            float WS = 1.0 / (NumSamples * PDF + 0.0001);
+            
+            // Mip level to sample from.
+            float MipLevel = max(0.5 * log2(WS / Wt) + 1.0, 0.0);
+            Color  += textureLod(sampler_InputCube, Li, MipLevel).rgb * CosLi;
+            Weight += CosLi;
+		}
     }
     
     Color /= Weight;
-    
     imageStore(o_OutputCube, ivec3(gl_GlobalInvocationID), vec4(Color, 1.0));
 }

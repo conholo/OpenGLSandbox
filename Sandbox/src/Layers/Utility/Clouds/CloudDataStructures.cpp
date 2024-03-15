@@ -37,15 +37,17 @@ BaseShapeWorleySettings::BaseShapeWorleySettings()
 	ChannelB = CreateChannelData(WorleyChannelMask::B, DefaultLayerCellsB, DefaultPersistence.b);
 	ChannelA = CreateChannelData(WorleyChannelMask::A, DefaultLayerCellsA, DefaultPersistence.a);
 
-	Engine::TextureSpecification baseShapeTextureSpec =
+	Engine::Texture3DSpecification baseShapeTextureSpec =
 	{
-		Engine::ImageUtils::Usage::Storage,
 		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
 		Engine::ImageUtils::ImageDataLayout::RGBA,
 		Engine::ImageUtils::ImageDataType::Float,
-		ShapeResolution, ShapeResolution
+		ShapeResolution, ShapeResolution, ShapeResolution
 	};
 
 	BaseShapeTexture = Engine::CreateRef<Engine::Texture3D>(baseShapeTextureSpec);
@@ -211,15 +213,17 @@ DetailShapeWorleySettings::DetailShapeWorleySettings()
 	ChannelR->InvertWorley = false;
 	ChannelR->InvertWorley = false;
 
-	Engine::TextureSpecification detailShapeTextureSpec =
+	Engine::Texture3DSpecification detailShapeTextureSpec =
 	{
-		Engine::ImageUtils::Usage::Storage,
 		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::WrapMode::Repeat,
+		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::FilterMode::Linear,
 		Engine::ImageUtils::ImageInternalFormat::RGBA32F,
 		Engine::ImageUtils::ImageDataLayout::RGBA,
 		Engine::ImageUtils::ImageDataType::Float,
-		DetailResolution, DetailResolution
+		DetailResolution, DetailResolution, DetailResolution
 	};
 
 	DetailShapeTexture = Engine::CreateRef<Engine::Texture3D>(detailShapeTextureSpec);

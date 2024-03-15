@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -37,8 +37,8 @@ namespace Engine
 		case ShaderAttributeType::Int:			return 1 * 4;
 		case ShaderAttributeType::Mat3:			return 3 * 3 * 4;
 		case ShaderAttributeType::Mat4:			return 4 * 4 * 4;
-		case ShaderAttributeType::Sampler2D:	return 2 * 4;
-		case ShaderAttributeType::SamplerCube:	return 2 * 4;
+		case ShaderAttributeType::Sampler2D:	return 3 * 4;
+		case ShaderAttributeType::SamplerCube:	return 3 * 4;
 		default:								return 0;
 		}
 	}

@@ -1,6 +1,6 @@
 #include "CurlDemoLayer.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 CurlDemoLayer::CurlDemoLayer()
 {
@@ -66,9 +66,9 @@ void CurlDemoLayer::OnUpdate(float deltaTime)
 	Engine::RenderCommand::Clear(true, true);
 
 	m_CurlTexture->BindToSamplerSlot(0);
-	m_Quad->GetEntityRenderer()->GetShader()->Bind();
-	m_Quad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", {1.0f, 1.0f, 1.0f});
-	m_Quad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_Quad->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_Quad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", {1.0f, 1.0f, 1.0f});
+	m_Quad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 	m_Quad->DrawEntity(m_Camera.GetViewProjection());
 }
 

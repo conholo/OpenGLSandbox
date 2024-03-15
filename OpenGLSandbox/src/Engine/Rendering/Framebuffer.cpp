@@ -1,8 +1,7 @@
+#include "epch.h"
 #include "Engine/Rendering/FrameBuffer.h"
-
+#include "Engine/Rendering/TextureUtils.h"
 #include <glad/glad.h>
-
-#include <iostream>
 
 namespace Engine
 {
@@ -147,12 +146,8 @@ namespace Engine
 			glReadBuffer(GL_NONE);
 		}
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			// TODO:: Assert
-			std::cout << m_ID << ": Framebuffer Incomplete." << "\n";
-		}
-
+		const bool CompleteFBO = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+		ASSERT(CompleteFBO, "{}: Framebuffer Incomplete.", m_ID);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
@@ -178,16 +173,16 @@ namespace Engine
 
 	void Framebuffer::BindColorAttachmentToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat, uint32_t index) const
 	{
-		GLenum glShaderDataFormat = ImageUtils::ConvertShaderFormatType(shaderDataFormat);
-		GLenum internalFormat = ImageUtils::ConvertInternalFormatMode(ImageUtils::ImageInternalFormat::RGBA32F);
+		const GLenum glShaderDataFormat = ConvertShaderFormatType(shaderDataFormat);
+		const GLenum internalFormat = ConvertInternalFormatMode(ImageUtils::ImageInternalFormat::RGBA32F);
 
 		if (glShaderDataFormat != internalFormat)
 		{
-			std::cout << "Shader Data Format and Internal format must match!" << "\n";
+			LOG_ERROR("Shader Data Format and Internal format must match!");
 			return;
 		}
 
-		glBindImageTexture(unit, m_ColorAttachmentIDs[index], level, GL_FALSE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
+		glBindImageTexture(unit, m_ColorAttachmentIDs[index], level, GL_FALSE, 0, ConvertTextureAccessLevel(access), ConvertShaderFormatType(shaderDataFormat));
 	}
 
 	void Framebuffer::UnbindColorAttachment(uint32_t index, uint32_t slot) const
@@ -196,13 +191,11 @@ namespace Engine
 		glBindTextureUnit(slot, 0);
 	}
 
-	void Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+	void Framebuffer::ClearAttachment(uint32_t attachmentIndex, int value) const
 	{
 		auto& specification = m_ColorAttachmentTextureSpecs[attachmentIndex];
-		uint32_t texID = m_ColorAttachmentIDs[attachmentIndex];
-
-		GLenum format = TextureFormatToGLenum(specification.TextureFormat);
-
+		const uint32_t texID = m_ColorAttachmentIDs[attachmentIndex];
+		const GLenum format = TextureFormatToGLenum(specification.TextureFormat);
 		glClearTexImage(texID, 0, format, GL_INT, &value);
 	}
 }

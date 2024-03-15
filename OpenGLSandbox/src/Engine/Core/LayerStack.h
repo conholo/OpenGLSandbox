@@ -1,8 +1,6 @@
 #pragma once
 #include "Engine/Core/Layer.h"
 
-#include <vector>
-
 namespace Engine
 {
 	class LayerStack

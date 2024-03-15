@@ -5,8 +5,6 @@
 #include "Engine/Rendering/RenderPass.h"
 #include "Engine/Scene/Component.h"
 
-#include <glm/glm.hpp>
-
 namespace Engine
 {
 	class Renderer

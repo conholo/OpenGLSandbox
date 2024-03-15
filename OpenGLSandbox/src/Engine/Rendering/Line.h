@@ -4,11 +4,8 @@
 #include "Engine/Rendering/Shader.h"
 #include "Engine/Rendering/VertexArray.h"
 #include "Engine/Rendering/VertexBuffer.h"
-#include "Engine/Rendering/IndexBuffer.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 
-#include <vector>
-#include <string>
 #include <glm/glm.hpp>
 
 namespace Engine

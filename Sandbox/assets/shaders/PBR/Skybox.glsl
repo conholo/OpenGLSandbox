@@ -17,17 +17,31 @@ void main()
 #type fragment
 #version 450 core
 
-layout(location = 0) out vec4 o_Color;
-layout(location = 1) out vec4 o_Color2;
+layout(location = 0) out vec4 o_FilteredEnvironmentColor;
+layout(location = 1) out vec4 o_UnfilteredEnvironmentColor;
+layout(location = 2) out vec4 o_IrradianceEnvironmentColor;
 layout(location = 0) in vec3 v_Position;
-uniform samplerCube u_Texture;
 
-uniform float u_TextureLOD;
-uniform float u_Intensity;
+uniform samplerCube u_FilteredRadianceMap;
+uniform samplerCube u_UnfilteredRadianceMap;
+uniform samplerCube u_IrradianceMap;
+
+/* 
+    x - u_FilteredRadianceMap, 
+    y - u_UnfilteredRadianceMap, 
+    z - u_IrradianceMap
+*/
+uniform vec3 u_LODs;
+uniform vec3 u_Intensities;
 
 void main()
 {
-	o_Color = textureLod(u_Texture, v_Position, u_TextureLOD) * u_Intensity;
-	o_Color.a = 1.0;
-	o_Color2 = vec4(0.0);
+	o_FilteredEnvironmentColor = textureLod(u_FilteredRadianceMap, v_Position, u_LODs.x) * u_Intensities.x;
+	o_FilteredEnvironmentColor.a = 1.0;
+	
+    o_UnfilteredEnvironmentColor = textureLod(u_UnfilteredRadianceMap, v_Position, u_LODs.y) * u_Intensities.y;
+	o_UnfilteredEnvironmentColor.a = 1.0;
+
+    o_IrradianceEnvironmentColor = textureLod(u_IrradianceMap, v_Position, u_LODs.z) * u_Intensities.z;
+	o_IrradianceEnvironmentColor.a = 1.0;
 }

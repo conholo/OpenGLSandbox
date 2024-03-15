@@ -20,7 +20,7 @@ void CloudsCompositePass::ExecutePass(const Engine::Camera& camera, const Engine
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 	Engine::RenderCommand::Clear(true, true);
 	mainRenderPass->BindMainColorAttachment(0);
-	m_CompositeQuad->GetEntityRenderer()->GetShader()->Bind();
-	m_CompositeQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SceneTexture", 0);
+	m_CompositeQuad->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_CompositeQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SceneTexture", 0);
 	m_CompositeQuad->DrawEntity(camera.GetViewProjection());
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include <glm/glm.hpp>
 #include "Engine/Rendering/VertexArray.h"
 

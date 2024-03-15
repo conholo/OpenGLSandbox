@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Scene/Entity.h"
 
 namespace Engine

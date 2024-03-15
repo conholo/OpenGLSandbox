@@ -1,9 +1,7 @@
 #pragma once
 
-#include <algorithm>
-#include <memory>
-#include <assert.h>
-
+#include <cassert>
+#include <cstring>
 using byte = uint8_t;
 
 class Buffer
@@ -46,7 +44,7 @@ public:
 	template<typename T>
 	void Write(void* data, size_t size, size_t offset = 0)
 	{
-		assert(("Buffer Overflow: Size + Offset must be less than allocated buffer size."),  size + offset <= m_Size);
+		assert(("Buffer Overflow: Size + Offset must be less than allocated buffer size.") &&  size + offset <= m_Size);
 
 		memcpy((byte*)m_Data + offset, data, size);
 	}

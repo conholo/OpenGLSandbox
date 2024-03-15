@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Core/Input.h"
 #include "Engine/Core/Application.h"
 
@@ -8,7 +9,7 @@ namespace Engine
 	bool Input::IsKeyPressed(KeyCode key)
 	{
 		GLFWwindow* window = Application::GetApplication().GetWindow().GetWindowHandle();
-		int action = glfwGetKey(window, key);
+		const int action = glfwGetKey(window, key);
 
 		return action == GLFW_PRESS || action == GLFW_REPEAT;
 	}
@@ -16,7 +17,7 @@ namespace Engine
 	bool Input::IsMouseButtonPressed(MouseCode button)
 	{
 		GLFWwindow* window = Application::GetApplication().GetWindow().GetWindowHandle();
-		int action = glfwGetMouseButton(window, button);
+		const int action = glfwGetMouseButton(window, button);
 
 		return action == GLFW_PRESS || action == GLFW_REPEAT;
 	}

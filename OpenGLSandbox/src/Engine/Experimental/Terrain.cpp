@@ -1,9 +1,8 @@
+#include "epch.h"
 #include "Engine/Experimental/Terrain.h"
 #include "Engine/Core/Random.h"
 #include "Engine/Rendering/RenderCommand.h"
-#include "Engine/Rendering/Camera.h"
-
-#include <iostream>
+#include "Engine/Rendering/Shader.h"
 
 namespace Engine
 {
@@ -38,7 +37,7 @@ namespace Engine
 		m_VBO = CreateRef<VertexBuffer>(maxSizeVerticesBuffer);
 		m_EBO = CreateRef<IndexBuffer>(maxSizeIndicesBuffer / sizeof(uint32_t));
 
-		BufferLayout layout = BufferLayout
+		auto layout = BufferLayout
 		(
 			{
 				{ "a_Position", ShaderAttributeType::Float3 },
@@ -70,7 +69,7 @@ namespace Engine
 	void Terrain::Draw()
 	{
 		m_VAO->Bind();
-		uint32_t indexCount = ((m_Resolution - 1) * (m_Resolution - 1) * 6);
+		uint32_t indexCount = (m_Resolution - 1) * (m_Resolution - 1) * 6;
 		RenderCommand::DrawIndexed(m_VAO, indexCount);
 		m_VAO->Unbind();
 	}
@@ -118,7 +117,7 @@ namespace Engine
 		m_VertexSSBO->CopyData(m_VBO->GetID(), 0, 0, vertexBufferSize);
 		m_IndexSSBO->CopyData(m_EBO->GetID(), 0, 0, indexBufferSize);
 
-		float* minMax = (float*)m_MinMaxSSBO->GetData();
+		auto* minMax = static_cast<float *>(m_MinMaxSSBO->GetData());
 
 		m_MinHeight = minMax[0];
 		m_MaxHeight = minMax[1];
@@ -126,8 +125,6 @@ namespace Engine
 
 	void Terrain::SetLOD(uint32_t lodLevel)
 	{
-		if (lodLevel < 0)
-			lodLevel = 0;
 		if (lodLevel > 8)
 			lodLevel = 8;
 		m_LOD = lodLevel;

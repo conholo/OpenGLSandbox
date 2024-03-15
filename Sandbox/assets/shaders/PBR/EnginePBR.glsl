@@ -222,7 +222,7 @@ vec3 IBL()
 	vec3 specularIrradiance = textureLod(
 	            sampler_RadianceCube, 
 	            RotateVectorAboutY(EnvMapRotation, Lr), 
-	            PBRParams.Roughness * envRadianceTexLevels).rgb;
+	            envRadianceTexLevels * Roughness).rgb;
 
 	vec2 specularBRDF = texture(sampler_BRDFLUT, vec2(PBRParams.NdotV, PBRParams.Roughness)).rg;
 	vec3 specularIBL = specularIrradiance * (F0 * specularBRDF.x + specularBRDF.y);

@@ -12,7 +12,7 @@ struct CloudAnimationSettings
 {
 	bool AnimateClouds = true;
 	float AnimationSpeed = 5.5f;
-	float TimeScale = 0.011f;
+	float TimeScale = 0.002f;
 	float CloudScrollOffsetSpeed = 0.00001f;
 	glm::vec3 ShapeTextureOffset{ 0.0f, 0.0f, 0.0f };
 };
@@ -20,12 +20,12 @@ struct CloudAnimationSettings
 struct WaterData
 {
 	bool DrawWater = true;
-	float SeaFrequency = .1f;
-	float SeaAmplitude = .6f;
-	float SeaHeight = -4.0f;
+	float SeaFrequency = .870f;
+	float SeaAmplitude = .05f;
+	float SeaHeight = -2.8f;
 	float SeaChoppy = 5.5f;
-	uint32_t OceanOctaves = 8;
-	uint32_t OceanSteps = 5;
+	uint32_t OceanOctaves = 20;
+	uint32_t OceanSteps = 8;
 };
 
 struct CloudSettings
@@ -37,42 +37,42 @@ struct CloudSettings
 	float SunSize = 1.0f;				// Relative size of the sun.
 
 	// March Parameters
-	int DensitySteps = 50;
-	int LightSteps = 10;
-	float RandomOffsetStrength = 1.0f;
+	int DensitySteps = 76;
+	int LightSteps = 14;
+	float RandomOffsetStrength = 12.0f;
 
 	// Phase Parameters
-	float PhaseBlend = 0.5f;			// The amount of blend between forward/back scattering. (0.5 is a good mix)
-	float ForwardScattering = 0.91f;	// Amount of light that is scattered towards the view direction when looking towards the sun through the clouds (0.2 is good).
-	float BackScattering = 0.33f;		// Amount of light that is scattered away from the view direction when looking towards the sun through the clouds (0.5 is good)
-	float BaseBrightness = 1.0f;		// Additive factor associated with the HG Phase Function (1.0 is a good value)
-	float PhaseFactor = 0.74f;			// Multiplicative factor associated with the HG Phase Function (1.0 is a good value)
+	float PhaseBlend = 1.0f;			// The amount of blend between forward/back scattering. (0.5 is a good mix)
+	float ForwardScattering = 0.996f;	// Amount of light that is scattered towards the view direction when looking towards the sun through the clouds (0.2 is good).
+	float BackScattering = 0.618f;		// Amount of light that is scattered away from the view direction when looking towards the sun through the clouds (0.5 is good)
+	float BaseBrightness = 1.279f;		// Additive factor associated with the HG Phase Function (1.0 is a good value)
+	float PhaseFactor = 0.997f;			// Multiplicative factor associated with the HG Phase Function (1.0 is a good value)
 
 	// Lighting Parameters
-	float PowderConstant = 1.5f;		// In Scattering probability factor.  Creases where bulges occur are more likely to produce in-scattered light.
-	float SilverLiningConstant = .5f;	// In Scattering probability factor.  When looking towards the sun, light is more likely to scatter towards the viewer around the cloud edges.
+	float PowderConstant = 4.24f;		// In Scattering probability factor.  Creases where bulges occur are more likely to produce in-scattered light.
+	float SilverLiningConstant = 0.648;	// In Scattering probability factor.  When looking towards the sun, light is more likely to scatter towards the viewer around the cloud edges.
 	float ExtinctionFactor = .14f;
 
 	// Density Parameters
-	float DensityThreshold = .20f;
-	float DensityMultiplier = .20f;
-	glm::vec4 ShapeNoiseWeights{ .72f, 1.0f, .28f, .36f };
+	float DensityThreshold = .214;
+	float DensityMultiplier = .144f;
+	glm::vec4 ShapeNoiseWeights{ 0.0f, 1.0f, .28f, .36f };
 	glm::vec3 BaseShapeTextureOffset = glm::vec3(0.0);
 
-	glm::vec3 DetailNoiseWeights{ .35f, 0.66f, 0.744f };
-	float DetailNoiseWeight = .2f;
+	glm::vec3 DetailNoiseWeights{ 1.0, 1.0, 0.0 };
+	float DetailNoiseWeight = .02f;
 
-	glm::vec3 CloudTypeWeights{ 0.37f, 0.32f, 0.41f };
-	float CloudTypeWeightStrength = 7.0f;
+	glm::vec3 CloudTypeWeights{ 0.25f, 0.33f, 0.5f };
+	float CloudTypeWeightStrength = 6.0f;
 
-	float CurlIntensity = 1.0f;
+	float CurlIntensity = 30.0f;
 
 	// Container / Scale Parameters
-	glm::vec3 CloudContainerPosition{ 0.0f, 150.0f, 0.0f };
-	glm::vec3 CloudContainerScale{ 400.0f, 300.0f, 300.0f };
-	float CloudScaleFactor = 1000.0f;
-	float CloudScale = 4.0f;
-	float ContainerEdgeFadeDistance = 50.0f;
+	glm::vec3 CloudContainerPosition{ 0.0f, 190.0f, 0.0f };
+	glm::vec3 CloudContainerScale{ 700.0f, 300.0f, 300.0f };
+	float CloudScaleFactor = 1153.5f;
+	float CloudScale = 2.260f;
+	float ContainerEdgeFadeDistance = 41.0f;
 };
 
 struct CurlSettings

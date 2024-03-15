@@ -1,23 +1,41 @@
 #include "Engine/Core/Random.h"
 
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 namespace Engine
 {
+	std::mt19937 Random::s_Gen;
+
 	void Random::Seed(int seed)
 	{
-		srand(static_cast <unsigned> (seed));
+		s_Gen.seed(seed);
 	}
 
 	void Random::Initialize()
 	{
-		srand(static_cast <unsigned> (time(0)));
+		std::random_device rd;
+		s_Gen.seed(rd());
 	}
 
 	float Random::RandomRange(float min, float max)
 	{
-		return min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+		std::uniform_real_distribution<float> dist(min, max);
+		return dist(s_Gen);
+	}
+
+	int Random::RandomRange(int min, int max)
+	{
+		std::uniform_int_distribution<int> dist(min, max);
+		return dist(s_Gen);
+	}
+
+	float Random::RandomNormal(float mean, float stddev)
+	{
+		std::normal_distribution<float> dist(mean, stddev);
+		return dist(s_Gen);
+	}
+
+	bool Random::RandomBool(double probability)
+	{
+		std::bernoulli_distribution dist(probability);
+		return dist(s_Gen);
 	}
 }

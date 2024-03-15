@@ -12,7 +12,7 @@ struct CloudsUIData
 	Engine::Ref<CloudSettings> MainCloudSettings;
 	Engine::Ref<CloudAnimationSettings> AnimationSettings;
 	Engine::Ref<CloudsSceneRenderPass> SceneRenderPass;
-	Engine::Ref<CurlSettings> CurlSettings;
+	Engine::Ref<CurlSettings> CloudCurlSettings;
 	Engine::Ref<WaterData> WaterSettings;
 };
 

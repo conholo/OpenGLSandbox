@@ -1,7 +1,4 @@
 #pragma once
-
-#include <stdint.h>
-#include "Engine/Rendering/Mesh.h"
 #include "Engine/Rendering/BufferLayout.h"
 
 namespace Engine

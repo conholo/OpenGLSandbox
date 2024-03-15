@@ -45,7 +45,6 @@ void main()
 #version 450
 
 layout(location = 0) out vec4 o_Color;
-layout(location = 1) out vec4 o_Color2;
 
 uniform float u_InnerGridScale;
 uniform float u_OuterGridScale;
@@ -115,5 +114,4 @@ void main()
 	float inner = min(u_InnerGridScale, u_InnerGridScale / pow(camLog, 2.0));
 	o_Color = (Grid(fragPosition, outer, true) + Grid(fragPosition, inner, true)) * float(t > 0);
 	o_Color.a *= fade;
-	o_Color2 = vec4(0.0);
 }
