@@ -26,6 +26,12 @@ namespace Engine
 
 		ShaderLibrary::Load("assets/shaders/PBR/Preetham.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/Skybox.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongSimple.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongWS.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongVS.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/SDFBlinnPhong.glsl");
+		ShaderLibrary::Load("assets/shaders/Line/LineShader.glsl");
+		ShaderLibrary::Load("assets/shaders/Line/LinePointShader.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EnginePBR.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EngineSceneComposite.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EquirectangularToCubemap.glsl");
@@ -33,7 +39,9 @@ namespace Engine
 		ShaderLibrary::Load("assets/shaders/PBR/EnvironmentIrradiance.glsl");
 		ShaderLibrary::Load("assets/shaders/Utility/LinearDepthVisualizer.glsl");
 		ShaderLibrary::Load("assets/shaders/Utility/WriteCubemapToAttachment.glsl");
-		
+
+		ShaderLibrary::Load("assets/shaders/Misc/EnvironmentReflection.glsl");
+
 		ShaderLibrary::Load("assets/shaders/Misc/FlatColor.glsl");
 		ShaderLibrary::Load("assets/shaders/Editor/InfiniteGrid.glsl");
 		ShaderLibrary::Load("assets/shaders/PostFX/BloomPostProcessing.glsl");

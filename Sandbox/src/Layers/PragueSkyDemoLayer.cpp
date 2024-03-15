@@ -204,10 +204,10 @@ void PragueSkyDemoLayer::OnUpdate(float deltaTime)
         m_DepthFBO->Bind();
         {
             m_ScenePBRFBO->BindDepthTexture(0);
-            m_DepthVisualizerFSQ->GetEntityRenderer()->GetShader()->Bind();
-            m_DepthVisualizerFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DepthTexture", 0);
-            m_DepthVisualizerFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Near", m_Camera.GetNearClip());
-            m_DepthVisualizerFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Far", m_Camera.GetFarClip());
+            m_DepthVisualizerFSQ->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+            m_DepthVisualizerFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_DepthTexture", 0);
+            m_DepthVisualizerFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Near", m_Camera.GetNearClip());
+            m_DepthVisualizerFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Far", m_Camera.GetFarClip());
             m_DepthVisualizerFSQ->DrawEntity(m_Camera.GetViewProjection());
         }
         m_DepthFBO->Unbind();
@@ -225,13 +225,13 @@ void PragueSkyDemoLayer::OnUpdate(float deltaTime)
         m_ScenePBRFBO->BindColorAttachment(1, 3);
         m_PragueDriver->BindSunRadianceAttachment(4);                                                
         m_CompositeFSQ->GetEntityRenderer()->Bind();
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_ApplyTransmittance", m_ApplyTransmittance ? 1 : 0);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SkyRadianceMap", 0);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SceneRadianceMap", 1);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_TransmittanceMap", 2);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SkyRadianceGeometryMap", 3);
-        m_CompositeFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SunRadianceMap", 4);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_ApplyTransmittance", m_ApplyTransmittance ? 1 : 0);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SkyRadianceMap", 0);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SceneRadianceMap", 1);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_TransmittanceMap", 2);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SkyRadianceGeometryMap", 3);
+        m_CompositeFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SunRadianceMap", 4);
         m_CompositeFSQ->DrawEntity(m_Camera.GetViewProjection());
     }
     // Scene Composite Pass

@@ -135,14 +135,14 @@ void PragueDriver::UpdateTransmittance(const Engine::Camera& Camera, const Engin
 	{
    		SceneFBO->BindDepthTexture(0);
    		m_PragueFSQ->GetEntityRenderer()->Bind();
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseView", glm::inverse(Camera.GetView()));
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseProjection", glm::inverse(Camera.GetProjection()));
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DepthTexture", 0);
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_TransmittanceScale", m_TransmittanceScale);
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SunRadianceTransmittanceScale", m_SunRadianceTransmittanceScale);
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_TotalSunRadianceModifier", m_TotalSunRadianceModifier);
-   		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Near", Camera.GetNearClip());
-		m_PragueFSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Far", Camera.GetFarClip());
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_InverseView", glm::inverse(Camera.GetView()));
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_InverseProjection", glm::inverse(Camera.GetProjection()));
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_DepthTexture", 0);
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_TransmittanceScale", m_TransmittanceScale);
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_SunRadianceTransmittanceScale", m_SunRadianceTransmittanceScale);
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_TotalSunRadianceModifier", m_TotalSunRadianceModifier);
+   		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Near", Camera.GetNearClip());
+		m_PragueFSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Far", Camera.GetFarClip());
 
    		m_PragueFSQ->DrawEntity(Camera.GetViewProjection());
 	}

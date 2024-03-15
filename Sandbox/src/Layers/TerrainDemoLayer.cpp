@@ -44,7 +44,7 @@ void TerrainDemoLayer::OnUpdate(float deltaTime)
 	m_Camera.Update(deltaTime);
 
 	Engine::RenderCommand::SetDrawMode(m_Wireframe ? Engine::DrawMode::WireFrame : Engine::DrawMode::Fill);
-	Engine::RenderCommand::SetFaceCullMode(Engine::FaceCullMode::Front);
+	Engine::RenderCommand::SetFaceCullMode(Engine::FaceCullMode::Back);
 	Engine::RenderCommand::ClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 	Engine::RenderCommand::Clear(true, true);
 

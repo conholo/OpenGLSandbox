@@ -51,15 +51,6 @@ CloudsSceneRenderPass::CloudsSceneRenderPass()
 
 	m_Terrain = Engine::CreateRef<Engine::Terrain>();
 
-	m_Terrain->GetProperties()->Scale = glm::vec3(18.0, 22.0f, 18.0f);
-	m_Terrain->GetProperties()->Position = glm::vec3(0.0f, -5.0f, 0.0f);
-	m_Terrain->GetProperties()->Color = glm::vec3(0.9f, 0.78f, 0.75f);
-	m_Terrain->GetProperties()->HeightScaleFactor = 50.0f;
-	m_Terrain->GetProperties()->HeightThreshold = 0.11f;
-	m_Terrain->GetProperties()->NoiseSettings->Octaves = 8;
-	m_Terrain->GetProperties()->NoiseSettings->Persistence = 0.26f;
-	m_Terrain->GetProperties()->NoiseSettings->Lacunarity = 2.8f;
-	m_Terrain->GetProperties()->NoiseSettings->NoiseScale = 6.0f;
 	m_Terrain->SetLOD(0);
 	m_Terrain->UpdateTerrain();
 
@@ -83,14 +74,13 @@ CloudsSceneRenderPass::~CloudsSceneRenderPass()
 void CloudsSceneRenderPass::DrawSceneEntities(const Engine::Camera& camera)
 {
 	//m_WhiteTexture->BindToSamplerSlot(0);
-	//m_GroundPlane->GetEntityRenderer()->GetShader()->Bind();
-	//m_GroundPlane->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", { 1.0f, 0.8f, 0.8f });
+	//m_GroundPlane->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	//m_GroundPlane->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", { 1.0f, 0.8f, 0.8f });
 	//m_GroundPlane->DrawEntity(camera.GetViewProjection());
 
 
 	if (!m_DrawTerrain) return;
 
-	Engine::RenderCommand::SetFaceCullMode(Engine::FaceCullMode::Back);
 	Engine::RenderCommand::SetDrawMode(m_TerrainIsWireframe ? Engine::DrawMode::WireFrame : Engine::DrawMode::Fill);
 	Engine::ShaderLibrary::Get("TerrainLighting")->Bind();
 	Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformMat4("u_ModelMatrix", m_Terrain->GetTransform()->Transform());
@@ -120,7 +110,6 @@ void CloudsSceneRenderPass::DrawSceneEntities(const Engine::Camera& camera)
 	Engine::ShaderLibrary::Get("TerrainLighting")->UploadUniformFloat3("u_Color", m_Terrain->GetProperties()->Color);
 	m_Terrain->Draw();
 	Engine::RenderCommand::SetDrawMode(Engine::DrawMode::Fill);
-	Engine::RenderCommand::SetFaceCullMode(Engine::FaceCullMode::None);
 }
 
 void CloudsSceneRenderPass::ExecutePass(const Engine::Camera& camera)

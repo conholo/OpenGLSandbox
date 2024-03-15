@@ -32,7 +32,7 @@ namespace Engine
 	void SimpleEntity::DrawEntity(const glm::mat4& viewProjection) const
 	{
 		m_EntityRenderer->Begin();
-		m_EntityRenderer->GetShader()->UploadUniformMat4("u_MVP", viewProjection * m_EntityTransform->Transform());
+		m_EntityRenderer->GetMaterial().GetShader()->UploadUniformMat4("u_MVP", viewProjection * m_EntityTransform->Transform());
 		m_EntityRenderer->Draw();
 		m_EntityRenderer->End();
 	}
@@ -40,7 +40,7 @@ namespace Engine
 	void SimpleEntity::DrawEntityPoints(const glm::mat4& viewProjection) const
 	{
 		m_EntityRenderer->Begin();
-		m_EntityRenderer->GetShader()->UploadUniformMat4("u_MVP", viewProjection * m_EntityTransform->Transform());
+		m_EntityRenderer->GetMaterial().GetShader()->UploadUniformMat4("u_MVP", viewProjection * m_EntityTransform->Transform());
 		m_EntityRenderer->DrawPoints();
 		m_EntityRenderer->End();
 	}

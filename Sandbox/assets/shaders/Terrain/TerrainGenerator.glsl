@@ -1,5 +1,5 @@
 #type compute
-#version 460 core
+#version 450 core
 
 const float Epsilon = 10e-4;
 

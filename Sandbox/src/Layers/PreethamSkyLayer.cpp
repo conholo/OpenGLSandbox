@@ -108,10 +108,10 @@ void PreethamSkyLayer::OnUpdate(float deltaTime)
 	Engine::RenderCommand::ClearColor(m_ClearColor);
 
 	//DrawReflectionSpheres();
-	m_NonReflectedCube->GetEntityRenderer()->GetShader()->Bind();
-	m_NonReflectedCube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", {1.0, 1.0f, 1.0f});
+	m_NonReflectedCube->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_NonReflectedCube->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", {1.0, 1.0f, 1.0f});
 	m_WhiteTexture->BindToSamplerSlot(0);
-	m_NonReflectedCube->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_NonReflectedCube->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 	m_NonReflectedCube->DrawEntity(m_Camera.GetViewProjection());
 
 	DrawSkybox(deltaTime);

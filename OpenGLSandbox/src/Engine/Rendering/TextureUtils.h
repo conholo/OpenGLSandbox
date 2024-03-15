@@ -20,7 +20,7 @@ namespace Engine
 		enum class TextureAccessLevel { None = 0, ReadOnly, WriteOnly, ReadWrite };
 		enum class TextureShaderDataFormat { None = 0, RGBA32F, RGBA16F, RG32F, RG16F, R11FG11FB10F, R32F, R16F, RGBA8, RGBA };
 
-		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height);
+		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height, uint32_t depth=0);
 
 
 		GLenum ConvertWrapMode(WrapMode wrapMode);

@@ -250,24 +250,24 @@ void BlinnPhongLightingDemoLayer::OnDetach()
 
 static void UploadPositionalData(const Engine::Ref<Engine::SimpleEntity> entity, const Engine::Camera& camera)
 {
-	entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", entity->GetEntityTransform()->Transform());
-	entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ViewMatrix", camera.GetView());
-	entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ProjectionMatrix", camera.GetProjection());
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", entity->GetEntityTransform()->Transform());
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ViewMatrix", camera.GetView());
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ProjectionMatrix", camera.GetProjection());
 	glm::mat4 modelView = camera.GetView() * entity->GetEntityTransform()->Transform();
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(modelView));
-	entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_NormalMatrix", normalMatrix);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_NormalMatrix", normalMatrix);
 }
 
 static void UploadMaterialProperties(const Engine::Ref<Engine::SimpleEntity> entity, const BlinnPhongMaterialProperties& properties)
 {
-	entity->GetEntityRenderer()->GetShader()->Bind();
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", properties.AmbientColor);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", properties.DiffuseColor);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", properties.AmbientStrength);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", properties.DiffuseStrength);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", properties.SpecularStrength);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", properties.Shininess);
-	entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_IsSmooth", properties.IsSmooth);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", properties.AmbientColor);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", properties.DiffuseColor);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", properties.AmbientStrength);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", properties.DiffuseStrength);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", properties.SpecularStrength);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", properties.Shininess);
+	entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_IsSmooth", properties.IsSmooth);
 }
 
 static void UploadDirectionalLightData(const Engine::Ref<Engine::Light>& directionalLight, const Engine::Camera& camera, const Engine::Ref<Engine::Shader>& shader)
@@ -455,22 +455,22 @@ void BlinnPhongLightingDemoLayer::DrawEntities()
 		for (uint32_t i = 0; i < m_CatWalkEntities.size(); i++)
 		{
 			auto entity = m_CatWalkEntities[i].CatWalkEntity;
-			entity->GetEntityRenderer()->GetShader()->Bind();
+			entity->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 			m_WhiteTexture->BindToSamplerSlot(0);
 			UploadPositionalData(entity, m_Camera);
 			UploadMaterialProperties(entity, m_CatWalkEntities[i].MaterialProperties);
 			entity->DrawEntity(m_Camera.GetViewProjection());
 		}
 
-		m_DiscoBall->GetEntityRenderer()->GetShader()->Bind();
+		m_DiscoBall->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_DiscoBall, m_Camera);
 		UploadMaterialProperties(m_DiscoBall, m_FlatShadedShinyProperties);
-		m_DiscoBall->GetEntityRenderer()->GetShader()->Bind();
-		m_DiscoBall->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_DiscoBall->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_DiscoBall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_DiscoBall->DrawEntity(m_Camera.GetViewProjection());
 
-		m_Plane->GetEntityRenderer()->GetShader()->Bind();
+		m_Plane->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 
 		if (m_GroundPlaneHasTexture)
 			m_GroundTexture->BindToSamplerSlot(0);
@@ -478,44 +478,44 @@ void BlinnPhongLightingDemoLayer::DrawEntities()
 			m_WhiteTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_Plane, m_Camera);
 		UploadMaterialProperties(m_Plane, m_SmoothProperties);
-		m_Plane->GetEntityRenderer()->GetShader()->Bind();
-		m_Plane->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_Plane->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_Plane->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_Plane->DrawEntity(m_Camera.GetViewProjection());
 		m_WhiteTexture->BindToSamplerSlot(0);
 
-		m_Wall->GetEntityRenderer()->GetShader()->Bind();
+		m_Wall->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WallTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_Wall, m_Camera);
 		UploadMaterialProperties(m_Wall, m_SmoothProperties);
-		m_Wall->GetEntityRenderer()->GetShader()->Bind();
-		m_Wall->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_Wall->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_Wall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_Wall->DrawEntity(m_Camera.GetViewProjection());
 		m_WhiteTexture->BindToSamplerSlot(0);
 
-		m_DisplayCube->GetEntityRenderer()->GetShader()->Bind();
+		m_DisplayCube->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_DisplayCube, m_Camera);
 		UploadMaterialProperties(m_DisplayCube, m_SmoothProperties);
-		m_DisplayCube->GetEntityRenderer()->GetShader()->Bind();
-		m_DisplayCube->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_DisplayCube->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_DisplayCube->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_DisplayCube->DrawEntity(m_Camera.GetViewProjection());
 		m_WhiteTexture->BindToSamplerSlot(0);
 
-		m_DisplaySphere->GetEntityRenderer()->GetShader()->Bind();
+		m_DisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_DisplaySphere, m_Camera);
 		UploadMaterialProperties(m_DisplaySphere, m_RoughProperties);
-		m_DisplaySphere->GetEntityRenderer()->GetShader()->Bind();
-		m_DisplaySphere->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_DisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_DisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_DisplaySphere->DrawEntity(m_Camera.GetViewProjection());
 		m_WhiteTexture->BindToSamplerSlot(0);
 
-		m_TexturedDisplaySphere->GetEntityRenderer()->GetShader()->Bind();
+		m_TexturedDisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_MapTexture->BindToSamplerSlot(0);
 		UploadPositionalData(m_TexturedDisplaySphere, m_Camera);
 		UploadMaterialProperties(m_TexturedDisplaySphere, m_SmoothProperties);
-		m_TexturedDisplaySphere->GetEntityRenderer()->GetShader()->Bind();
-		m_TexturedDisplaySphere->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+		m_TexturedDisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+		m_TexturedDisplaySphere->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 		m_TexturedDisplaySphere->DrawEntity(m_Camera.GetViewProjection());
 		m_WhiteTexture->BindToSamplerSlot(0);
 	}
@@ -549,17 +549,17 @@ void BlinnPhongLightingDemoLayer::DrawSDFEntities()
 			UploadSpotLightData(i, m_SpotLights[i], spotLightModelSpacePosition, m_SpotLights[i]->GetLightDirection(), Engine::ShaderLibrary::Get("SDFBlinnPhong"));
 		}
 
-		entity->GetEntityRenderer()->GetShader()->Bind();
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
 		glm::vec3 camModelSpace = glm::vec3(worldToModel * glm::vec4(m_Camera.GetPosition(), 1.0f));
-		entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_UseDirectionalLight", m_UseDirectional ? 1 : 0);
-		entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_UsePointLights", m_UsePointLights ? 1 : 0);
-		entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_UseSpotLights", m_UseSpotLights ? 1 : 0);
-		entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", entity->GetEntityTransform()->Transform());
-		entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", camModelSpace);
-		entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPositionWorld", m_Camera.GetPosition());
-		entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_SphereOffset", m_SphereOffset);
-		entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SmoothUnionCoefficient", 0.5f);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_UseDirectionalLight", m_UseDirectional ? 1 : 0);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_UsePointLights", m_UsePointLights ? 1 : 0);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_UseSpotLights", m_UseSpotLights ? 1 : 0);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", entity->GetEntityTransform()->Transform());
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPosition", camModelSpace);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPositionWorld", m_Camera.GetPosition());
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_SphereOffset", m_SphereOffset);
+		entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_SmoothUnionCoefficient", 0.5f);
 		UploadMaterialProperties(entity, m_SDFEntities[i].MaterialProperties);
 		entity->DrawEntity(m_Camera.GetViewProjection());
 	}

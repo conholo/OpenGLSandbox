@@ -45,7 +45,7 @@ namespace Engine
 		shadowRenderPassSpec.ColorWrite = false;
 		shadowRenderPassSpec.ClearColor = glm::vec4(0.0f);
 		shadowRenderPassSpec.TargetFramebuffer = CreateRef<Framebuffer>(shadowFrameBufferSpec);
-		shadowRenderPassSpec.Shader = ShaderLibrary::Get("Depth");
+		shadowRenderPassSpec.RenderPassShader = ShaderLibrary::Get("Depth");
 		shadowRenderPassSpec.Flags |= (uint32_t)RenderFlag::DepthTest;
 		shadowRenderPassSpec.Flags |= (uint32_t)RenderFlag::Blend;
 
@@ -63,7 +63,7 @@ namespace Engine
 		s_WhiteTexture = Texture2D::CreateWhiteTexture();
 
 		s_GeometryPass = CreateRef<RenderPass>(geoRenderPassSpec);
-		s_GeometryPass->GetRenderPassSpecification().Shader = ShaderLibrary::Get("EngineBP");
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader = ShaderLibrary::Get("EngineBP");
 	}
 
 	void SceneRenderer::ShadowPass()
@@ -80,7 +80,7 @@ namespace Engine
 
 		auto group = s_ActiveScene->m_Registry.group<TransformComponent, MeshRendererComponent>();
 
-		s_ShadowPass->GetRenderPassSpecification().Shader->Bind();
+		s_ShadowPass->GetRenderPassSpecification().RenderPassShader->Bind();
 
 		RenderCommand::SetFaceCullMode(FaceCullMode::Front);
 
@@ -93,7 +93,7 @@ namespace Engine
 
 		RenderCommand::SetFaceCullMode(FaceCullMode::Back);
 
-		s_ShadowPass->GetRenderPassSpecification().Shader->Unbind();
+		s_ShadowPass->GetRenderPassSpecification().RenderPassShader->Unbind();
 		s_ShadowPass->GetRenderPassSpecification().TargetFramebuffer->BindDepthTexture(1);
 		Renderer::EndPass(s_ShadowPass);
 	}
@@ -142,13 +142,13 @@ namespace Engine
 		std::pair<TransformComponent, LightComponent> directionalLightComponents = s_ActiveScene->GetDirectionalLight();
 
 		s_WhiteTexture->BindToSamplerSlot(0);
-		s_GeometryPass->GetRenderPassSpecification().Shader->Bind();
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformInt("u_Texture", 0);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformInt("u_ShadowMap", 1);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat3("u_DirectionalLight.Position", directionalLightComponents.first.Translation);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat3("u_DirectionalLight.Color", directionalLightComponents.second.Color);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat("u_DirectionalLight.Intensity", directionalLightComponents.second.Intensity);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat3("u_CameraPosition", s_Camera.GetPosition());
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->Bind();
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformInt("u_Texture", 0);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformInt("u_ShadowMap", 1);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat3("u_DirectionalLight.Position", directionalLightComponents.first.Translation);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat3("u_DirectionalLight.Color", directionalLightComponents.second.Color);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat("u_DirectionalLight.Intensity", directionalLightComponents.second.Intensity);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat3("u_CameraPosition", s_Camera.GetPosition());
 
 		for (auto entity : group)
 		{
@@ -159,7 +159,7 @@ namespace Engine
 			Renderer::DrawPrimitive(meshRenderer.Type);
 		}
 
-		s_GeometryPass->GetRenderPassSpecification().Shader->Unbind();
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->Unbind();
 
 		Renderer::EndPass(s_GeometryPass);
 	}
@@ -204,11 +204,11 @@ namespace Engine
 
 	void SceneRenderer::UploadMaterialProperties(const RendererMaterialProperties& properties)
 	{
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat3("u_MaterialProperties.AmbientColor", properties.AmbientColor);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", properties.DiffuseColor);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat("u_MaterialProperties.AmbientStrength", properties.AmbientStrength);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", properties.DiffuseStrength);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat("u_MaterialProperties.SpecularStrength", properties.SpecularStrength);
-		s_GeometryPass->GetRenderPassSpecification().Shader->UploadUniformFloat("u_MaterialProperties.Shininess", properties.Shininess);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat3("u_MaterialProperties.AmbientColor", properties.AmbientColor);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", properties.DiffuseColor);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat("u_MaterialProperties.AmbientStrength", properties.AmbientStrength);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", properties.DiffuseStrength);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat("u_MaterialProperties.SpecularStrength", properties.SpecularStrength);
+		s_GeometryPass->GetRenderPassSpecification().RenderPassShader->UploadUniformFloat("u_MaterialProperties.Shininess", properties.Shininess);
 	}
 }

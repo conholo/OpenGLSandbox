@@ -2,23 +2,23 @@
 	path = OpenGLSandbox/third_party/yaml-cpp
 	url = https://github.com/thecherno/yaml-cpp
 	branch = master
-[submodule "OpenGLSandbox/OpenGLSandbox/third_party/spdlog"]
-	path = OpenGLSandbox/OpenGLSandbox/third_party/spdlog
+[submodule "OpenGLSandbox/third_party/spdlog"]
+	path = OpenGLSandbox/third_party/spdlog
 	url = https://github.com/gabime/spdlog
 	branch = v1.x
-[submodule "OpenGLSandbox/OpenGLSandbox/third_party/imgui"]
-	path = OpenGLSandbox/OpenGLSandbox/third_party/imgui
+[submodule "OpenGLSandbox/third_party/imgui"]
+	path = OpenGLSandbox/third_party/imgui
 	url = https://github.com/TheCherno/imgui
 	branch = docking
-[submodule "OpenGLSandbox/OpenGLSandbox/third_party/yaml-cpp"]
-	path = OpenGLSandbox/OpenGLSandbox/third_party/yaml-cpp
+[submodule "OpenGLSandbox/third_party/yaml-cpp"]
+	path = OpenGLSandbox/third_party/yaml-cpp
 	url = https://github.com/thecherno/yaml-cpp
 	branch = master
-[submodule "OpenGLSandbox/OpenGLSandbox/third_party/glm"]
-	path = OpenGLSandbox/OpenGLSandbox/third_party/glm
+[submodule "OpenGLSandbox/third_party/glm"]
+	path = OpenGLSandbox/third_party/glm
 	url = https://github.com/g-truc/glm
 	branch = master
-[submodule "OpenGLSandbox/OpenGLSandbox/third_party/GLFW"]
-	path = OpenGLSandbox/OpenGLSandbox/third_party/GLFW
+[submodule "OpenGLSandbox/third_party/GLFW"]
+	path = OpenGLSandbox/third_party/GLFW
 	url = https://github.com/TheCherno/glfw
 	branch = master

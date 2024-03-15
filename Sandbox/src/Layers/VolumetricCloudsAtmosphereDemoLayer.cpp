@@ -100,76 +100,76 @@ void VolumetricCloudsAtmosphereDemoLayer::OnUpdate(float deltaTime)
 
 	Engine::RenderCommand::ClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 	Engine::RenderCommand::Clear(true, true);
-	m_FSQ->GetEntityRenderer()->GetShader()->Bind();
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 	m_FBO->BindColorAttachment(0);
 	m_BaseShapeSettings->BaseShapeTexture->BindToSamplerSlot(1);
 	m_DetailShapeSettings->DetailShapeTexture->BindToSamplerSlot(2);
 	m_PerlinSettings->PerlinTexture->BindToSamplerSlot(3);
 	m_CurlSettings->CurlTexture->BindToSamplerSlot(4);
 	m_FBO->BindDepthTexture(5);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SceneTexture", 0);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_ShapeTexture", 1);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DetailTexture", 2);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_WeatherMap", 3);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_CurlNoise", 4);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DepthTexture", 5);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_NearClip", m_Camera.GetNearClip());
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_FarClip", m_Camera.GetFarClip());
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SunSizeAttenuation", m_SunSizeAttenuation);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SceneTexture", 0);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_ShapeTexture", 1);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_DetailTexture", 2);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_WeatherMap", 3);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_CurlNoise", 4);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_DepthTexture", 5);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_NearClip", m_Camera.GetNearClip());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_FarClip", m_Camera.GetFarClip());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_SunSizeAttenuation", m_SunSizeAttenuation);
 
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformBool("u_Animate", m_AnimateClouds);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_AnimationSpeed", m_AnimationSpeed);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_ElapsedTime", Engine::Time::Elapsed());
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_TimeScale", m_TimeScale);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformBool("u_Animate", m_AnimateClouds);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_AnimationSpeed", m_AnimationSpeed);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_ElapsedTime", Engine::Time::Elapsed());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_TimeScale", m_TimeScale);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_DensitySteps", m_DensitySteps);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_LightSteps", m_LightSteps);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformInt("u_AtmosphericOpticalDepthPoints", m_AtmosphericOpticalDepthPoints);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_DensitySteps", m_DensitySteps);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_LightSteps", m_LightSteps);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_AtmosphericOpticalDepthPoints", m_AtmosphericOpticalDepthPoints);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_AtmosphereColor", m_AtmosphereColor);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CloudTintColor", m_CloudTintColor);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_AtmosphereColor", m_AtmosphereColor);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CloudTintColor", m_CloudTintColor);
 
 	glm::vec4 phaseParams = glm::vec4(m_CloudSettings->ForwardScattering, m_CloudSettings->BackScattering, m_CloudSettings->BaseBrightness, m_CloudSettings->PhaseFactor);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat4("u_PhaseParams", phaseParams);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat4("u_PhaseParams", phaseParams);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_LuminanceMultiplier", m_LuminanceMultiplier);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_ForwardScatteringConstant", m_ForwardScatteringConstant);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_ExtinctionFactor", m_ExtinctionFactor);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_AtmosphereDensityFalloff", m_AtmosphereDensityFalloff);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SilverLiningConstant", m_SilverLiningConstant);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_PowderConstant", m_PowderConstant);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_LuminanceMultiplier", m_LuminanceMultiplier);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_ForwardScatteringConstant", m_ForwardScatteringConstant);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_ExtinctionFactor", m_ExtinctionFactor);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_AtmosphereDensityFalloff", m_AtmosphereDensityFalloff);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_SilverLiningConstant", m_SilverLiningConstant);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_PowderConstant", m_PowderConstant);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_ViewerAttenuationFactor", m_ViewerAttenuationFactor);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_LowerCloudOffsetPct", m_LowerCloudOffsetPct);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_UpperCloudOffsetPct", m_UpperCloudOffsetPct);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DetailHeightModifier", m_BaseShapeErosionFactor);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_TypeWeightMultiplier", m_TypeWeightMultiplier);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_ViewerAttenuationFactor", m_ViewerAttenuationFactor);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_LowerCloudOffsetPct", m_LowerCloudOffsetPct);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_UpperCloudOffsetPct", m_UpperCloudOffsetPct);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_DetailHeightModifier", m_BaseShapeErosionFactor);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_TypeWeightMultiplier", m_TypeWeightMultiplier);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_CloudScale", m_CloudScale);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DensityMultiplier", m_DensityMultiplier);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DensityThreshold", m_DensityThreshold);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat4("u_ShapeNoiseWeights", m_ShapeNoiseWeights);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_DetailNoiseWeights", m_DetailNoiseWeights);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CloudTypeWeights", m_CloudTypeWeights);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_CloudScale", m_CloudScale);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_DensityMultiplier", m_DensityMultiplier);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_DensityThreshold", m_DensityThreshold);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat4("u_ShapeNoiseWeights", m_ShapeNoiseWeights);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_DetailNoiseWeights", m_DetailNoiseWeights);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CloudTypeWeights", m_CloudTypeWeights);
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_AtmosphereStrength", m_AtmosphereStrength);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_AtmosphereStrength", m_AtmosphereStrength);
 
 	float scatterR = glm::pow(400.0 / m_WaveLengths.r, 4) * m_ScatteringStrength;
 	float scatterG = glm::pow(400.0 / m_WaveLengths.g, 4) * m_ScatteringStrength;
 	float scatterB = glm::pow(400.0 / m_WaveLengths.b, 4) * m_ScatteringStrength;
 
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_AtmosphereScatteringCoefficient", {scatterR, scatterG, scatterB});
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_AtmosphereRadius", m_Planet->GetProperties().AtmosphereRadius);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_PlanetRadius", m_Planet->GetProperties().Radius);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_PlanetPosition", m_Planet->GetProperties().Position);
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseProjection", glm::inverse(m_Camera.GetProjection()));
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_InverseView", glm::inverse(m_Camera.GetView()));
-	m_FSQ->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_AtmosphereScatteringCoefficient", {scatterR, scatterG, scatterB});
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_AtmosphereRadius", m_Planet->GetProperties().AtmosphereRadius);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_PlanetRadius", m_Planet->GetProperties().Radius);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_PlanetPosition", m_Planet->GetProperties().Position);
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_InverseProjection", glm::inverse(m_Camera.GetProjection()));
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_InverseView", glm::inverse(m_Camera.GetView()));
+	m_FSQ->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
 	m_FSQ->DrawEntity(m_Camera.GetViewProjection());
 }
 

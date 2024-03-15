@@ -56,7 +56,6 @@ void BloomDemoLayer::OnAttach()
 	m_BrickWallTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/space.jpg", fileTexSpec);
 	m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/floor3.jpg", fileTexSpec);
 	//m_GroundTexture = Engine::CreateRef<Engine::Texture2D>("assets/textures/ground-blue.jpg", fileTexSpec);
-	Engine::ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongSimple.glsl");
 
 	Engine::Texture2DSpecification bloomSpec =
 	{
@@ -77,11 +76,11 @@ void BloomDemoLayer::OnAttach()
 
 	m_FullScreenQuad = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::FullScreenQuad, "BloomPostProcessing");
 
-	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+	m_Table = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS", "Table");
 	m_Table->GetEntityTransform()->SetScale({ 26.940f, 3.00f, 19.480f });
 	m_Table->GetEntityTransform()->SetPosition({ 4.730f, -10.010f, 6.100f});
 
-	m_BrickWall = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS");
+	m_BrickWall = Engine::CreateRef<Engine::SimpleEntity>(Engine::PrimitiveType::Cube, "BlinnPhongWS", "BrickWall");
 	m_BrickWall->GetEntityTransform()->SetScale({ 26.780f, 26.010, 2.00f });
 	m_BrickWall->GetEntityTransform()->SetPosition({ 4.730f, 1.890f, -2.630f });
 
@@ -210,40 +209,40 @@ void BloomDemoLayer::OnUpdate(float deltaTime)
 
 	if (m_DrawGround)
 	{
-		m_Table->GetEntityRenderer()->GetShader()->Bind();
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_WhiteTexture->BindToSamplerSlot(0);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", m_Table->GetEntityTransform()->Transform());
 		m_GroundTexture->BindToSamplerSlot(0);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_TableProperties.AmbientStrength);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_TableProperties.DiffuseStrength);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_TableProperties.SpecularStrength);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_TableProperties.Shininess);
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_TableProperties.AmbientColor);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_TableProperties.DiffuseColor);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_TableProperties.AmbientStrength);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_TableProperties.DiffuseStrength);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_TableProperties.SpecularStrength);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_TableProperties.Shininess);
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
 		m_Table->DrawEntity(m_Camera.GetViewProjection());
 	}
 
 	if (m_DrawWall)
 	{
-		m_BrickWall->GetEntityRenderer()->GetShader()->Bind();
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 		m_BrickWallTexture->BindToSamplerSlot(0);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_BrickWall->GetEntityTransform()->Transform());
-		m_Table->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_BrickProperties.AmbientColor);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_BrickProperties.DiffuseColor);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_BrickProperties.AmbientStrength);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_BrickProperties.DiffuseStrength);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_BrickProperties.SpecularStrength);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_BrickProperties.Shininess);
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
-		m_BrickWall->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", m_BrickWall->GetEntityTransform()->Transform());
+		m_Table->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.AmbientColor", m_BrickProperties.AmbientColor);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_MaterialProperties.DiffuseColor", m_BrickProperties.DiffuseColor);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.AmbientStrength", m_BrickProperties.AmbientStrength);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.DiffuseStrength", m_BrickProperties.DiffuseStrength);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.SpecularStrength", m_BrickProperties.SpecularStrength);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_MaterialProperties.Shininess", m_BrickProperties.Shininess);
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Position", m_Light->GetLightTransform()->GetPosition());
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Light.Intensity", m_Light->GetLightIntensity());
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Color", m_Light->GetLightColor());
+		m_BrickWall->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
 		m_BrickWall->DrawEntity(m_Camera.GetViewProjection());
 	}
 
@@ -268,17 +267,17 @@ void BloomDemoLayer::OnUpdate(float deltaTime)
 	BloomComputePass();
 
 	Engine::RenderCommand::Clear(true, true);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->Bind();
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomIntensity", m_BloomEnabled ? m_BloomIntensity : 0.0f);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomEnabled && m_BloomDirtEnabled ? m_BloomDirtIntensity : 0.0f);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Exposure", m_Exposure);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_BloomIntensity", m_BloomEnabled ? m_BloomIntensity : 0.0f);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_BloomDirtIntensity", m_BloomEnabled && m_BloomDirtEnabled ? m_BloomDirtIntensity : 0.0f);
 
 	m_FBO->BindColorAttachment(0, 0);
 	m_BloomComputeTextures[2]->BindToSamplerSlot(1);
 	m_BloomDirtTexture->BindToSamplerSlot(2);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BloomTexture", 1);
-	m_FullScreenQuad->GetEntityRenderer()->GetShader()->UploadUniformInt("u_BloomDirtTexture", 2);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_BloomTexture", 1);
+	m_FullScreenQuad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_BloomDirtTexture", 2);
 	m_FullScreenQuad->DrawEntity(m_Camera.GetViewProjection());
 	m_BloomComputeTextures[2]->Unbind();
 	m_FBO->UnbindColorAttachment(0, 0);

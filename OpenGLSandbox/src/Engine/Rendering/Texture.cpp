@@ -493,7 +493,8 @@ namespace Engine
 		// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexStorage2D.xhtml
 
 		const uint32_t Mips = GetMipLevelCount();
-		glTextureStorage3D(m_ID, Mips, ConvertInternalFormatMode(Specification.InternalFormat), Specification.Width, Specification.Height, Specification.Depth);
+		GLenum InternalFormat = ConvertInternalFormatMode(Specification.InternalFormat);
+		glTextureStorage3D(m_ID, 1, InternalFormat, Specification.Width, Specification.Height, Specification.Depth);
 	}
 
 	Texture3D::~Texture3D()
@@ -514,15 +515,7 @@ namespace Engine
 
 	void Texture3D::BindToImageSlot(uint32_t unit, uint32_t level, ImageUtils::TextureAccessLevel access, ImageUtils::TextureShaderDataFormat shaderDataFormat) const
 	{
-		const GLenum GLShaderDataFormat = ConvertShaderFormatType(shaderDataFormat);
-		const GLenum InternalFormat = ConvertInternalFormatMode(m_Specification.InternalFormat);
-
-		if (GLShaderDataFormat != InternalFormat)
-		{
-			LOG_ERROR("Failure Binding '{}' Texture3D to Image Slot: Shader Data Format and Internal format must match!", m_Specification.Name);
-		}
-
-		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ConvertTextureAccessLevel(access), ConvertShaderFormatType(shaderDataFormat));
+		glBindImageTexture(unit, m_ID, level, GL_TRUE, 0, ImageUtils::ConvertTextureAccessLevel(access), ImageUtils::ConvertShaderFormatType(shaderDataFormat));
 	}
 
 	int Texture3D::WriteToFile(const std::string& assetPath) const
@@ -553,7 +546,7 @@ namespace Engine
 
 	uint32_t Texture3D::GetMipLevelCount() const
 	{
-		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height);
+		return ImageUtils::CalculateMipLevelCount(m_Specification.Width, m_Specification.Height, m_Specification.Depth);
 	}
 
 	
