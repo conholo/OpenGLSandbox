@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include <iostream>
-#include "Shader.h"
+#include "Engine/Rendering/Shader.h"
 #include "Engine/Core/Buffer.h"
 #include "Engine/Core/Memory.h"
+#include "Engine/Core/Log.h"
 
 namespace Engine
 {
@@ -14,6 +14,7 @@ namespace Engine
 	{
 		uint32_t RendererID = 0;
 		int32_t TextureUnit = -1;
+		int32_t HideInUI = 0;
 	};
 
 	struct MaterialUniformData
@@ -43,10 +44,10 @@ namespace Engine
 		void Set(const std::string& name, const T& data)
 		{
 			const auto* uniform = FindShaderUniform(name);
-
+			
 			if (uniform == nullptr)
 			{
-				std::cout << "Unable to Set Uniform with name: " << name << " for material: " << m_Name << "\n";				
+				LOG_TRACE("Unable to Set Uniform with name: '{}' for material: '{}' - check that the uniform is being used in the shader.", name, m_Name);				
 				return;
 			}
 
@@ -59,7 +60,10 @@ namespace Engine
 			const auto* uniform = FindShaderUniform(name);
 
 			if (uniform == nullptr)
+			{
+				LOG_TRACE("Unable to Get Uniform with name: '{}' for material: '{}' - check that the spelling of the uniform", name, m_Name);				
 				return nullptr;
+			}
 		
 			return m_UniformStorageBuffer.Read<T>(uniform->GetBufferOffset());
 		}
@@ -67,7 +71,6 @@ namespace Engine
 		bool Has(const std::string& name)
 		{
 			const auto* uniform = FindShaderUniform(name);
-
 			return uniform != nullptr;
 		}
 

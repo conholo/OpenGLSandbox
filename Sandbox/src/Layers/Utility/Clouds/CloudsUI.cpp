@@ -1,7 +1,7 @@
 #include "CloudsUI.h"
 #include "HelperFunctions.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 CloudsUI::CloudsUI()
 {
@@ -212,7 +212,7 @@ void CloudsUI::Draw(const Engine::Ref<CloudsUIData>& uiData)
 					else if (m_ActiveUIType == CloudUIType::Perlin)
 						DrawPerlinUI(uiData->PerlinSettings);
 					else if (m_ActiveUIType == CloudUIType::Curl)
-						DrawCurlUI(uiData->CurlSettings);
+						DrawCurlUI(uiData->CloudCurlSettings);
 				}
 				else if (m_ActiveTabType == UITabTypes::TerrainSettings)
 					DrawTerrainSettingsUI(uiData->SceneRenderPass, uiData->SceneRenderPass->GetTerrain(), uiData->SceneRenderPass->GetTerrainLOD(), uiData->SceneRenderPass->GetTerrainIsWireframe());

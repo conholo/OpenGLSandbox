@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Utility.h"
 #include "Engine/Core/Time.h"
@@ -6,17 +7,16 @@
 #include "Engine/Core/Random.h"
 #include "Engine/Rendering/Renderer.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Engine/Rendering/Texture.h"
 
 namespace Engine
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application(const std::string& name)
-		:m_Name(name)
+	Application::Application(std::string name)
+		:m_Name(std::move(name))
 	{
+		ASSERT(!s_Instance, "An instance of Application already exists!");
 		s_Instance = this;
 		m_Window = CreateScope<Window>(name);
 		m_Window->SetEventCallbackFunction(BIND_FN(Application::OnEvent));
@@ -26,6 +26,12 @@ namespace Engine
 
 		ShaderLibrary::Load("assets/shaders/PBR/Preetham.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/Skybox.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongSimple.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongWS.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/BlinnPhongVS.glsl");
+		ShaderLibrary::Load("assets/shaders/BlinnPhong/SDFBlinnPhong.glsl");
+		ShaderLibrary::Load("assets/shaders/Line/LineShader.glsl");
+		ShaderLibrary::Load("assets/shaders/Line/LinePointShader.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EnginePBR.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EngineSceneComposite.glsl");
 		ShaderLibrary::Load("assets/shaders/PBR/EquirectangularToCubemap.glsl");
@@ -33,7 +39,9 @@ namespace Engine
 		ShaderLibrary::Load("assets/shaders/PBR/EnvironmentIrradiance.glsl");
 		ShaderLibrary::Load("assets/shaders/Utility/LinearDepthVisualizer.glsl");
 		ShaderLibrary::Load("assets/shaders/Utility/WriteCubemapToAttachment.glsl");
-		
+
+		ShaderLibrary::Load("assets/shaders/Misc/EnvironmentReflection.glsl");
+
 		ShaderLibrary::Load("assets/shaders/Misc/FlatColor.glsl");
 		ShaderLibrary::Load("assets/shaders/Editor/InfiniteGrid.glsl");
 		ShaderLibrary::Load("assets/shaders/PostFX/BloomPostProcessing.glsl");
@@ -55,7 +63,7 @@ namespace Engine
 			Engine::ImageUtils::ImageDataType::UByte,
 		};
 		BRDFSpec.Name = "BRDF LUT";
-		TextureLibrary::LoadTexture2D(BRDFSpec, "assets/textures/BRDF LUT.png");
+		//TextureLibrary::LoadTexture2D(BRDFSpec, "assets/textures/BRDF LUT.png");
 		
 		RenderCommand::Initialize();
 		RenderCommand::SetViewport(m_Window->GetWidth(), m_Window->GetHeight());

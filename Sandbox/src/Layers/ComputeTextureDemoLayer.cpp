@@ -101,14 +101,14 @@ void ComputeTextureDemoLayer::OnUpdate(float deltaTime)
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	m_TestComputeTexture->BindToSamplerSlot(0);
-	m_Sphere->GetEntityRenderer()->GetShader()->Bind();
-	m_Sphere->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
+	m_Sphere->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_Sphere->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
 	m_Sphere->DrawEntity(m_Camera.GetViewProjection());
-	m_Cube->GetEntityRenderer()->GetShader()->Bind();
-	m_Cube->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
+	m_Cube->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_Cube->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
 	m_Cube->DrawEntity(m_Camera.GetViewProjection());
-	m_Quad->GetEntityRenderer()->GetShader()->Bind();
-	m_Quad->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
+	m_Quad->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+	m_Quad->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Color", glm::vec3(1.0f));
 	m_Quad->DrawEntity(m_Camera.GetViewProjection());
 }
 

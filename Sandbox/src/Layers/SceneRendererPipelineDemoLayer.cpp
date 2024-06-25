@@ -1,5 +1,5 @@
 #include "SceneRendererPipelineDemoLayer.h"
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 SceneRendererPipelineDemoLayer::SceneRendererPipelineDemoLayer()
 {

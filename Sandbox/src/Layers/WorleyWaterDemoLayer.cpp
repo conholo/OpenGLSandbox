@@ -1,7 +1,7 @@
 #include "WorleyWaterDemoLayer.h"
 #include <iostream>
 #include <glm/gtc/quaternion.hpp>
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 
 #define PI 3.14159265359
@@ -132,28 +132,28 @@ void WorleyWaterDemoLayer::OnUpdate(float deltaTime)
 
 
 	m_WhiteTexture->BindToSamplerSlot(0);
-	m_Entity->GetEntityRenderer()->GetShader()->Bind();
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
 
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_Entity->GetEntityTransform()->Transform());
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_AnimateVertex", m_AnimateVertex ? 1 : 0);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_SurfaceType", (int)m_SurfaceType);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_VertexCounter", m_VertexCounter);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_CameraPosition", m_Camera.GetPosition());
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", m_Entity->GetEntityTransform()->Transform());
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_AnimateVertex", m_AnimateVertex ? 1 : 0);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_SurfaceType", (int)m_SurfaceType);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_VertexCounter", m_VertexCounter);
 
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Position", m_PointLight->GetLightTransform()->GetPosition());
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_Light.Color", m_PointLight->GetLightColor());
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Light.Intensity", m_PointLight->GetLightIntensity());
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Position", m_PointLight->GetLightTransform()->GetPosition());
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_Light.Color", m_PointLight->GetLightColor());
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Light.Intensity", m_PointLight->GetLightIntensity());
 
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_AnimateFragment", m_AnimateFragment ? 1 : 0);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_FragmentCounter", m_FragmentCounter);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_AmbientColor", { 0.8, 0.8, 0.8 });
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_DiffuseColor", { 0.0f, 0.7f, 0.9f });
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat3("u_SpecularColor", { 1.0f, 1.0f, 1.0f });
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_AmbientStrength", 0.5f);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_DiffuseStrength", 0.6f);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_SpecularStrength", 1.0f);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformFloat("u_Shininess", 32.0f);
-	m_Entity->GetEntityRenderer()->GetShader()->UploadUniformInt("u_Texture", 0);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_AnimateFragment", m_AnimateFragment ? 1 : 0);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_FragmentCounter", m_FragmentCounter);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_AmbientColor", { 0.8, 0.8, 0.8 });
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_DiffuseColor", { 0.0f, 0.7f, 0.9f });
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat3("u_SpecularColor", { 1.0f, 1.0f, 1.0f });
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_AmbientStrength", 0.5f);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_DiffuseStrength", 0.6f);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_SpecularStrength", 1.0f);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformFloat("u_Shininess", 32.0f);
+	m_Entity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformInt("u_Texture", 0);
 
 	m_Entity->DrawEntity(m_Camera.GetViewProjection());
 
@@ -227,8 +227,8 @@ void WorleyWaterDemoLayer::OnUpdate(float deltaTime)
 			m_FloatingEntity->GetEntityTransform()->SetScale(m_FloatingBoxes[i].Scale);
 
 
-			m_FloatingEntity->GetEntityRenderer()->GetShader()->Bind();
-			m_FloatingEntity->GetEntityRenderer()->GetShader()->UploadUniformMat4("u_ModelMatrix", m_FloatingEntity->GetEntityTransform()->Transform());
+			m_FloatingEntity->GetEntityRenderer()->GetMaterial().GetShader()->Bind();
+			m_FloatingEntity->GetEntityRenderer()->GetMaterial().GetShader()->UploadUniformMat4("u_ModelMatrix", m_FloatingEntity->GetEntityTransform()->Transform());
 			m_FloatingEntity->DrawEntity(m_Camera.GetViewProjection());
 		}
 	}

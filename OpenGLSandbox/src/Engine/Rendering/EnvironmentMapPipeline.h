@@ -50,17 +50,17 @@ namespace Engine
     class EnvironmentMapPipeline
     {
     public:
-        EnvironmentMapPipeline(const std::string& CreationShader, const Ref<EnvironmentMapSpecification>& Specification);
-        EnvironmentMapPipeline(const std::string& filePath);
+        EnvironmentMapPipeline();
         ~EnvironmentMapPipeline();
 
-        void Rebuild(const std::string& CreationShader, const Ref<EnvironmentMapSpecification>& Specification);
+        void BuildFromShader(const std::string& CreationShaderName, const Ref<EnvironmentMapSpecification>& Specification);
+        void BuildFromEquirectangularImage(const std::string& FilePath);
+        
         const Ref<EnvironmentMapSpecification>& GetSpecification() const { return m_Specification; }
         
     private:
-        void GenerateFromFile(const std::string& filePath);
+        void GenerateFromFile(const std::string& filePath) const;
         void GenerateFromShader(const std::string& CreationShader, const EnvironmentMapSpecification& Specification) const;
-
         Ref<EnvironmentMapSpecification> m_Specification;
     };
 }

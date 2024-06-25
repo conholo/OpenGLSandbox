@@ -1,5 +1,5 @@
+#include "epch.h"
 #include "Engine/Rendering/TextureUtils.h"
-
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
@@ -7,10 +7,12 @@ namespace Engine
 {
 	namespace ImageUtils
 	{
-		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height)
+		uint32_t CalculateMipLevelCount(uint32_t width, uint32_t height, uint32_t depth)
 		{
-			return (uint32_t)std::floor(std::log2(glm::min(width, height))) + 1;
+			uint32_t maxDimension = glm::max(glm::max(width, height), depth);
+			return static_cast<uint32_t>(std::floor(std::log2(maxDimension))) + 1;
 		}
+
 
 		GLenum ConvertWrapMode(WrapMode wrapMode)
 		{

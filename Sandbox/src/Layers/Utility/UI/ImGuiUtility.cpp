@@ -1,7 +1,7 @@
 #include "ImGuiUtility.h"
 
-#include <imgui/imgui_internal.h>
-#include <imgui/imgui.h>
+#include <imgui_internal.h>
+#include <imgui.h>
 
 void ImGuiUtility::DrawVec3Controls(const std::string& label, glm::vec3& values, float resetValue /*= 0.0f*/, float columnWidth /*= 100.0f*/)
 {
@@ -58,4 +58,10 @@ void ImGuiUtility::DrawVec3Controls(const std::string& label, glm::vec3& values,
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+}
+
+
+void ImGuiUtility::DrawMaterialInspector(const Engine::Ref<Engine::Material>& Material)
+{
+	const auto& Uniforms = Material->GetMaterialUniformData();
 }

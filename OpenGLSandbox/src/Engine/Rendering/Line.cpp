@@ -1,7 +1,6 @@
+#include "epch.h"
 #include "Engine/Rendering/Line.h"
 #include "Engine/Rendering/RenderCommand.h"
-
-#include <iostream>
 
 namespace Engine
 {

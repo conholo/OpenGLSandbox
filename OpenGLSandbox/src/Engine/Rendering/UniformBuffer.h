@@ -1,7 +1,4 @@
 #pragma once
-
-#include <stdint.h>
-
 namespace Engine
 {
 	class UniformBuffer

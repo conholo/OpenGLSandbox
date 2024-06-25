@@ -1,3 +1,4 @@
+#include "epch.h"
 #include "Engine/Scene/SimpleECS/EntityRenderer.h"
 #include "Engine/Scene/SimpleECS/EntityTransform.h"
 #include "Engine/Scene/SimpleECS/Light.h"

@@ -1,5 +1,5 @@
+#include "epch.h"
 #include "Engine/Scene/SimpleECS/Light.h"
-#include "Engine/Rendering/Mesh.h"
 #include "Engine/Rendering/Shader.h"
 
 namespace Engine

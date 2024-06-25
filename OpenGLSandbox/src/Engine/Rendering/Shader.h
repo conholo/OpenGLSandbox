@@ -1,15 +1,8 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <unordered_map>
-#include <glm/glm.hpp>
-
-#include "BufferLayout.h"
+#include "glm/glm.hpp"
+#include "Engine/Rendering/BufferLayout.h"
 #include "Engine/Core/Memory.h"
-
-typedef unsigned int GLenum;
-typedef int GLint;
 
 namespace Engine
 {
@@ -127,6 +120,7 @@ namespace Engine
 
 	private:
 		std::string ReadFile(const std::string& filePath);
+		void DumpShaderData();
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 		void Reflect();

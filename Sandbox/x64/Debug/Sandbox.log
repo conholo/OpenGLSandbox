@@ -1,6 +1,0 @@
-﻿  SphericalToPlanarLayer.cpp
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Core\Buffer.h(49,3): warning C4002: too many arguments for function-like macro invocation 'assert'
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(78,34): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Rendering\Line.h(79,36): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
-C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\OpenGLSandbox\src\Engine\Experimental\Terrain.h(62,51): warning C4244: 'return': conversion from 'double' to 'uint32_t', possible loss of data
-  Sandbox.vcxproj -> C:\dev\Engines\OpenGLSandbox\OpenGLSandbox\x64\Debug\Sandbox.exe

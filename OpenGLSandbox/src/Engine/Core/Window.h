@@ -1,10 +1,7 @@
 #pragma once
-#include <stdint.h>
-#include <string>
 
 #include <functional>
 #include <glm/glm.hpp>
-
 #include "Engine/Event/Event.h"
 
 struct GLFWwindow;
@@ -17,7 +14,7 @@ namespace Engine
 
 		using EventCallbackFunction = std::function<void(Event&)>;
 
-		Window(const std::string& name = "Ohm Engine", uint32_t width = 1920, uint32_t height = 1080, bool fullScreen = false, bool maximized = false);
+		Window(const std::string& name = "Engine", uint32_t width = 1920, uint32_t height = 1080, bool fullScreen = false, bool maximized = false);
 		~Window();
 
 		void Update();
@@ -52,8 +49,8 @@ namespace Engine
 			bool VSync;
 
 
-			WindowData(const std::string& name = "Ohm Engine", uint32_t width = 1920, uint32_t height = 1080, bool fullScreen = false, bool maximized = false, bool vSync = true)
-				:Name(name), Width(width), Height(height), FullScreenBorderless(fullScreen), Maximized(maximized), VSync(vSync)
+			WindowData(std::string name = "Ohm Engine", uint32_t width = 1920, uint32_t height = 1080, bool fullScreen = false, bool maximized = false, bool vSync = true)
+				:Name(std::move(name)), Width(width), Height(height), FullScreenBorderless(fullScreen), Maximized(maximized), VSync(vSync)
 			{
 			}
 		};

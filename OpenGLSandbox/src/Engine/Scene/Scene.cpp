@@ -1,8 +1,7 @@
+#include "epch.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Scene/Entity.h"
 #include "Engine/Rendering/Renderer.h"
-
-#include <string>
 
 namespace Engine
 {

@@ -1,14 +1,9 @@
 #pragma once
 
-#include "Engine/Core/Memory.h"
-#include <stdint.h>
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include <glm/glm.hpp>
-
 #include "Engine/Rendering/Material.h"
 #include "Engine/Rendering/Texture.h"
+
+#include <glm/glm.hpp>
 
 namespace Assimp
 {
@@ -73,8 +68,7 @@ namespace Engine
 
 	private:
 		void InitializeMeshFromFile(const aiScene* scene, const std::string& modelFilePath);
-		void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
-		
+
 	private:
 		std::vector<Ref<Texture2D>> m_Textures;
 		std::vector<Ref<Texture2D>> m_NormalMaps;
@@ -82,10 +76,6 @@ namespace Engine
 		std::vector<Submesh> m_Submeshes;
 		std::vector<Vertex> m_Vertices;
 		std::vector<uint32_t> m_Indices;
-		
-		Ref<Assimp::Importer> m_Importer;
-		std::unordered_map<aiNode*, std::vector<uint32_t>> m_NodeMap;
-		const aiScene* m_Scene;
 		Ref<Shader> m_MeshShader;
 	};
 

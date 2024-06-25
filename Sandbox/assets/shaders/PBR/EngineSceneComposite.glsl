@@ -25,6 +25,7 @@ uniform sampler2D u_SceneRadianceMap;
 uniform sampler2D u_TransmittanceMap;
 uniform sampler2D u_SkyRadianceMap;
 uniform sampler2D u_SkyRadianceGeometryMap;
+uniform sampler2D u_SunRadianceMap;
 uniform float u_Exposure;
 in vec2 v_TexCoord;
 
@@ -47,17 +48,21 @@ vec3 ACESTonemap(vec3 color)
 	return clamp(m2 * (a / b), 0.0, 1.0);
 }
 
+vec3 GammaCorrect(vec3 color, float gamma)
+{
+	return pow(color, vec3(1.0f / gamma));
+}
+
 void main()
 {
     vec3 SceneGeometry = texture(u_SceneRadianceMap, v_TexCoord).rgb;
     vec3 SkyRadiance = texture(u_SkyRadianceMap, v_TexCoord).rgb;
     vec3 SkyRadianceGeometry = texture(u_SkyRadianceGeometryMap, v_TexCoord).rgb;
     vec3 Transmittance = u_ApplyTransmittance == 1 ? texture(u_TransmittanceMap, v_TexCoord).rgb : vec3(1.0);
+    vec3 SunRadiance = texture(u_SunRadianceMap, v_TexCoord).rgb;
     
-    //vec3 SceneAttenuation = SkyRadianceGeometry * (1.0 - Transmittance);
-    //float Visibility = dot(Transmittance, Transmittance) / 3.0;
-    //vec3 SceneRadiance = mix(SkyRadiance, SceneGeometry - SceneAttenuation, Visibility);
-    
-    vec3 InScatteredRadiance = SkyRadiance + SkyRadianceGeometry * Transmittance;
-	o_Color = vec4(InScatteredRadiance, 1.0); 
+    vec3 SunSkyRadiance = SunRadiance + SkyRadiance;
+    vec3 InScatteredRadiance = SunSkyRadiance - SkyRadianceGeometry * Transmittance;
+    vec3 Result = SceneGeometry * Transmittance + InScatteredRadiance;
+	o_Color = vec4(Result, 1.0); 
 }

@@ -1,12 +1,7 @@
 #pragma once
 
-#include "Engine/Core/Memory.h"
 #include "Engine/Scene/Component.h"
-#include "Engine/Rendering/Camera.h"
-
-#include <utility>
 #include <entt/entt.hpp>
-#include <glm/glm.hpp>
 
 namespace Engine
 {

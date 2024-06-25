@@ -12,8 +12,8 @@ struct MainCloudPassData
 	Engine::Ref<BaseShapeWorleySettings> BaseShapeSettings;
 	Engine::Ref<DetailShapeWorleySettings> DetailShapeSettings;
 	Engine::Ref<WorleyPerlinSettings> PerlinSettings;
-	Engine::Ref<CurlSettings> CurlSettings;
-	Engine::Ref<WaterData> WaterData;
+	Engine::Ref<CurlSettings> MainCloudCurlSettings;
+	Engine::Ref<WaterData> MainWaterData;
 	Engine::Ref<CloudsUI> UI;
 };
 
@@ -31,8 +31,8 @@ private:
 	Engine::Ref<Engine::EditorGrid> m_EditorGrid;
 
 	glm::vec4 m_ClearColor{ 0.1f, 0.1f, 0.1f, 0.1f };
-	//Engine::Ref<Engine::ShaderStorageBuffer> m_DensitySettingsSSBO;
-	//Engine::Ref<Engine::ShaderStorageBuffer> m_AnimationSettings;
+	Engine::Ref<Engine::ShaderStorageBuffer> m_DensitySettingsSSBO;
+	Engine::Ref<Engine::ShaderStorageBuffer> m_AnimationSettings;
 	Engine::Ref<Engine::Texture2D> m_BlueNoiseTexture;
 	Engine::Ref<Engine::Texture2D> m_BlackTexture;
 	Engine::Ref<Engine::Framebuffer> m_CloudFBO;
